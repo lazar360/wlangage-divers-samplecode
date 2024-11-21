@@ -1,0 +1,8 @@
+// Mettre un message bonjour dans une boxe
+Info("Bonjour le monde", "Bienvenue dans ce tutoriel")
+
+// Ouvrir une fenêtre en tant que fille et la fermeture de la fenêtre principale ferme la fenêtre fille
+OuvreFille(FEN_Fille)
+
+// Ouvre la fenêtre sœur et la fermeture de la fenêtre principale ne ferme PAS la fenêtre sœur
+OuvreSoeur(FEN_Soeur)
