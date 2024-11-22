@@ -1,0 +1,41 @@
+1- SANS LIAISON
+// Déclarer des variables et allouer des valeurs
+sNom est une chaîne = "KENOBI"
+sPrenom est une chaîne = "Ob iwan"
+dDOB est une Date = "19800101"
+sMaCle est une chaîne = Gauche(sNom,3) + Gauche(sPrenom,3)
+
+ou
+
+sNom est une chaîne = SAI_Nom
+sPrenom est une chaîne = SAI_Prenom
+dDOB est une Date = SAI_Date_de_naissance
+sMaCle est une chaîne = Gauche(SAI_Nom,3) + Gauche(SAI_Prenom,3)
+
+ou liaison
+
+// Allouer les valeurs aux rubriques
+Patients.Nom = sNom
+Patients.Prenom = sPrenom
+Patients.DateDeNaissance = dDOB
+Patients.IDPatients = sMaCle
+
+// Ajouter les informations
+HAjoute(Patients)
+
+// Infobox
+Info("Les données sont enregistrées")
+
+2- AVEC LIAISON
+// Déclarer des variables et allouer des valeurs
+sMaCle est une chaîne = Gauche(SAI_Nom,3) + Gauche(SAI_Prenom,3)
+
+// Dire à windev de lier les données automatiquement
+Patients.IDPatients = sMaCle
+EcranVersFichier(FEN_Ajout_de_patients)
+
+// Ajouter les informations
+HAjoute(Patients)
+
+// Infobox
+Info("Les données sont enregistrées")
