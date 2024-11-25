@@ -1,0 +1,5 @@
+// Action de supprimer tous les patients. Attention ! Intégrité non respectée (pas de cascade)
+HSupprimeTout(Patients)
+
+// Message d'apparition rapide
+ToastAffiche("Action effectuée",toastLong,cvMilieu,chCentre,RougeClair)
