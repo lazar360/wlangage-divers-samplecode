@@ -1,0 +1,22 @@
+1- champs non liés
+// Rechercher la valeur KENOb
+HLitRecherchePremier(Patients,IDPatients,"KENOb")
+
+// Ouvre la fenêtre
+OuvreFille(FEN_ChampsNonLiés)
+
+// remplir le champ
+FEN_ChampsNonLiés.SAI_Nom = Patients.Nom
+FEN_ChampsNonLiés.SAI_Prenom = Patients.Prenom
+FEN_ChampsNonLiés.SAI_Date_de_naissance = Patients.DateDeNaissance
+FEN_ChampsNonLiés.SAI_IDPatient = Patients.IDPatients
+
+2- champs liés
+// Rechercher la valeur KENOb
+HLitRecherchePremier(Patients,IDPatients,"KENOb ")
+
+// Ouvre la fenêtre
+OuvreFille(FEN_ChampsLiés)
+
+// remplir le champ automatiquement
+FichierVersEcran(FEN_ChampsLiés)
