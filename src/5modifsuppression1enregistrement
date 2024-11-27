@@ -1,0 +1,40 @@
+1- Champs non liés
+// Recherche l'identifiant dans le fichier
+HLitRecherchePremier(Patients,IDPatients,"KENOb ")
+
+// Enregistre la modification
+Patients.Nom = SAI_Nom
+
+// toast
+ToastAffiche("c'est fait")
+
+2- Champs liés (l'auteur ne fera plus que cette méthode)
+2.1- modification
+
+// Recherche l'identifiant dans le fichier
+HLitRecherchePremier(Patients,IDPatients,SAI_IDPatient)
+
+// Liaison des rubriques
+EcranVersFichier(FEN_ChampsLiés)
+
+// Enregistre la modification
+Patients.Nom = SAI_Nom
+
+// toast
+ToastAffiche("c'est fait")
+
+2.2 suppression
+// Rechercher l'identifiant en deux temps
+//HLitRecherchePremier(Patients,IDPatients, SAI_IDPatient)
+
+// SUPPRESSION
+// SI HTrouve(Patients) ALORS
+// en un temps
+SI	HLitRecherchePremier(Patients,IDPatients, SAI_IDPatient) ALORS
+	HSupprime(Patients)
+	// toast
+	ToastAffiche("C'est fait")
+SINON
+	Erreur("Patient non trouvé")
+	RETOUR
+FIN
