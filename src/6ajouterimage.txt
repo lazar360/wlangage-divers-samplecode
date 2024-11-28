@@ -1,0 +1,7 @@
+sFichier est une chaîne
+
+// Ouvre le sélecteur d'images
+sFichier = fSélecteurImage(".\Exe\Img", "", "Photo du patient", "PNG" + TAB + "*.png" + RC + "JPG" + TAB + "*.jpg")
+
+// Afficher image dans le champ
+IMG_imgPatient = sFichier
