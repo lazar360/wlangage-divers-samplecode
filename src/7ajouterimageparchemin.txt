@@ -1,0 +1,46 @@
+// 1- Affiche le chemin de l'image et l'image (bouton sélectionner)
+sPhoto est une chaîne
+
+// Ouvre le sélecteur d'images
+sPhoto = fSélecteurImage("C:\Users\Benjamine et Nicolas\Downloads", "", "Sélectionnez une image...", "JPG, PNG" + TAB + "*.jpg;*.png")
+
+// Charge les images
+SAI_Photo = sPhoto
+
+IMG_imgParChemin = sPhoto
+
+// 2- Enregistre l'image dans le répertoire exe et le nouveau chemin en bdd
+// Copie l'image dans le répertoire img dans le dossier exe
+sNouveauChemin est une chaîne = fRepExe()+"\Img\"+DateHeureSys()+".jpg"
+fCopieFichier(SAI_Photo,sNouveauChemin)
+
+// Enregistre le chemin de l'image
+SAI_Photo = sNouveauChemin
+
+// Lecture des informations
+EcranVersFichier()
+
+// Création de l'identifiant
+Patients.IDPatients = Gauche(SAI_Nom,3) + "Tes"
+Patients.Prenom = "Test"
+Patients.DateDeNaissance = 19800101
+
+// Ajoute ou modifie l'enregistrement
+HAjoute(Patients)
+
+// Ferme la fenêtre
+Ferme(FEN_FichePatient)
+
+// 3 - affichage du détail avec photo (chemin ou image)
+HLitRecherchePremier(Patients,Nom,COMBO_FEN_DétailAvecPhoto.Valeur)
+SAI_IDPatients = Patients.IDPatients
+SAI_Nom = Patients.Nom
+SAI_Prenom = Patients.Prenom
+
+SI Patients.CheminImage = "" ALORS
+	IMG_photoPatient = Patients.Image
+FIN
+
+SI Patients.CheminImage <> "" ALORS
+	IMG_photoPatient = Patients.CheminImage
+FIN
