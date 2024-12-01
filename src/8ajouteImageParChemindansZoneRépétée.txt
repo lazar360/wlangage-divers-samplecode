@@ -1,0 +1,20 @@
+POUR TOUT Patients
+	SI Patients.CheminImage = "" ALORS
+		!!!! Marche pas : ZoneRépétéeAjoute(ZR_Prog, Patients.Nom + TAB + Patients.Prenom + TAB + IMG_champRépété = Patients.Image)
+	SINON
+		ZoneRépétéeAjoute(ZR_Prog, Patients.Nom + TAB + Patients.Prenom + TAB + Patients.CheminImage)
+	FIN
+FIN
+
+-----
+POUR TOUT Patients
+	SI Patients.CheminImage = "" ALORS
+		ZoneRépétéeAjoute(ZR_Prog, Patients.Nom + TAB + Patients.Prenom + TAB + "")
+	SINON
+		ZoneRépétéeAjoute(ZR_Prog, Patients.Nom + TAB + Patients.Prenom + TAB + Patients.CheminImage)
+	FIN
+FIN
+
+----
+Dans bouton visualiser :
+Info("Nom : " + ZR_Prog.ATT_Nom)
