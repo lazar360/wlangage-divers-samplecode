@@ -1,0 +1,54 @@
+// Décrire une session
+maSession est une emailSessionSMTP
+maSession.Nom="recherche5335@gmail.com"
+maSession.MotDePasse=""
+maSession.AdresseServeur="smtp.gmail.com"
+maSession.Port="587"
+maSession.Option=emailProtocoleSMTPS // à activer également dans gmail
+
+// Ouvrir la session smtp
+SI PAS maSession.OuvreSession() ALORS
+	Erreur("Impossible de se connecter au serveur SMTP", ErreurInfo())
+SINON
+	Trace("Connexion serveur ok")
+FIN
+
+// Création de la variable email
+monMessage est un Email
+monMessage.Expediteur="recherche5335@gmail.com"
+monMessage.Destinataire[1]="recherche5335@gmail.com"
+monMessage.Sujet="Envoi message test"
+
+// message simple
+//--------------
+// monMessage.Message=[
+//Envoi du message réussi
+//Tout est ok
+//]
+
+// message html avec éditeur
+//------------------
+// EmailImporteHTML(monMessage, EDHTML_SansNom1, EDHTML_SansNom1.RépertoireDeTravail) // créer une fenêtre html
+// Trace("Le mail a été créé")
+
+// message ansi (sans passer par éditeur html
+sMonTexteAnsi est une chaîne ANSI
+sMonTexteAnsi = fChargeTexte("C:\downloads")
+EmailImporteHTML(monMessage,sMonTexteAnsi,"C:\downloads")
+
+// message ansi modifié (indication du prénom Nicolas en remplaçant %Nom%)
+sMonTexteAnsi est une chaîne ANSI
+sMonTexteAnsi = fChargeTexte("C:\downloads")
+sMonTexteAnsi = Remplace(sMonTexteAnsi,"%Nom%", "Nicolas")
+fSauveTexte("C:\downloads", sMonTexteAnsi)
+EmailImporteHTML(monMessage,sMonTexteAnsi,"C:\downloads")
+
+// Envoyer le mail
+SI maSession.EnvoieMessage(monMessage)=Faux ALORS
+	Erreur("message non envoyé")
+SINON
+	ToastAffiche("message envoyé")
+FIN
+
+// Fermer la session
+maSession.FermeSession()
