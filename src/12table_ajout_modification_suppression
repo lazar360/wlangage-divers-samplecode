@@ -1,0 +1,33 @@
+// Si les champs de saisie sont remplis, alors indique un produit
+SI SAI_Nom_Produit <> "" ET SAI_Prix <> "" ALORS
+	TableAjouteLigne(TABLE_Produit, SAI_Nom_Produit, SAI_Prix)
+SINON
+	// Si les champs de saisie sont vides, alors indique les valeurs ci-dessous
+	TableAjouteLigne(TABLE_Produit,"Produit A", 10.00)
+	TableAjouteLigne(TABLE_Produit,"Produit B", 15.00)
+	TableAjouteLigne(TABLE_Produit,"Produit C", 30.00)
+FIN
+// vide les champs après ajout
+SAI_Prix..Valeur = ""
+SAI_Nom_Produit..Valeur = ""
+
+SI SAI_Prix <> "" ET SAI_Nom_Produit <> "" ALORS
+	// Parcours de la table
+	POUR indiceTableProduit1 = 1 _À_ TABLE_Produit..Occurrence
+		// Modification du produit
+		SI TABLE_Produit[indiceTableProduit1].COL_Nom_du_produit = SAI_Nom_Produit ALORS
+			TABLE_Produit[indiceTableProduit1].COL_Prix = SAI_Prix
+		FIN
+	FIN
+FIN
+
+SI SAI_Prix <> "" ET SAI_Nom_Produit <> "" ALORS
+	// Parcours de la table
+	POUR indiceTableProduit2 = 1 _À_ TABLE_Produit..Occurrence
+		// Suppression du produit
+		SI TABLE_Produit[indiceTableProduit2].COL_Nom_du_produit = SAI_Nom_Produit ALORS
+			TableSupprime(TABLE_Produit,indiceTableProduit2)
+			RETOUR
+		FIN
+	FIN
+FIN
