@@ -1,0 +1,22 @@
+// Configuration requête
+maRequeteMetz est une restRequête
+monResultatMetz est une restRéponse
+maClé est une chaîne
+maRequeteMetz.URL="htte://api.airvisual.com/v2/nearestcity?lat=49.11753&lon=6.17688&key=" + maClé
+
+// Envoi
+monResultatMetz=RESTEnvoie(maRequeteMetz)
+
+// Conversion des informations
+maRéponseAuFormatVariant est un Variant
+
+// Chercher si erreur
+SI ErreurDétectée ALORS
+	Erreur("erreur détectée")
+	SINON
+	maRéponseAuFormatVariant = JSONVersVariant(monResultatMetz.Contenu)
+
+	// Afficher résultat
+	SAI_Status=maRéponseAuFormatVariant.status // status est une rubrique dans le Json de réponse
+FIN
+
