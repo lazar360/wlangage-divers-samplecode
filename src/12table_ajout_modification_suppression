@@ -27,7 +27,7 @@ SI SAI_Prix <> "" ET SAI_Nom_Produit <> "" ALORS
 		// Suppression du produit
 		SI TABLE_Produit[indiceTableProduit2].COL_Nom_du_produit = SAI_Nom_Produit ALORS
 			TableSupprime(TABLE_Produit,indiceTableProduit2)
-			RETOUR
+			SORTIR
 		FIN
 	FIN
 FIN
