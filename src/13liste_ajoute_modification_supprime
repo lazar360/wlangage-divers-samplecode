@@ -1,1 +1,63 @@
+// A la sélection de la ligne, code dans le combo : SAI_selection = LST_MaListe[LST_MaListe]	
+/////////////////////////
+Clic gauche sur BTN_Action_SurListe
+////////////////////////
+nIndice est un entier
 
+// Ajoute des éléments au combo LST_MaListe si la liste est vide et si SAI_selection est vide
+SI LST_MaListe..Occurrence <= 0 ET SAI_selection.Valeur = "" ALORS
+	ListeAjoute(LST_MaListe,"Un")
+	ListeAjoute(LST_MaListe,"Deux")
+	ListeAjoute(LST_MaListe,"Trois")
+FIN
+
+// Si champ de saisi non vide 
+SI SAI_selection.Valeur <> "" ALORS	
+	// Recherche dans la liste
+	nIndice = ListeCherche(LST_MaListe,SAI_selection)
+	
+	SI nIndice = -1 ALORS
+		// ajoute élément dans la liste si non trouvé
+		ListeAjoute(LST_MaListe, SAI_selection)
+	SINON
+		// trouve l'élément dans la liste
+		Info("L'élément est à la position " + nIndice)
+		// Info("L'élément est " + LST_MaListe[nIndice])
+	FIN
+FIN
+
+// Récupérer la position de la sélection si une ligne est sélectionnée
+// 1- Tester si une ligne du champ combo est sélectionnée
+//SI ListeSelect(LST_MaListe) > 0 ALORS
+//	// 2- Toaster la position
+//	ToastAffiche("L'élément sélectionné est à la position : " + LST_MaListe[LST_MaListe])
+//FIN
+
+// Modification d'une valeur de la liste
+SI LST_MaListe..Occurrence <> 0 _ET_ SAI_selection <> "" _ET_ SAI_Nouvelle_Valeur <> "" ALORS
+	indiceAModifier est un entier = ListeCherche(LST_MaListe,SAI_selection)
+	LST_MaListe[indiceAModifier] = SAI_Nouvelle_Valeur
+	LST_MaListe = 1
+	Vider_le_champ_SAI_selection()
+	SAI_Nouvelle_Valeur = ""
+FIN
+
+/////////////////////////
+Clic droit sur BTN_Action_SurListe
+////////////////////////
+SI LST_MaListe..Occurrence <> 0 ALORS
+	// Vide entièrement la liste si rien dans 
+	SI SAI_selection.Valeur = "" ALORS
+		ListeSupprimeTout(LST_MaListe)
+	FIN
+	// Si saisie sélection pas vide, 
+	SI SAI_selection.Valeur <> "" ALORS	
+		SI ListeCherche(LST_MaListe,SAI_selection.Valeur) ALORS
+			 ListeSupprime(LST_MaListe)
+		FIN
+		// Positionne le champ combo sur son premier élément
+		LST_MaListe = 1
+	FIN
+FIN
+
+Vider_le_champ_SAI_selection()
