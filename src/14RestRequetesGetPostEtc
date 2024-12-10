@@ -45,10 +45,15 @@ FIN
 // récupérer le json sous forme de variant
 maReponseVAR est un Variant = EnvoyerRequeteGet("https://jsonplaceholder.typicode.com/posts")
 
+// Initialiser la chaîne de résultat
+resultat est une chaîne = ""
+
 // affichage du résultat
 POUR TOUT item DE maReponseVAR
-	SAI_Listing_all_resources = "{" + RC + "id : " + item.id + RC + "title : " + item.title + RC + "}"
+	resultat += "{" + RC + "id : " + item.id + RC + "title : " + item.title + RC + item.body + RC + item.userId + RC +"}"
 FIN
+
+SAI_Listing_all_resources = resultat
 
 //////////////////
 // Creating a resource with POST
@@ -86,6 +91,143 @@ SINON
 	vVariant est un Variant = JSONVersVariant(Rep.Contenu)
 	SAI_Creating_a_resource = "{" + RC + "id:" + vVariant.id + RC + "title:" + vVariant.title + RC + "body:" +vVariant.body + RC + "userId:" + vVariant.userId + RC + "}"
 FIN
+
+//////////
+// Updating a resource
+/////////////
+vElement		est un Variant
+vElement["id"]		    = 1
+vElement["title"]		= "foo"
+vElement["body"]		= "bar"
+vElement["userId"]		= 1
+
+sBody		est une chaîne				= VariantVersJSON(vElement)
+
+sBaseUrl	est une chaîne				= "https://jsonplaceholder.typicode.com/"
+
+sPath		est une chaîne				= "posts/1"
+
+sFullUrl	est une chaîne				= sBaseUrl + sPath
+
+nTime		est un entier sur 8 octets	= DateHeureVersEpoch(DateHeureSys())
+
+sMethod		est une chaîne				= "PUT"
+
+Req			est une restRequête
+Rep			est une restRéponse
+
+Req.Méthode							= httpPut
+Req.URL								= sFullUrl
+Req.Entête["Content-Type"]			= "application/json; charset=UTF-8"
+Req.Contenu							= sBody
+
+Rep									= HTTPEnvoie(Req)
+
+SI ErreurDétectée ALORS
+	Erreur("Unable to reach server - errorCode : "+ErreurInfo(errCode))
+SINON
+	vVariant est un Variant = JSONVersVariant(Rep.Contenu)
+	SAI_Updating_a_resource = "{" + RC + "id:" + vVariant.id + RC + "title:" + vVariant.title + RC + "body:" +vVariant.body + RC + "userId:" + vVariant.userId + RC + "}"
+FIN
+
+////////////
+// Patching a resource
+/////////
+
+vElement est un Variant
+vElement["title"]		= "foo2"
+
+sBody		est une chaîne				= VariantVersJSON(vElement)
+
+sBaseUrl	est une chaîne				= "https://jsonplaceholder.typicode.com/"
+
+sPath		est une chaîne				= "posts/1"
+
+sFullUrl	est une chaîne				= sBaseUrl + sPath
+
+nTime		est un entier sur 8 octets	= DateHeureVersEpoch(DateHeureSys())
+
+sMethod		est une chaîne				= "PATCH"
+
+Req			est une restRequête
+Rep			est une restRéponse
+
+Req.Méthode							= httpPatch
+Req.URL								= sFullUrl
+Req.Entête["Content-Type"]			= "application/json; charset=UTF-8"
+Req.Contenu							= sBody
+
+Rep									= HTTPEnvoie(Req)
+
+SI ErreurDétectée ALORS
+	Erreur("Unable to reach server - errorCode : "+ErreurInfo(errCode))
+SINON
+	vVariant est un Variant = JSONVersVariant(Rep.Contenu)
+	SAI_Patching_a_resource = "{" + RC + "id:" + vVariant.id + RC + "title:" + vVariant.title + RC + "body:" +vVariant.body + RC + "userId:" + vVariant.userId + RC + "}"
+FIN
+
+//////////////
+// Deleting a resource
+/////
+
+sBaseUrl	est une chaîne				= "https://jsonplaceholder.typicode.com/"
+
+sPath		est une chaîne				= "posts/1"
+
+sFullUrl	est une chaîne				= sBaseUrl + sPath
+
+nTime		est un entier sur 8 octets	= DateHeureVersEpoch(DateHeureSys())
+
+sMethod		est une chaîne				= "DELETE"
+
+Req			est une restRequête
+Rep			est une restRéponse
+
+Req.Méthode							= httpDelete
+Req.URL								= sFullUrl
+Req.Entête["Content-Type"]			= "application/json; charset=UTF-8"
+
+Rep									= HTTPEnvoie(Req)
+
+SI ErreurDétectée ALORS
+	Erreur("Unable to reach server - errorCode : "+ErreurInfo(errCode))
+SINON
+	SAI_Deleting_a_resource = "Resource deleted"
+FIN
+
+//////////////
+// Filtering resources
+/////////
+// récupérer le json sous forme de variant
+maReponseVAR est un Variant = EnvoyerRequeteGet("https://jsonplaceholder.typicode.com/posts?userId=1")
+
+// Initialisation de resultat
+resultat est une chaîne
+
+// affichage du résultat
+POUR TOUT item DE maReponseVAR
+	resultat += "{" + RC + "id : " + item.id + RC + "title : " + item.title + RC + "}"
+FIN
+
+SAI_Filtering_resources = resultat
+
+////////////
+// Listing nested resources
+//////////
+// récupérer le json sous forme de variant
+maReponseVAR est un Variant = EnvoyerRequeteGet("https://jsonplaceholder.typicode.com/posts/1/comments")
+
+
+// Initialiser la chaîne de résultat
+resultat est une chaîne = ""
+
+// affichage du résultat
+POUR TOUT item DE maReponseVAR
+resultat += "{" + RC + "postId : " + item.postId + RC + "id : " + item.id + RC + "name : " + item.name + RC + "email : " + item.email + RC + "body : " + item.body + RC + "}" + RC + RC
+FIN
+
+SAI_Listing_nested_resources = resultat
+
 
 
 
