@@ -1,1 +1,80 @@
+// Ajouter des contacts hors HFQL
+TableAjouteLigne(TABLE_Contact,"John", "Do","00 00 00 00")
+TableAjouteLigne(TABLE_Contact,"Eddy", "Smith","00 00 00 00")
+TableAjouteLigne(TABLE_Contact,"Allan", "McKins","00 00 00 00")
+
+// Sauvegarder les contacts dans HFQL
+POUR indiceTableContact = 1 _À_ TABLE_Contact..Occurrence 
+	SI PAS HLitRecherchePremier(Contact,Nom,TABLE_Contact[indiceTableContact].COL_Nom) ALORS
+		Contact.Nom			= TABLE_Contact[indiceTableContact].COL_Nom
+		Contact.Prenom		= TABLE_Contact[indiceTableContact].COL_Prénom 
+		Contact.Telephone	= TABLE_Contact[indiceTableContact].COL_Téléphone  
+		HAjoute(Contact)
+	FIN
+FIN
+
+// Vider la table
+TableSupprimeTout(TABLE_Contact)
+
+// Vider le fichier HFQL
+SI OuiNon("Voulez-vous supprimer tous les enregistrements de la base de données ?") ALORS
+	HSupprimeTout(Contact)
+FIN
+
+// Remplir la table avec HFQL
+TableSupprimeTout(TABLE_Contact)
+
+POUR TOUT Contact 
+	TableAjouteLigne(TABLE_Contact, Contact.Nom, Contact.Prenom, Contact.Telephone)
+FIN
+
+// Sélectionner une ligne
+ToastAffiche("Vous avez sélectionner le ligne : " + TableSelect(TABLE_Contact))
+
+// Supprimer la ligne sélectionnée
+indiceDeLaTableASupprimer est un entier = TableSelect(TABLE_Contact)
+
+SI OuiNon("Voulez-vous supprimer l'enregistrement de la base de données") ALORS
+	SI HLitRecherche(Contact,Nom, TABLE_Contact.COL_Nom[indiceDeLaTableASupprimer]) ALORS
+		SI Contact.Nom = COL_Nom[indiceDeLaTableASupprimer] .... 
+			ET Contact.Prenom = COL_Prénom[indiceDeLaTableASupprimer] ...
+			ET Contact.Telephone =  COL_Téléphone[indiceDeLaTableASupprimer] ALORS
+			HSupprime(Contact,hNumEnrEnCours)
+		FIN
+	FIN
+FIN
+TableSupprime(TABLE_Contact,indiceDeLaTableASupprimer)
+
+// Ajouter une ligne vierge
+TableAjouteLigne(TABLE_Contact)
+
+// Tri
+Info("La table va être triée par ordre décroissant sur le NOM")
+TableTrie(TABLE_Contact,"-COL_Nom")
+
+// Voir si la personne est déjà enregistrée dans HFQL
+SI HLitRecherchePremier(Contact,Nom,TABLE_Contact.COL_Nom[TableSelect(TABLE_Contact)],hIdentique) ET ...
+	HLitRecherchePremier(Contact,Prenom,TABLE_Contact.COL_Prénom[TableSelect(TABLE_Contact)],hIdentique) ET ...
+	HLitRecherchePremier(Contact,Telephone,TABLE_Contact.COL_Téléphone[TableSelect(TABLE_Contact)],hIdentique)...
+	ALORS
+	Info("Contact trouvé")
+SINON
+	Info("Contact non trouvé") 
+FIN
+
+// Passage d'un paramètre à une autre fenêtre
+Déclaration Globale
+IDContactARecuperer est un entier
+
+-> Clic sur bouton sélectionner un contact dans une fenêtre
+Ouvre(FEN_Ges_contact)
+SI HLitRecherchePremier(Contact,IDContact,IDContactARecuperer,hIdentique) ALORS
+	TableAjouteLigne(TABLE_Contact,Contact.Nom,Contact.Prenom,Contact.Telephone)
+FIN
+
+-> Clic sur bouton Choix dans la nouvelle fenêtre
+IDContactARecuperer = TABLE_GES_Contact[TableSelect(TABLE_GES_Contact)].COL_IDContact
+Ferme
+
+
 
