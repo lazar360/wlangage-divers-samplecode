@@ -86,7 +86,9 @@ POUR TOUT elmt DE utilitaire.GetListeContacts()
 FIN
 
 /////////////////////
-// Bouton Supprimer la ligne sélectionnée
+// Bouton Ajouter saisie dans hfql
 //////////////
+vl_utiliaire est un cContactUtilitaire(SAI_Nom, SAI_Prénom, SAI_Téléphone)
+vl_utiliaire.HAjouteContact()
 
 
