@@ -1,1 +1,49 @@
+//////////////
+// Modèle 
+///////////
+MContact est une Classe <MAPPING=Contact>
+
+	// Le code se trouvant entre <MAPPING> et <FIN> est généré automatiquement.
+	// Il sera effacé et recréé entièrement à chaque génération depuis le menu contextuel
+	// du fichier dans l'explorateur de projet ou dans l'analyse "..Regénérer la classe modèle"
+	<MAPPING>
+	m_IDContact	est un entier sur 8 octets	<MAPPING=IDContact, clé unique>
+	m_Nom		est une chaîne				<MAPPING=nom>
+	m_Prenom	est une chaîne				<MAPPING=Prenom>
+	m_Telephone	est une chaîne				<MAPPING=Telephone>
+	<FIN>
+	
+FIN
+
+PROCÉDURE Constructeur(nom est une chaîne ="", prenom est une chaîne="", telephone est une chaîne="")
+:m_Nom = nom
+:m_Prenom = prenom
+:m_Telephone = telephone
+
+PROCÉDURE estEnBDD(param_nom est une chaîne, param_prenom est une chaîne = ""): booléen
+SI HLitRecherchePremier(Contact,Nom,param_nom,hIdentique) ALORS
+	
+	// Évite les problèmes de doublon 
+	SI param_prenom <> "" ET Contact.Prenom = param_prenom ALORS
+		RENVOYER Vrai
+	FIN
+	
+	// N'évite pas les problèmes de doublon
+	RENVOYER Vrai
+	
+FIN
+RENVOYER Faux
+
+//////////////
+// Bouton Vérifier si ligne est en bdd
+////////
+
+indiceDeLaTableSélectionné est un entier = TableSelect(TABLE_Contact)
+
+leContact est un MContact
+
+SI leContact.estEnBDD(TABLE_Contact.COL_Nom[indiceDeLaTableSélectionné]) ALORS
+	Info("Le contact est en bdd")
+FIN
+
 
