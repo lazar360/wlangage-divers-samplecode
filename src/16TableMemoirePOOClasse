@@ -1,0 +1,92 @@
+///////////////////////////
+// Classe contact
+//////////////////
+cContactUtilitaire est une Classe
+nom est une chaîne
+prenom est une chaîne
+telephone est une chaîne
+FIN
+
+PROCÉDURE Constructeur(nom est une chaîne ="", prenom est une chaîne="", telephone est une chaîne="")
+SI nom<>"" ALORS		:nom = nom
+SI prenom<>"" ALORS		:prenom = prenom
+SI telephone<>"" ALORS	:telephone = telephone
+
+PROCÉDURE HAjouteContact()
+Contact.Nom 		= :nom
+Contact.Prenom 		= :prenom
+Contact.Telephone 	= :telephone
+HAjoute(Contact)
+
+PROCÉDURE TableAjouteContactFenêtreTableContact()
+TableAjouteLigne(FEN_TableMemoireCRUD.TABLE_Contact, :nom, :prenom, :telephone)
+
+PROCÉDURE GetListeContacts():tableau de cContactUtilitaire
+
+tabContacts est un tableau de cContactUtilitaire
+
+// Parcours de la base de données
+POUR TOUT Contact 
+	
+	contactTemp est cContactUtilitaire(Contact.Nom,Contact.Prenom,Contact.Telephone)
+	
+	tabContacts.Ajoute(contactTemp)
+	
+FIN
+
+RENVOYER tabContacts
+
+PROCÉDURE LeContactEstEnBdd(param_nom est une chaîne, param_prenom est une chaîne = ""): booléen
+
+SI HLitRecherchePremier(Contact,Nom,param_nom,hIdentique) ALORS
+	
+	// Évite les problèmes de doublon 
+	SI param_prenom <> "" ET Contact.Prenom = param_prenom ALORS
+		RENVOYER Vrai
+	FIN
+	
+	// N'évite pas les problèmes de doublon
+	RENVOYER Vrai
+	
+FIN
+RENVOYER Faux
+
+/////////////////
+// Bouton Ajouter des contacts hors hfql
+/////////////
+
+ajout1 est un cContactUtilitaire("DO","John","00.00.00.00") 
+ajout1.TableAjouteContactFenêtreTableContact()
+ajout2 est un cContactUtilitaire("SMITH","Teddy","00.00.00.00") 
+ajout2.TableAjouteContactFenêtreTableContact()
+ajout3 est un cContactUtilitaire("PAIN","Steve","00.00.00.00") 
+ajout3.TableAjouteContactFenêtreTableContact()
+
+/////////////////
+// Bouton Sauvegarder les contacts dans HFQL
+/////////////
+POUR indiceTableContact = 1 _À_ TABLE_Contact..Occurrence 
+	SI TABLE_Contact[indiceTableContact].COL_Nom <> ""ALORS
+		ajoutContact est un cContactUtilitaire(TABLE_Contact[indiceTableContact].COL_Nom, TABLE_Contact[indiceTableContact].COL_Prénom,TABLE_Contact[indiceTableContact].COL_Téléphone)
+		SI PAS ajoutContact.LeContactEstEnBdd(ajoutContact.nom,ajoutContact.prenom) ALORS
+			SI OuiNon(1, "Le contact : " + ajoutContact.nom + " " + ajoutContact.prenom + " n'a pas été trouvé dans la base de données.","Voulez-vous le rajouter ?") ALORS
+				ajoutContact.HAjouteContact()	
+			FIN
+		FIN
+	FIN
+FIN
+
+////////////////////
+// Bouton Remplir la table avec avec HFQL
+////////////////////
+TableSupprimeTout(TABLE_Contact)
+utilitaire est un cContactUtilitaire
+POUR TOUT elmt DE utilitaire.GetListeContacts()
+	TableAjouteLigne(TABLE_Contact, elmt.nom, elmt.prenom, elmt.telephone)
+FIN
+
+/////////////////////
+// Bouton Supprimer la ligne sélectionnée
+//////////////
+
+
