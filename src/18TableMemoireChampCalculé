@@ -1,1 +1,28 @@
+mCAClient est un monétaire
+moMCATotal est un monétaire
+nCpt, nMaxi sont des entiers
+nMaxi = HNbEnr(CLIENT)
+JAUGE_progression..BorneMax = nMaxi
+
+HLitPremier(CLIENT, NomClient) !!!!
+
+POUR TOUT CLIENT
+    mCAClient = CalculerCAClient(CLIENT.NumClient)
+    moMCATotal += mCAClient
+    TableAjouteLigne(TABLE_CA, CLIENT.NomClient, CLIENT.Societe, CLIENT.Ville, mCAClient)
+    nCpt++
+    JAUGE_progression = nCpt
+FIN
+
+SAI_CA_Total_TTC = moMCATotal
+
+PROCÉDURE CalculerCAClient(NumClient est un entier)
+    mCAClient est un monétaire = 0
+    HFiltre(COMMANDE, NumClient, NumClient)
+    POUR TOUT COMMANDE
+        mCAClient += COMMANDE.TotalTTC
+    FIN
+    HDésactiveFiltre(COMMANDE)
+    RETOURNE mCAClient
+FIN
 
