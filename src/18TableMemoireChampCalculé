@@ -1,15 +1,13 @@
 mCAClient est un monétaire
 moMCATotal est un monétaire
-nCpt, nMaxi sont des entiers
-nMaxi = HNbEnr(CLIENT)
-JAUGE_progression..BorneMax = nMaxi
+nCompteur est un entier 
+JAUGE_progression..BorneMax = HNbEnr(CLIENT)
 
 POUR TOUT CLIENT
     mCAClient = CalculerCAClient(CLIENT.NumClient)
     moMCATotal += mCAClient
     TableAjouteLigne(TABLE_CA, CLIENT.NomClient, CLIENT.Societe, CLIENT.Ville, mCAClient)
-    nCpt++
-    JAUGE_progression = nCpt
+    JAUGE_progression = ++nCpt
 FIN
 
 SAI_CA_Total_TTC = moMCATotal
