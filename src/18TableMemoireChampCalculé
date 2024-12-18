@@ -4,8 +4,6 @@ nCpt, nMaxi sont des entiers
 nMaxi = HNbEnr(CLIENT)
 JAUGE_progression..BorneMax = nMaxi
 
-HLitPremier(CLIENT, NomClient) !!!!
-
 POUR TOUT CLIENT
     mCAClient = CalculerCAClient(CLIENT.NumClient)
     moMCATotal += mCAClient
