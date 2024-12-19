@@ -10,5 +10,54 @@ ListeAjoute(LISTE_fichier,pnomfichier)
 RENVOYER Vrai
 
 ////////////
-// Bouton Connexion
+// Bouton Connexion : clic
 /////////////////
+idftp = FTPConnecte("servform","","")
+
+SI idftp <> -1 ALORS
+	Info("Connexion réussie")
+	gbEstConnecté = PAS gbEstConnecté
+	
+	SI gbEstConnecté ALORS
+		BTN_Lister_les_fichiers..Visible = Vrai
+		BTN_Déconnexion..Visible = Vrai
+	SINON
+		BTN_Lister_les_fichiers..Visible = Faux
+		BTN_Déconnexion..Visible = Faux
+	FIN
+	
+SINON
+	Erreur("PB de connexion", ErreurInfo())
+FIN
+
+///////////
+// Lister les fichiers : clic
+////////////
+ListeSupprimeTout(LISTE_fichier)
+FTPListeFichier(idftp,"REPFTP/*.*",proftp)
+
+//////////////
+// Déconnexion : clic
+///////////////
+ListeSupprimeTout(LISTE_fichier)
+
+SI gbEstConnecté ALORS
+	Info("Déconnexion réussie")
+	gbEstConnecté = PAS gbEstConnecté
+	FTPDéconnecte(idftp)
+FIN
+
+SI gbEstConnecté ALORS
+	BTN_Déconnexion..Visible = Vrai
+	BTN_Lister_les_fichiers..Visible = Vrai
+SINON
+	BTN_Déconnexion..Visible = Faux
+	BTN_Lister_les_fichiers..Visible = Faux
+FIN
+
+/////////////////
+// Fermer : clic
+/////////////////////
+ExécuteTraitement(BTN_Déconnexion,trtClic)
+
+Ferme()
