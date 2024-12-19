@@ -1,3 +1,12 @@
 //////////////
 // Bouton remplir
 ////////////////
+ListeSupprimeTout(LSI_temp)
+fListeFichier("C:\Temp\*.*", proliste)
+
+///////////
+PROCEDURE proliste (pchemin, pnomfichier)
+
+ListeAjoute(LSI_temp, pnomfichier, CompplèteRep(pchemin)+pnomfichier)
+
+RENVOYER Vrai
