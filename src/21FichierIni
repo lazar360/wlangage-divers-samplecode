@@ -1,0 +1,34 @@
+/////////////
+// SEL CHOIX 
+//////////////
+: initialisation
+
+SELON Nation()
+	CAS nationFrançais
+		SEL_choix = 1
+		
+	CAS nationAnglais
+		SEL_choix = 2
+			
+FIN
+
+: à chaque modification
+SELON SEL_choix
+	// Français
+	CAS 1
+		Nation(nationFrançais)
+	// Anglais
+	CAS 2
+		Nation(nationAnglais)
+FIN
+INIEcrit("Préférences", "Langue", Nation(), gsCheminini)
+
+////////////
+// Declaration du projet
+//////////////
+gsRepappli, gsCheminini sont des chaînes
+gsRepappli = fRepExe()
+gsCheminini = ComplèteRep(gsRepappli)+"pref.ini"
+gnLepays est un entier
+gnLepays = INILit("Préférences", "Langue", nationFrançais, gsCheminini)
+Nation(gnLepays)
