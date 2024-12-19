@@ -1,9 +1,13 @@
 /////////
 // Déclarations globales de fenêtre
 //////////
-PROCEDURE Ma 
+PROCEDURE MaFenêtre() 
 idftp est un entier
 gbEstConnecté est un booléen
+
+PROCÉDURE proftp(pnomfichier)
+ListeAjoute(LISTE_fichier,pnomfichier)
+RENVOYER Vrai
 
 ////////////
 // Bouton Connexion
