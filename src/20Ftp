@@ -61,3 +61,35 @@ FIN
 ExécuteTraitement(BTN_Déconnexion,trtClic)
 
 Ferme()
+
+////////////////
+// Liste Fichier : selection de ligne
+///////////////
+gsCheminDest est une chaîne = "C:\Temp\"
+sFiltre est une chaîne = Majuscule(fFiltreImage())
+
+SI gbEstConnecté ALORS
+	
+	SI OuiNon("Voulez-vous télécharger ce fichier ?") ALORS
+		
+		sFichierATelecharger est une chaîne = LISTE_fichier[LISTE_fichier..Valeur]
+		
+		// extraire l'extension
+		sMonExtension est une chaîne = fExtraitChemin("REPFTP/" + sFichierATelecharger,fExtension)
+		
+		// test de compatibilité
+		SI Position(sFiltre, sMonExtension) > 0 ALORS
+			
+			// téléchargement
+			SI FTPRécupère(idftp,"REPFTP/" + sFichierATelecharger, gsCheminDest) ALORS
+				// Affichage de la photo
+				IMG_photo = gsCheminDest + sFichierATelecharger
+			FIN
+			
+		SINON 
+			Info("format non supporté")
+		FIN
+	FIN
+FIN
+
+
