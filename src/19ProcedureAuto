@@ -1,1 +1,15 @@
+PROCÉDURE pro_auto()
+// récupérer l'heure du pc heuresys
+SAI_Heure_PC = HeureSys()
 
+// exécuter une appli lance appli notepad
+SI SAI_Heure_PC = SAI_Heure_de_Lancement ALORS
+	
+	bLancé est un booléen
+		
+	bLancé = LanceAppli("notepad.exe")
+	
+	SI ErreurDétectée ALORS
+		Erreur("L'application ne peut pas être lancée")
+	FIN
+FIN
