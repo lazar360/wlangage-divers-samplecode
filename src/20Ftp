@@ -1,0 +1,10 @@
+/////////
+// Déclarations globales de fenêtre
+//////////
+PROCEDURE Ma 
+idftp est un entier
+gbEstConnecté est un booléen
+
+////////////
+// Bouton Connexion
+/////////////////
