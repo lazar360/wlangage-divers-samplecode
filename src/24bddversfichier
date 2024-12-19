@@ -1,0 +1,16 @@
+nIdfic est un entier
+nIdfic = fOuvre(ComplèteRep(gsRepappli)+"exportclient.txt",foCréation)
+
+SI nIdfic=-1 ALORS
+	
+	Erreur("Erreur à l'ouverture", ErreurInfo())
+	
+SINON
+	
+	POUR TOUT CLIENT 
+		fEcritLigne(nIdfic,HEnregistrementVersChaîne(CLIENT))	
+	FIN
+	
+	fFerme(nIdfic)
+	
+FIN
