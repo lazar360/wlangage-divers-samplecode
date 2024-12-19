@@ -1,0 +1,9 @@
+SI PAS HExécuteRequête(REQ_fournisseursproduits) ALORS
+	
+	Erreur("Problème d'initialisation de la requête")
+		
+SINON
+
+	ConstruitTableFichier(TABLE_resultat, REQ_fournisseursproduits, taRemplirTable)
+	
+FIN
