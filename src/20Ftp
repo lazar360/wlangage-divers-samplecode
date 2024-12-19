@@ -65,20 +65,21 @@ Ferme()
 ////////////////
 // Liste Fichier : selection de ligne
 ///////////////
-gsCheminDest est une chaîne = "C:\Temp\"
 sFiltre est une chaîne = Majuscule(fFiltreImage())
+sFichierATelecharger est une chaîne
+sMonExtension est une chaîne
 
 SI gbEstConnecté ALORS
 	
 	SI OuiNon("Voulez-vous télécharger ce fichier ?") ALORS
 		
-		sFichierATelecharger est une chaîne = LISTE_fichier[LISTE_fichier..Valeur]
+		sFichierATelecharger = LISTE_fichier[LISTE_fichier..Valeur]
 		
 		// extraire l'extension
-		sMonExtension est une chaîne = fExtraitChemin("REPFTP/" + sFichierATelecharger,fExtension)
+		sMonExtension = fExtraitChemin("REPFTP/" + sFichierATelecharger,fExtension)
 		
 		// test de compatibilité
-		SI Position(sFiltre, sMonExtension) > 0 ALORS
+		SI Position(sFiltre, Majuscule(sMonExtension)) > 0 ALORS
 			
 			// téléchargement
 			SI FTPRécupère(idftp,"REPFTP/" + sFichierATelecharger, gsCheminDest) ALORS
@@ -86,10 +87,15 @@ SI gbEstConnecté ALORS
 				IMG_photo = gsCheminDest + sFichierATelecharger
 			FIN
 			
+		
+		
 		SINON 
 			Info("format non supporté")
 		FIN
 	FIN
 FIN
+sMonExtension = ""
+sFichierATelecharger =""
+
 
 
