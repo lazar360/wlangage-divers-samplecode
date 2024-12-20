@@ -1,19 +1,44 @@
+///////////
+// Initialisation de l'arbre 
+//////////////
 monDocXml est un xmlDocument <description="ExportXML"> = XMLOuvre("C:\Mes Projets\ExportXML.xml",depuisFichier)
 
 leClient est un xmlNoeud <description="ExportXML.WINDEV_TABLE.ClientCdeXML">
 
-
-
 POUR TOUT leClient DE monDocXml.WINDEV_TABLE
 		
 	SI leClient.Total_TTC > 0 ALORS
-		
-		ArbreAjoute(ARBRE_SansNom1, "Client" + TAB  + leClient.Nom_client + TAB + NumériqueVersChaîne(leClient.Total_TTC,maskMonétaireSystème))
+
+		// Le dernier paramètre fixe l'id pour l'affichage 
+		ArbreAjoute(ARBRE_SansNom1, "Client" + TAB  + leClient.Nom_client + TAB + ...
+					NumériqueVersChaîne(leClient.Total_TTC,maskMonétaireSystème),aDéfaut, aDéfaut, leClient.Num_Commande)
 	
 	SINON
 		
 		ArbreAjoute(ARBRE_SansNom1, "Client" + TAB  + leClient.Nom_client)
 		
 	FIN
+	
+FIN
+
+///////////////
+// Affichage 
+/////////////////
+sBranche est une chaîne
+
+sBranche = ArbreSelect(ARBRE_SansNom1)
+
+sIdentifiant est une chaîne
+
+// On récupère l'identifiant fixé à l'initialisation
+sIdentifiant = ArbreRécupèreIdentifiant(ARBRE_SansNom1, sBranche)
+
+HLitRecherchePremier(COMMANDE,NumCommande,sIdentifiant)
+
+SI HTrouve(COMMANDE) ALORS
+	
+	LIB_NumCommande = COMMANDE.NumCommande
+	SAI_NumClient = COMMANDE.NumClient
+	SAI_DateCommande = COMMANDE.DateCommande
 	
 FIN
