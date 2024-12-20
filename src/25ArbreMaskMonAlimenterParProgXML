@@ -2,15 +2,17 @@ monDocXml est un xmlDocument <description="ExportXML"> = XMLOuvre("C:\Mes Projet
 
 leClient est un xmlNoeud <description="ExportXML.WINDEV_TABLE.ClientCdeXML">
 
+
+
 POUR TOUT leClient DE monDocXml.WINDEV_TABLE
 		
 	SI leClient.Total_TTC > 0 ALORS
 		
-		ArbreAjoute(ARBRE_SansNom1, "Client" + TAB  + leClient.Nom_client + TAB + leClient.Total_TTC)
+		ArbreAjoute(ARBRE_SansNom1, "Client" + TAB  + leClient.Nom_client + TAB + NumériqueVersChaîne(leClient.Total_TTC,maskMonétaireSystème))
 	
 	SINON
 		
-		ArbreAjoute(ARBRE_SansNom1, "Client" + TAB  + leClient.Nom_client + TAB)
+		ArbreAjoute(ARBRE_SansNom1, "Client" + TAB  + leClient.Nom_client)
 		
 	FIN
 	
