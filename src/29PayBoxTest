@@ -1,3 +1,180 @@
+/////////////////
+//Classe MClient
+///////////////////
+MClient est une Classe <MAPPING=Client>
+
+	// Le code se trouvant entre <MAPPING> et <FIN> est généré automatiquement.
+	// Il sera effacé et recréé entièrement à chaque génération depuis le menu contextuel
+	// du fichier dans l'explorateur de projet ou dans l'analyse "..Regénérer la classe modèle"
+	<MAPPING>
+	m_IDclient		est une chaîne	<MAPPING=IDclient, clé unique>
+	m_surname		est une chaîne	<MAPPING=surname>
+	m_first_name	est une chaîne	<MAPPING=first_name>
+	m_company		est une chaîne	<MAPPING=company>
+	m_email_address	est une chaîne	<MAPPING=email_address>
+	m_language		est une chaîne	<MAPPING=language>
+	m_job_function	est une chaîne	<MAPPING=job_function>
+	m_address		est une chaîne	<MAPPING=address>
+	m_postal_code	est une chaîne	<MAPPING=postal_code>
+	m_city			est une chaîne	<MAPPING=city>
+	m_country		est une chaîne	<MAPPING=country>
+	m_phone_prefix	est une chaîne	<MAPPING=phone_prefix>
+	m_phone			est une chaîne	<MAPPING=phone>
+	m_mobile_prefix	est une chaîne	<MAPPING=mobile_prefix>
+	m_mobile		est une chaîne	<MAPPING=mobile>
+	m_tax_number	est une chaîne	<MAPPING=tax_number>
+	m_passport		est une chaîne	<MAPPING=passport>
+	m_pec			est une chaîne	<MAPPING=pec>
+	m_id_code		est une chaîne	<MAPPING=id_code>
+	m_client_number	est une chaîne	<MAPPING=client_number>
+	m_comments		est une chaîne	<MAPPING=comments>
+	<FIN>
+	
+FIN
+
+PROCÉDURE Constructeur(surname est une chaîne ="" ...
+						,first_name est une chaîne ="" ... 
+						,company est une chaîne ="" ... 
+						,email_address est une chaîne ="" ... 
+						,language est une chaîne ="" ... 
+						,job_function est une chaîne ="" ... 
+						,address est une chaîne ="" ... 
+						,postal_code est une chaîne ="" ... 
+						,city est une chaîne ="" ... 
+						,country est une chaîne ="" ... 
+						,phone_prefix est une chaîne ="" ... 
+						,phone est une chaîne ="" ... 
+						,mobile_prefix est une chaîne ="" ... 
+						,mobile est une chaîne ="" ... 
+						,tax_number est une chaîne ="" ... 
+						,passport est une chaîne ="" ... 
+						,pec est une chaîne ="" ... 
+						,id_code est une chaîne ="" ... 
+						,client_number est une chaîne ="" ... 
+						,comments est une chaîne ="" ... 
+						)
+
+		SI surname <> "" ALORS 		:m_surname = surname
+		SI first_name <> "" ALORS 		:m_first_name = first_name
+		SI company <> "" ALORS 		:m_company = company
+		SI email_address <> "" ALORS 	:m_email_address = email_address
+		SI language <> "" ALORS 		:m_language = language
+		SI job_function <> "" ALORS 	:m_job_function = job_function
+		SI address <> "" ALORS 		:m_address = address
+		SI postal_code <> "" ALORS 	:m_postal_code = postal_code
+		SI city <> "" ALORS 			:m_city = city
+		SI country <> "" ALORS 		:m_country = country // doit comprendre 3 caractères et être au format iso
+		SI phone_prefix <> "" ALORS 	:m_phone_prefix = phone_prefix
+		SI phone <> "" ALORS 			:m_phone = phone
+		SI mobile_prefix <> "" ALORS 	:m_mobile_prefix = mobile_prefix
+		SI mobile <> "" ALORS 			:m_mobile = mobile
+		SI tax_number <> "" ALORS 		:m_tax_number = tax_number
+		SI passport <> "" ALORS 		:m_passport = passport
+		SI pec <> "" ALORS 			:m_pec = pec
+		SI id_code <> "" ALORS 		:m_id_code = id_code
+		SI client_number <> "" ALORS 	:m_client_number = client_number
+		SI comments <> "" ALORS 		:m_comments = comments
+
+
+PROCÉDURE enVariant()
+
+vElement est un Variant
+
+SI :m_IDclient <> "" ALORS
+	vElement["IDclient"] 	= :m_IDclient
+FIN
+vElement["surname"]			= :m_surname
+vElement["first_name"]		= :m_first_name
+vElement["company"]			= :m_company
+vElement["email_address"]	= :m_email_address
+vElement["language"]		= :m_language
+vElement["job_function"]	= :m_job_function
+vElement["address"]			= :m_address
+vElement["postal_code"]		= :m_postal_code
+vElement["city"]			= :m_city 
+vElement["country"]			= :m_country // 3 caractères seulement en iso format
+vElement["phone_prefix"]	= :m_phone_prefix
+vElement["phone"]			= :m_phone
+vElement["mobile_prefix"]	= :m_mobile_prefix
+vElement["mobile"]			= :m_mobile 
+vElement["tax_number"]		= :m_tax_number
+vElement["passport"]		= :m_passport
+vElement["pec"]				= :m_pec
+vElement["id_code"]			= :m_id_code
+vElement["client_number"]	= :m_client_number
+vElement["comments"]		= :m_comments
+
+RENVOYER vElement
+
+PROCÉDURE ALeNumeroPayBox(IDclientPayBoxRecupere est une chaîne)
+:m_IDclient = IDclientPayBoxRecupere
+
+estCree est un booléen
+
+// si IDclientPayBoxRecupere, on est en création
+SI IDclientPayBoxRecupere <> "" ALORS 
+	
+	Client.IDclient 		= IDclientPayBoxRecupere
+	estCree 				= Vrai
+	
+FIN
+
+Client.surname 			= :m_surname			
+Client.first_name 		= :m_first_name		
+Client.company 			= :m_company		
+Client.email_address 	= :m_email_address		
+Client.language 		= :m_language			
+Client.job_function 	= :m_job_function		
+Client.address 			= :m_address		
+Client.postal_code 		= :m_postal_code	
+Client.city 			= :m_city				
+Client.country 			= :m_country		
+Client.phone_prefix 	= :m_phone_prefix		
+Client.phone 			= :m_phone				
+Client.mobile_prefix 	= :m_mobile_prefix		
+Client.mobile 			= :m_mobile			
+Client.tax_number 		= :m_tax_number		
+Client.passport 		= :m_passport			
+Client.pec 				= :m_pec			
+Client.id_code 			= :m_id_code			
+Client.client_number 	= :m_client_number		
+Client.comments 		= :m_comments			
+
+SI estCree ALORS
+	HAjoute(Client)
+SINON
+	HModifie(Client)
+FIN
+
+PROCÉDURE recupereIDParSonNom(nomDuClientToGet est une chaîne):chaîne
+
+SI HLitRecherchePremier(Client,surname,nomDuClientToGet) ALORS
+
+	RENVOYER Client.IDclient
+
+FIN
+
+RENVOYER ""
+
+PROCÉDURE versMClientParIDClient(param_idClient est une chaîne):MClient
+
+SI HLitRecherchePremier(Client,IDclient,param_idClient)ALORS
+	
+	leClientArenvoyer est un MClient(Client.IDclient,Client.surname,Client.first_name,...
+								  Client.company,Client.email_address,Client.language,...
+								  Client.job_function, Client.address,Client.postal_code,...
+								  Client.city,Client.country,Client.phone_prefix,...
+								  Client.phone, Client.mobile_prefix, Client.mobile,...
+								  Client.tax_number, Client.passport, Client.pec,...
+								  Client.id_code, Client.client_number, Client.comments)
+	RENVOYER leClientArenvoyer
+
+FIN
+
+leClientArenvoyer est un MClient()
+
+RENVOYER leClientArenvoyer
+
 ////////////
 // Bouton AccessRights : clic
 ////////////////
