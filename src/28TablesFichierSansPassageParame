@@ -1,5 +1,17 @@
 //////////////////
-// Première fenêtre avec table 
+// Première fenêtre avec table fichier 
 ////////////////
 Ligne sélectionnée + clic sur le bouton modifier :
-FEN_Fichecli
+Ouvre(FEN_Fichecli) 
+TableAffiche(Table_Clients, taCourantPremier) // MAJ de la table après modif
+
+//////////////////
+// Seconde fenêtre avec des champs liés 
+////////////////
+modification dans champ saisie nom + clic sur bouton modifier
+EcranVersFichier() // charge le buffer avec les valeurs dans les champs
+Hmodifie(CLIENT)
+SI ErreurDétectée ALORS
+Erreur("Problème de mise à jour", ErreurInfo())
+FIN
+Ferme()
