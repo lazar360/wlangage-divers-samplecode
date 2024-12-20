@@ -1,0 +1,27 @@
+//Ouverture d'une session SMTP
+Session est une emailSessionSMTP
+Session..AdresseServeur = "smtp.free.fr"
+
+SI EmailOuvreSession(Session) = Faux ALORS
+	Erreur()
+	RETOUR
+FIN
+
+MonEmail est un Email
+
+//Expéditeur du message
+MonEmail..Expediteur = "formation@free.fr"
+
+//Destinataire(s) du message
+Ajoute(MonEmail..Destinataire, SAI_Destinataire)
+
+//Sujet et contenu du message
+MonEmail..Sujet		= SAI_Sujet
+MonEmail..Message	= ""
+MonEmail..HTML		= EDHTML_email
+
+//Envoi du message
+EmailEnvoieMessage(Session, MonEmail)
+SI ErreurDétectée ALORS
+	Erreur(ErreurInfo(errRésumé))
+FIN
