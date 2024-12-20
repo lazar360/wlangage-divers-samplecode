@@ -1,0 +1,298 @@
+////////////
+// Bouton AccessRights : clic
+////////////////
+
+sApplicationKey	est une chaîne	= "ZNoIIyZ4KhC7anCdTRrimM5Vy1M7f4Bi"
+sSecretKey		est une chaîne	= "50xoYs7i62fASSsxYWpAN5gNgBdV9e4Z2YtiedRLWghDSsizO17cZdLHR5qMnEDA"
+
+sBody est une chaîne = ""
+
+sBaseUrl	est une chaîne				= "https://www.payboxmail.com/api/v1.0/"
+
+sPath		est une chaîne				= "accessrights"
+
+sFullUrl	est une chaîne				= sBaseUrl + sPath
+
+nTime		est un entier sur 8 octets	= DateHeureVersEpoch(DateHeureSys())
+
+sMethod		est une chaîne				= "GET"
+
+// Signature
+sToSign		est une chaîne				= sFullUrl + "+" + sMethod + "+" + sSecretKey + "+" + sBody + "+" + nTime
+sSignature	est une chaîne				= Minuscule(Remplace(BufferVersHexa(HashChaîne(HA_SHA_256,sToSign)),[Caract(32),RC],""))
+
+Req			est une restRequête
+Rep			est une restRéponse
+
+Req.Méthode							= httpGet
+Req.URL								= sFullUrl
+Req.Entête["Content-Type"]			= "application/json"
+Req.Entête["X-Auth-Appkey"]			= sApplicationKey
+Req.Entête["X-Method-Signature"]	= "sha256"
+Req.Entête["X-Auth-Signature"]		= sSignature
+Req.Entête["X-Auth-Time"]			= "" + nTime
+
+Rep									= HTTPEnvoie(Req)
+
+SI ErreurDétectée ALORS
+	Erreur("Unable to reach server - errorCode : "+ErreurInfo(errCode))
+SINON
+	//Trace(Rep.Contenu)
+	vVariant est un Variant = JSONVersVariant(Rep.Contenu)
+	// Trace("status="+vVariant["status"])
+	SAI_GET_Accessrights = "status="+vVariant["status"] + RC
+	
+	POUR TOUT item DE vVariant["data"] 
+		SAI_GET_Accessrights += "{" + "service: " + item.service + ", method: " + item.method +"}" + RC
+	FIN
+FIN
+
+/////////////
+// Bouton create a client 
+//////////
+sApplicationKey	est une chaîne	= "ZNoIIyZ4KhC7anCdTRrimM5Vy1M7f4Bi"
+sSecretKey		est une chaîne	= "50xoYs7i62fASSsxYWpAN5gNgBdV9e4Z2YtiedRLWghDSsizO17cZdLHR5qMnEDA"
+
+sBody est une chaîne = ""
+
+sBaseUrl	est une chaîne				= "https://www.payboxmail.com/api/v1.0/"
+
+sPath		est une chaîne				= "accessrights"
+
+sFullUrl	est une chaîne				= sBaseUrl + sPath
+
+nTime		est un entier sur 8 octets	= DateHeureVersEpoch(DateHeureSys())
+
+sMethod		est une chaîne				= "GET"
+
+// Signature
+sToSign		est une chaîne				= sFullUrl + "+" + sMethod + "+" + sSecretKey + "+" + sBody + "+" + nTime
+sSignature	est une chaîne				= Minuscule(Remplace(BufferVersHexa(HashChaîne(HA_SHA_256,sToSign)),[Caract(32),RC],""))
+
+Req			est une restRequête
+Rep			est une restRéponse
+
+Req.Méthode							= httpGet
+Req.URL								= sFullUrl
+Req.Entête["Content-Type"]			= "application/json"
+Req.Entête["X-Auth-Appkey"]			= sApplicationKey
+Req.Entête["X-Method-Signature"]	= "sha256"
+Req.Entête["X-Auth-Signature"]		= sSignature
+Req.Entête["X-Auth-Time"]			= "" + nTime
+
+Rep									= HTTPEnvoie(Req)
+
+SI ErreurDétectée ALORS
+	Erreur("Unable to reach server - errorCode : "+ErreurInfo(errCode))
+SINON
+	//Trace(Rep.Contenu)
+	vVariant est un Variant = JSONVersVariant(Rep.Contenu)
+	// Trace("status="+vVariant["status"])
+	SAI_GET_Accessrights = "status="+vVariant["status"] + RC
+	
+	POUR TOUT item DE vVariant["data"] 
+		SAI_GET_Accessrights += "{" + "service: " + item.service + ", method: " + item.method +"}" + RC
+	FIN
+FIN
+
+/////////////
+// Bouton Get a Client  
+/////////////////
+nomDuClientToGet  est une chaîne 			= SansEspace(Majuscule(SAI_GET_a_client)) 
+leClient est un MClient()
+idClientToGet est une chaîne				= leClient.recupereIDParSonNom(nomDuClientToGet)
+
+sApplicationKey	est une chaîne				= "ZNoIIyZ4KhC7anCdTRrimM5Vy1M7f4Bi"
+sSecretKey		est une chaîne				= "50xoYs7i62fASSsxYWpAN5gNgBdV9e4Z2YtiedRLWghDSsizO17cZdLHR5qMnEDA"
+
+sBody			est une chaîne				= ""
+
+sBaseUrl		est une chaîne				= "https://www.payboxmail.com/api/v1.0/"
+
+sPath			est une chaîne				= "clients/"+idClientToGet
+
+sFullUrl		est une chaîne				= sBaseUrl + sPath
+
+nTime			est un entier sur 8 octets	= DateHeureVersEpoch(DateHeureSys())
+
+sMethod			est une chaîne				= "GET"
+
+// Signature
+sToSign			est une chaîne				= sFullUrl + "+" + sMethod + "+" + sSecretKey + "+" + sBody + "+" + nTime
+sSignature		est une chaîne				= Minuscule(Remplace(BufferVersHexa(HashChaîne(HA_SHA_256,sToSign)),[Caract(32),RC],""))
+
+Req				est une restRequête
+Rep				est une restRéponse
+
+Req.Méthode							= httpGet
+Req.URL								= sFullUrl
+Req.Entête["Content-Type"]			= "application/json"
+Req.Entête["X-Auth-Appkey"]			= sApplicationKey
+Req.Entête["X-Method-Signature"]	= "sha256"
+Req.Entête["X-Auth-Signature"]		= sSignature
+Req.Entête["X-Auth-Time"]			= "" + nTime
+
+Rep									= HTTPEnvoie(Req)
+
+SI ErreurDétectée ALORS
+	
+	Erreur("Unable to reach server - errorCode : "+ErreurInfo(errCode))
+
+SINON
+	
+	vVariant est un Variant = JSONVersVariant(Rep.Contenu)
+	
+	SI vVariant["status"] = 200 ALORS
+	
+		SAI_GET_a_client = ChaîneConstruit("Le client %1 - %2 avec id %3 a été récupéré de PayBox", ...
+		vVariant["data"].surname, vVariant["data"].first_name, vVariant["data"].IDclient)
+	
+	FIN
+	
+FIN
+
+////////////////
+// Bouton put a client 
+///////////////////
+sApplicationKey	est une chaîne	= "ZNoIIyZ4KhC7anCdTRrimM5Vy1M7f4Bi"
+sSecretKey		est une chaîne	= "50xoYs7i62fASSsxYWpAN5gNgBdV9e4Z2YtiedRLWghDSsizO17cZdLHR5qMnEDA"
+
+utilitaire	est un MClient()
+
+leClient est un MClient()
+
+leClient = utilitaire.versMClientParIDClient(leClient.recupereIDParSonNom(SansEspace(Majuscule(SAI_PUT_a_client.Valeur))))
+
+leClient.m_first_name = "TestModifié"
+
+// InfoConstruit("Le Client n° %1 va être modifié en %2 | %3", leClient.m_IDclient,leClient.m_first_name, leClient.m_surname)
+
+sBody		est une chaîne				= VariantVersJSON(leClient.enVariant())
+
+sBaseUrl	est une chaîne				= "https://www.payboxmail.com/api/v1.0"
+
+sPath		est une chaîne				= "/clients"
+
+sFullUrl	est une chaîne				= sBaseUrl + sPath
+
+nTime		est un entier sur 8 octets	= DateHeureVersEpoch(DateHeureSys())
+
+sMethod		est une chaîne				= "PUT"
+
+// Signature
+sToSign		est une chaîne				= sFullUrl + "+" + sMethod + "+" + sSecretKey + "+" + sBody + "+" + nTime
+sSignature	est une chaîne				= Minuscule(Remplace(BufferVersHexa(HashChaîne(HA_SHA_256,sToSign)),[Caract(32),RC],""))
+
+Req			est une restRequête
+Rep			est une restRéponse
+
+Req.Méthode							= httpPut
+Req.URL								= sFullUrl
+Req.Entête["Content-Type"]			= "application/json"
+Req.Entête["X-Auth-Appkey"]			= sApplicationKey
+Req.Entête["X-Method-Signature"]	= "sha256"
+Req.Entête["X-Auth-Signature"]		= sSignature
+Req.Entête["X-Auth-Time"]			= "" + nTime
+Req.Contenu							= sBody
+
+Rep									= HTTPEnvoie(Req)
+
+SI ErreurDétectée ALORS
+	
+	Erreur("Unable to reach server - errorCode : "+ErreurInfo(errCode))
+	
+SINON
+	
+	vVariant est un Variant = JSONVersVariant(Rep.Contenu)
+		
+	SI vVariant["status"] = 200 ALORS
+		
+		SAI_PUT_a_client = "status="+vVariant["status"] + RC
+		
+		SAI_PUT_a_client += "Le Prénom du client a été modifié"
+		
+		leClient.versHFQL()
+		
+	SINON
+		
+		Erreur("Erreur : ", vVariant["data"].help)
+		
+	FIN
+FIN
+
+//////////////
+// Bouton search client
+//////////////////
+sApplicationKey	est une chaîne	= "ZNoIIyZ4KhC7anCdTRrimM5Vy1M7f4Bi"
+sSecretKey		est une chaîne	= "50xoYs7i62fASSsxYWpAN5gNgBdV9e4Z2YtiedRLWghDSsizO17cZdLHR5qMnEDA"
+
+//leClient		est un MClient("ZTEST","Test","testCompany","test@test.com","EN","testeur",...
+//"rue test","12345","testCity","FRA", "33", "0123456789", "33", "0987654321",...
+//"TAX123456", "P1234567890", "XYZ", "XYZ", "CLI123456", "string")
+leClient		est un MClient	= leClient.versMClientParIDClient(leClient.recupereIDParSonNom("ZTEST"))
+laDateMin		est une Date	= DateVersChaîne(DateDuJour(), "AAAA-MM-JJ")
+laDateMax		est une Date	= DateVersChaîne(DateDuJour(), "AAAA-MM-JJ")
+
+vElement		est un Variant
+vElement["start"]				= 100
+vElement["limit"]				= 25
+vElement["lastID"]				= leClient.m_IDclient
+vElement["creation_date_min"]	= laDateMin 
+vElement["creation_date_max"]	= laDateMax
+vElement["email"]				= leClient.m_email_address
+vElement["mobile_phone"]		= leClient.m_mobile
+vElement["client_num"]			= leClient.m_id_code 
+
+sBody		est une chaîne				= VariantVersJSON(leClient.enVariant())
+
+sBaseUrl	est une chaîne				= "https://www.payboxmail.com/api/v1.0"
+
+sPath		est une chaîne				= "/clients/search"
+
+sFullUrl	est une chaîne				= sBaseUrl + sPath
+
+nTime		est un entier sur 8 octets	= DateHeureVersEpoch(DateHeureSys())
+
+sMethod		est une chaîne				= "POST"
+
+// Signature
+sToSign		est une chaîne				= sFullUrl + "+" + sMethod + "+" + sSecretKey + "+" + sBody + "+" + nTime
+sSignature	est une chaîne				= Minuscule(Remplace(BufferVersHexa(HashChaîne(HA_SHA_256,sToSign)),[Caract(32),RC],""))
+
+Req			est une restRequête
+Rep			est une restRéponse
+
+Req.Méthode							= httpPost
+Req.URL								= sFullUrl
+Req.Entête["Content-Type"]			= "application/json"
+Req.Entête["X-Auth-Appkey"]			= sApplicationKey
+Req.Entête["X-Method-Signature"]	= "sha256"
+Req.Entête["X-Auth-Signature"]		= sSignature
+Req.Entête["X-Auth-Time"]			= "" + nTime
+Req.Contenu							= sBody
+
+Rep									= HTTPEnvoie(Req)
+
+SI ErreurDétectée ALORS
+	
+	Erreur("Unable to reach server - errorCode : "+ErreurInfo(errCode))
+	
+SINON
+	
+	vVariant est un Variant = JSONVersVariant(Rep.Contenu)
+	
+	resultat est une chaîne
+	
+	POUR TOUT item DE vVariant["data"]
+		resultat += "surname : " + item.surname + " | firstname: " + item.first_name 
+	FIN
+	
+	SAI_SEARCH_clients = "status="+vVariant["status"] + RC
+	
+FIN
+
+
+
+
+
+
