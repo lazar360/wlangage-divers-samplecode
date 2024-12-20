@@ -10,7 +10,7 @@ POUR TOUT leClient DE monDocXml.WINDEV_TABLE
 	
 	SINON
 		
-		ArbreAjoute(ARBRE_SansNom1, "Client" + TAB  + leClient.Nom_client + TAB + "")
+		ArbreAjoute(ARBRE_SansNom1, "Client" + TAB  + leClient.Nom_client + TAB)
 		
 	FIN
 	
