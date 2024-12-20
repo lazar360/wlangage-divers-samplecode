@@ -9,7 +9,7 @@ TableAffiche(Table_Clients, taCourantPremier) // MAJ de la table après modif
 // Seconde fenêtre avec des champs liés 
 ////////////////
 modification dans champ saisie nom + clic sur bouton modifier
-EcranVersFichier() // charge le buffer avec les valeurs dans les champs
+EcranVersFichier() // charge le buffer avec les valeurs dans les champs de la fenêtre
 Hmodifie(CLIENT)
 SI ErreurDétectée ALORS
 Erreur("Problème de mise à jour", ErreurInfo())
