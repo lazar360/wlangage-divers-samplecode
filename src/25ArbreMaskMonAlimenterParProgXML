@@ -24,21 +24,20 @@ FIN
 ///////////////
 // Affichage 
 /////////////////
-sBranche est une chaîne
+nIdnumcom est un entier
 
-sBranche = ArbreSelect(ARBRE_SansNom1)
+nIdnumcom = ArbreRécupèreIdentifiant(ARBRE_SansNom1,ArbreSelect(ARBRE_SansNom1))
 
-sIdentifiant est une chaîne
-
-// On récupère l'identifiant fixé à l'initialisation
-sIdentifiant = ArbreRécupèreIdentifiant(ARBRE_SansNom1, sBranche)
-
-HLitRecherchePremier(COMMANDE,NumCommande,sIdentifiant)
-
-SI HTrouve(COMMANDE) ALORS
+SI nIdnumcom ALORS
 	
-	LIB_NumCommande = COMMANDE.NumCommande
-	SAI_NumClient = COMMANDE.NumClient
-	SAI_DateCommande = COMMANDE.DateCommande
+	HLitRecherchePremier(COMMANDE,NumCommande,nIdnumcom)
 	
+	SI HTrouve(COMMANDE) ALORS
+		FichierVersEcran()
+	SINON
+		Erreur("La commande n'existe plus")
+		RAZ()
+	FIN
+SINON
+	RAZ()
 FIN
