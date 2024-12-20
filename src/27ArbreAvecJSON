@@ -1,0 +1,17 @@
+mondocJSON est un JSON <description="ExportJSON.ClientCdeJSON"> = fChargeTexte("C:\Mes Projets\ExportJSON.json")
+leClient est un JSON <description="ExportJSON.ClientCdeJSON">
+
+POUR TOUT leClient DE mondocJSON.ClientCdeJSON
+		
+	SI leClient.Total_TTC > 0 ALORS
+		
+		ArbreAjoute(ARBRE_SansNom1, "Client" + TAB  + leClient.Nom_client + TAB + ...
+					leClient.Total_TTC,aDéfaut, aDéfaut, leClient.Num_Commande)
+	
+	SINON
+		
+		ArbreAjoute(ARBRE_SansNom1, "Client" + TAB  + leClient.Nom_client)
+		
+	FIN
+	
+FIN
