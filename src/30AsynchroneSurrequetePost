@@ -26,12 +26,13 @@ Req.URL								= sFullUrl
 Req.Entête["Content-Type"]			= "application/json; charset=UTF-8"
 Req.Contenu							= sBody
 
+MessageAjouteCase("CaseInfo", 1000)
+Message("CaseInfo","Récupération des informations en cours")
+
 // Mode asynchrone
 // Pour envoyer votre requête en mode asynchrone, il faut ajouter une procédure en paramètre à votre RestEnvoie, 
 // Cette procédure attend elle-même la REST Réponse.
-
 RESTEnvoie(Req,HTTPEnvoie_Callback)
-
 
 	PROCÉDURE INTERNE HTTPEnvoie_Callback(Rep httpRéponse)
 		// traitement du résultat
@@ -40,5 +41,6 @@ RESTEnvoie(Req,HTTPEnvoie_Callback)
 		SINON
 			vVariant est un Variant = JSONVersVariant(Rep.Contenu)
 			SAI_Afficher_résultat_de_la_requête = "{" + RC + "id:" + vVariant.id + RC + "title:" + vVariant.title + RC + "body:" +vVariant.body + RC + "userId:" + vVariant.userId + RC + "}"
+			MessageSupprimeCase("CaseInfo")
 		FIN		
 	FIN
