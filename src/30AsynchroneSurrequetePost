@@ -1,0 +1,44 @@
+//////////////////
+// Creating a resource with POST !!!! ASYNCHRONE !!!!!!!!!
+/////////////////
+vElement		est un Variant
+vElement["title"]		= "foo"
+vElement["body"]		= "bar"
+vElement["userId"]		= 1
+
+sBody		est une chaîne				= VariantVersJSON(vElement)
+
+sBaseUrl	est une chaîne				= "https://jsonplaceholder.typicode.com/"
+
+sPath		est une chaîne				= "posts"
+
+sFullUrl	est une chaîne				= sBaseUrl + sPath
+
+nTime		est un entier sur 8 octets	= DateHeureVersEpoch(DateHeureSys())
+
+sMethod		est une chaîne				= "POST"
+
+Req			est une restRequête
+//Rep			est une restRéponse
+
+Req.Méthode							= httpPost
+Req.URL								= sFullUrl
+Req.Entête["Content-Type"]			= "application/json; charset=UTF-8"
+Req.Contenu							= sBody
+
+// Mode asynchrone
+// Pour envoyer votre requête en mode asynchrone, il faut ajouter une procédure en paramètre à votre RestEnvoie, 
+// Cette procédure attend elle-même la REST Réponse.
+
+RESTEnvoie(Req,HTTPEnvoie_Callback)
+
+
+	PROCÉDURE INTERNE HTTPEnvoie_Callback(Rep httpRéponse)
+		// traitement du résultat
+		SI ErreurDétectée ALORS
+			Erreur("Unable to reach server - errorCode : "+ErreurInfo(errCode))
+		SINON
+			vVariant est un Variant = JSONVersVariant(Rep.Contenu)
+			SAI_Afficher_résultat_de_la_requête = "{" + RC + "id:" + vVariant.id + RC + "title:" + vVariant.title + RC + "body:" +vVariant.body + RC + "userId:" + vVariant.userId + RC + "}"
+		FIN		
+	FIN
