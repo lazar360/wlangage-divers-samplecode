@@ -179,8 +179,8 @@ RENVOYER leClientArenvoyer
 // Bouton AccessRights : clic
 ////////////////
 
-sApplicationKey	est une chaîne	= "ZNoIIyZ4KhC7anCdTRrimM5Vy1M7f4Bi"
-sSecretKey		est une chaîne	= "50xoYs7i62fASSsxYWpAN5gNgBdV9e4Z2YtiedRLWghDSsizO17cZdLHR5qMnEDA"
+sApplicationKey	est une chaîne	= "..."
+sSecretKey		est une chaîne	= "..."
 
 sBody est une chaîne = ""
 
@@ -227,8 +227,8 @@ FIN
 /////////////
 // Bouton create a client 
 //////////
-sApplicationKey	est une chaîne	= "ZNoIIyZ4KhC7anCdTRrimM5Vy1M7f4Bi"
-sSecretKey		est une chaîne	= "50xoYs7i62fASSsxYWpAN5gNgBdV9e4Z2YtiedRLWghDSsizO17cZdLHR5qMnEDA"
+sApplicationKey	est une chaîne	= "..."
+sSecretKey		est une chaîne	= "..."
 
 sBody est une chaîne = ""
 
@@ -279,8 +279,8 @@ nomDuClientToGet  est une chaîne 			= SansEspace(Majuscule(SAI_GET_a_client))
 leClient est un MClient()
 idClientToGet est une chaîne				= leClient.recupereIDParSonNom(nomDuClientToGet)
 
-sApplicationKey	est une chaîne				= "ZNoIIyZ4KhC7anCdTRrimM5Vy1M7f4Bi"
-sSecretKey		est une chaîne				= "50xoYs7i62fASSsxYWpAN5gNgBdV9e4Z2YtiedRLWghDSsizO17cZdLHR5qMnEDA"
+sApplicationKey	est une chaîne				= "..."
+sSecretKey		est une chaîne				= "..."
 
 sBody			est une chaîne				= ""
 
@@ -331,8 +331,8 @@ FIN
 ////////////////
 // Bouton put a client 
 ///////////////////
-sApplicationKey	est une chaîne	= "ZNoIIyZ4KhC7anCdTRrimM5Vy1M7f4Bi"
-sSecretKey		est une chaîne	= "50xoYs7i62fASSsxYWpAN5gNgBdV9e4Z2YtiedRLWghDSsizO17cZdLHR5qMnEDA"
+sApplicationKey	est une chaîne	= "..."
+sSecretKey		est une chaîne	= "..."
 
 utilitaire	est un MClient()
 
@@ -400,8 +400,8 @@ FIN
 //////////////
 // Bouton search client
 //////////////////
-sApplicationKey	est une chaîne	= "ZNoIIyZ4KhC7anCdTRrimM5Vy1M7f4Bi"
-sSecretKey		est une chaîne	= "50xoYs7i62fASSsxYWpAN5gNgBdV9e4Z2YtiedRLWghDSsizO17cZdLHR5qMnEDA"
+sApplicationKey	est une chaîne	= "..."
+sSecretKey		est une chaîne	= "..."
 
 //leClient		est un MClient("ZTEST","Test","testCompany","test@test.com","EN","testeur",...
 //"rue test","12345","testCity","FRA", "33", "0123456789", "33", "0987654321",...
