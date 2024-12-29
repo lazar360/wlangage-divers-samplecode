@@ -25,3 +25,41 @@ Trace("chaineAEnregistrer : \" + chaineAEnregistrer)
 chaineenregistree.ChaineAUtiliser = chaineAEnregistrer
 HAjoute(chaineenregistree)
 
+//////////////////
+// Combo de sélection du code
+///////////////////
+- A l'init 
+SI HNbEnr(chaineenregistree) ALORS
+	
+	chaineTmp est une chaîne
+	tableauTmp est un tableau de chaînes
+	
+	HLitPremier(chaineenregistree,ChaineAUtiliser)
+	
+	SI PAS HEnDehors(chaineenregistree) ALORS 
+		
+		chaineTmp  = chaineenregistree.ChaineAUtiliser
+	
+	FIN
+	
+	ChaîneVersTableau(chaineTmp,tableauTmp," ")
+	
+	POUR i = 1 _À_ tableauTmp.Occurrence - 1
+		
+		SI i % 2 <> 0 ALORS
+			
+			tableauAsso[tableauTmp[i]] = tableauTmp[i+1]
+			ListeAjoute(COMBO_Sélection_du_1er_élément, tableauTmp[i])
+						
+		FIN
+		
+	FIN
+		
+FIN
+
+
+// Trace(tableauAsso["Carte"])
+
+- A la sélection d'une ligne 
+// Info(COMBO_Sélection_du_1er_élément..ValeurAffichée)
+SAI_Affichage_2ème_élément = tableauAsso[COMBO_Sélection_du_1er_élément..ValeurAffichée]
