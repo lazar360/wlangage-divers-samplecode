@@ -1,0 +1,27 @@
+////////////////
+// Bouton Plus
+/////////////////
+SI COMBO_1er_élément <> "" ET COMBO_2èmeélément <> "" ALORS
+	
+	SI Position(chaineAEnregistrer,COMBO_1er_élément) = 0 OU Position(chaineAEnregistrer,COMBO_1er_élément) = 0 ALORS
+		
+		SI chaineAEnregistrer <> "" ALORS chaineAEnregistrer += " "
+		
+		chaineAEnregistrer += COMBO_1er_élément.ValeurAffichée + " " + COMBO_2èmeélément.ValeurAffichée
+		
+	SINON
+		
+		Info("Association déjà effectuée")
+		
+	FIN
+	
+FIN
+
+Trace("chaineAEnregistrer : \" + chaineAEnregistrer)
+
+///////////////////
+// Bouton enregistrer en base
+////////////////////
+chaineenregistree.ChaineAUtiliser = chaineAEnregistrer
+HAjoute(chaineenregistree)
+
