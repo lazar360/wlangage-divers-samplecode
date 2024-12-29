@@ -1,0 +1,30 @@
+URLrequise		est une chaîne =  "https://jsonplaceholder.typicode.com/posts/1"
+
+// Configuration de la requête (Pas de clé pour le site https://jsonplaceholder.typicode.com  
+maRequeteREST	est une restRequête  
+maReponseREST	est une restRéponse  
+maRequeteREST.URL	= URLrequise  
+
+// Envoi de la requête  
+RESTEnvoie(maRequeteREST, HTTPEnvoie_Callback)  
+
+	// PROCÉDURE INTERNE pour le callback  
+	PROCÉDURE INTERNE HTTPEnvoie_Callback(Rep httpRéponse)  
+		// Vérification des erreurs  
+		SI ErreurDétectée ALORS  
+			Erreur("Impossible de joindre le serveur - code d'erreur : " + ErreurInfo(errCode))  
+		SINON  
+			vVariant est un Variant = JSONVersVariant(Rep.Contenu)  
+			
+			// Formatage et affichage des résultats  
+			SAI_Afficher_résultat_de_la_requête = "{" + RC +   
+			"id: " + vVariant.id + RC +   
+			"title: " + vVariant.title + RC +   
+			"body: " + vVariant.body + RC +   
+			"userId: " + vVariant.userId + RC +   
+			"}"  
+			
+			
+			RENVOYER maReponseREST  
+		FIN  
+	FIN  
