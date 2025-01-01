@@ -4,3 +4,4 @@ chaineTmp1 est une chaîne = Remplace(ExtraitChaîne(chaineTmp,1,"T"),"-","")
 chaineTmp2 est une chaîne = Remplace(ExtraitChaîne(chaineTmp,2,"T"),":","") 
 maDateHeure est une DateHeure = chaineTmp1+chaineTmp2
 Trace(maDateHeure)
+Trace(DateHeureVersChaîne(maDateHeure,"AAAAMMJJHHmmSS"))
