@@ -1,1 +1,89 @@
+PROCÉDURE MaFenêtre()
+ListeAjoute(COMBO_1er_élément,"CARTE")
+ListeAjoute(COMBO_1er_élément,"PAYPAL")
+ListeAjoute(COMBO_2ème_élément, "12356789")
+ListeAjoute(COMBO_2ème_élément, "OD")
+gsChaîneARécupérer est une chaîne
+gsChaîneARécupérerTable est une chaîne
+gtabTableauPourTable est un tableau de chaîne
+
+HLitRecherchePremier(CONSTUTIL,CUCODE,"PAYBOX")
+
+SI HTrouve(CONSTUTIL) ALORS
+
+	gsChaîneARécupérer = CONSTUTIL.CUMEMO
+	SAI_Code1 = ExtraitChaîne(gsChaîneARécupérer,1,RC)
+	SAI_Code2 = ExtraitChaîne(gsChaîneARécupérer,2,RC)
+	gsChaîneARécupérerTable = ExtraitChaîne(gsChaîneARécupérer,3,RC)
+
+	ChaîneVersTableau(gsChaîneARécupérerTable, gtabTableauPourTable, ",")
+
+	POUR i = 1 _À_ gtabTableauPourTable..Occurrence
+
+		SI gtabTableauPourTable[i] <> "" ALORS
+
+			TableAjouteLigne(TABLE_AssociationCodes,ExtraitChaîne(gtabTableauPourTable[i],1," "),ExtraitChaîne(gtabTableauPourTable[i],2," "))
+				
+		FIN
+
+	FIN
+
+SINON
+
+	SAI_Code1	= ""
+	SAI_Code2	= ""
+
+FIN
+
+//////////
+// Clic sur Bouton associer
+/////////////////
+
+premElement est une chaîne = COMBO_1er_élément.ValeurAffichée
+
+SI COMBO_1er_élément <> "-1" _ET_ COMBO_2ème_élément <> "-1" ALORS
+
+	POUR nIndiceDeTable = 1 _À_ TABLE_AssociationCodes..Occurrence
+
+		SI premElement = TABLE_AssociationCodes.COL_1er_élément[nIndiceDeTable] ALORS
+
+			Info("Le code " + premElement + " a déjà été associé")
+			RETOUR
+
+		FIN
+
+	FIN
+
+	TableAjouteLigne(TABLE_AssociationCodes, COMBO_1er_élément.ValeurAffichée, COMBO_2ème_élément.ValeurAffichée)
+
+	COMBO_1er_élément = ""
+	COMBO_2ème_élément = ""
+
+FIN
+
+///////////////////
+// Clic sur bouton Enregistrer
+//////////////////////
+
+sCodesAEnregistrer est une chaîne = SAI_Code1 + RC + SAI_Code2 + RC
+
+SI TABLE_AssociationCodes..Occurrence > 0 ALORS
+
+	POUR i = 1  _À_ TABLE_AssociationCodes..Occurrence
+
+		sCodesAEnregistrer += TABLE_AssociationCodes.COL_1er_élément[i] + " " + TABLE_AssociationCodes.COL_2ème_élément[i] + ","
+
+	FIN
+
+FIN
+
+CONSTUTIL.CUCODE = "PAYBOX"
+CONSTUTIL.CUMEMO = sCodesAEnregistrer
+
+SI HEnregistre(CONSTUTIL) ALORS
+
+	Info("Enregistrement Ok")
+	Ferme()
+
+FIN
 
