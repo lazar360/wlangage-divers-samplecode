@@ -1,0 +1,32 @@
+PROCÉDURE TrouverPaiementsARégulariser()
+
+infoPaiment est un cPaybox
+tableauDeNumbl est un tableau de chaîne
+tableauARetourner est un tableau de cPaybox
+
+POUR TOUT BLENTETE_COMPLEMENT
+	
+	SI BLENTETE_COMPLEMENT.INFO_SUIVI <> "" ALORS
+		
+		tableauDeNumbl.Ajoute(BLENTETE_COMPLEMENT.NUMBL)
+		
+	FIN		
+FIN
+
+ven_paiement.Jauge_Récupération_Demandes.Visible   = Vrai
+ven_paiement.Jauge_Récupération_Demandes..BorneMax = tableauDeNumbl.Occurrence
+
+POUR TOUT numéro DE tableauDeNumbl
+	
+		SI  PAS :EstComptabilisé(numéro) ALORS
+			 
+			infoPaiment = :DemanderInfoSurPaiement(BLENTETE.NUMBL, BLENTETE_COMPLEMENT.INFO_SUIVI)
+			
+			tableauARetourner.Ajoute(infoPaiment)
+			
+		 FIN
+
+		ven_paiement.Jauge_Récupération_Demandes..Valeur++
+FIN
+	 	 	
+RENVOYER tableauARetourner
