@@ -1,0 +1,76 @@
+// TODO : transformer cOdysseyAdhocRecipients.OptionalFields  en tableau de JSON chaine
+
+cOdysseyEmailBody est une Classe
+
+	Name 	est une chaîne
+	Content est une chaîne
+	Type 	est un entier
+	
+FIN
+
+
+
+PROCÉDURE Constructeur(param_Name est une chaîne = "", param_Content est une chaîne ="", LOCAL param_Type est un entier = 0)
+
+SI param_Name 	 <> "" ALORS :Name 	  = param_Name
+SI param_Content <> "" ALORS :Content = param_Content
+SI param_Type 	 <> 0  ALORS :Type 	  = param_Type
+
+PROCÉDURE Destructeur()
+
+cOdysseyAdhocRecipients est une Classe
+ 
+	Address			est une chaîne
+	Name			est une chaîne 
+	OptionalFields	est une chaîne
+	
+FIN
+
+
+
+PROCÉDURE Constructeur(param_Address est une chaîne ="", param_Name est une chaîne = "", param_OptionalFields est une chaînes = "")
+
+SI param_Address 			   <> "" ALORS :Address 	   = param_Address
+SI param_Name 	 			   <> "" ALORS :Name 		   = param_Name
+SI param_OptionalFields    	   <> "" ALORS :OptionalFields = param_OptionalFields
+PROCÉDURE Destructeur()
+
+
+PROCÉDURE ConvertirEnJson():JSON
+
+JSONARenvoyer est un JSON
+JSONARenvoyer.Address 		 = :Address
+JSONARenvoyer.Name    		 = :Name
+JSONARenvoyer.OptionalFields = [:OptionalFields]
+JSONcontenant est un JSON 	 = [JSONARenvoyer]
+
+RENVOYER JSONcontenant
+
+cOdysseyParam est une Classe
+
+	Media   est un entier
+	Subject est une chaîne
+	ReplyTo est une chaîne
+	From 	est une chaîne
+	
+FIN
+
+
+
+PROCÉDURE Constructeur(LOCALE param_Media est un entier = 0, param_Subject est une chaîne = "",...
+					   param_ReplyTo est une chaîne = "", param_From est une chaîne = "")
+
+SI param_Media   <> 0 	ALORS :Media   = param_Media
+SI param_Subject <> ""  ALORS :Subject = param_Subject
+SI param_ReplyTo <> ""  ALORS :ReplyTo = param_ReplyTo
+SI param_From    <> ""  ALORS :From    = param_From
+PROCÉDURE Destructeur()
+
+Clic sur générer JSON complexe 
+leRecipient est un cOdysseyAdhocRecipients("nicolas.gautier@aquilainfo.com","Nicolas", "nicolas.gautier@aquilainfo.com")
+
+leJson est un JSON = leRecipient.ConvertirEnJson()
+
+Info(leJson) 
+
+
