@@ -1,0 +1,95 @@
+// GET request to get a single payment request
+
+sApplicationKey est une chaîne = "YourApplicationKey"
+sSecretKey est une chaîne = "YourSecretKey"
+
+sBody est une chaîne = ""
+
+sId est une chaîne = "PHBA16184878736223"
+
+sBaseUrl est une chaîne = "https://www.payboxmail.com/api/"
+
+sPath est une chaîne = "paymentrequests/single/" + sId
+
+sFullUrl est une chaîne = sBaseUrl + sPath
+
+nTime est un entier sur 8 octets = DateHeureVersEpoch(DateHeureSys())
+
+sMethod est une chaîne = "GET"
+
+// Signature
+sToSign est une chaîne = sFullUrl + "+" + sMethod + "+" + sSecretKey + "+" + sBody + "+" + nTime
+sSignature est une chaîne = Minuscule(Remplace(BufferVersHexa(HashChaîne(HA_SHA_256,sToSign)),[Caract(32),RC],""))
+
+Req est une restRequête
+Rep est une restRéponse
+
+Req.Méthode = httpGet
+Req.URL = sFullUrl
+Req.Entête["Content-Type"] = "application/json"
+Req.Entête["X-Auth-Appkey"] = sApplicationKey
+Req.Entête["X-Method-Signature"] = "sha256"
+Req.Entête["X-Auth-Signature"] = sSignature
+Req.Entête["X-Auth-Time"] = "" + nTime
+Req.Contenu = sBody
+
+Rep = HTTPEnvoie(Req)
+
+SI ErreurDétectée ALORS
+       Erreur("Unable to reach server - errorCode : "+ErreurInfo(errCode))
+SINON
+       Trace(Rep.Contenu)
+
+       vVariant est un Variant = JSONVersVariant(Rep.Contenu)
+       Trace("status="+vVariant["status"])
+FIN
+
+// POST request to create a single payment request
+
+sApplicationKey est une chaîne = "YourApplicationKey"
+sSecretKey est une chaîne = "YourSecretKey"
+
+vElement est un Variant
+vElement["reference"] = "Your ref"
+vElement["price"] = 170.5
+vElement["email_address"] = "john.doe@example.com"
+vElement["send_email"] = Vrai
+
+sBody est une chaîne = VariantVersJSON(vElement)
+
+sBaseUrl est une chaîne = "https://www.payboxmail.com/api/"
+
+sPath est une chaîne = "paymentrequests/single/"
+
+sFullUrl est une chaîne = sBaseUrl + sPath
+
+nTime est un entier sur 8 octets = DateHeureVersEpoch(DateHeureSys())
+
+sMethod est une chaîne = "POST"
+
+// Signature
+sToSign est une chaîne = sFullUrl + "+" + sMethod + "+" + sSecretKey + "+" + sBody + "+" + nTime
+sSignature est une chaîne = Minuscule(Remplace(BufferVersHexa(HashChaîne(HA_SHA_256,sToSign)),[Caract(32),RC],""))
+
+Req    est une restRequête
+Rep    est une restRéponse
+
+Req.Méthode = httpPost
+Req.URL = sFullUrl
+Req.Entête["Content-Type"] = "application/json"
+Req.Entête["X-Auth-Appkey"] = sApplicationKey
+Req.Entête["X-Method-Signature"] = "sha256"
+Req.Entête["X-Auth-Signature"] = sSignature
+Req.Entête["X-Auth-Time"]  = "" + nTime
+Req.Contenu = sBody
+
+Rep = HTTPEnvoie(Req)
+
+SI ErreurDétectée ALORS
+       Erreur("Unable to reach server - errorCode : "+ErreurInfo(errCode))
+SINON
+       Trace(Rep.Contenu)
+
+       vVariant est un Variant = JSONVersVariant(Rep.Contenu)
+       Trace("status="+vVariant["status"])
+FIN
