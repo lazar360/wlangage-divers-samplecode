@@ -28,13 +28,25 @@ FIN
 
 
 
-PROCÉDURE Constructeur(param_Address est une chaîne ="", param_Name est une chaîne = "", param_OptionalFields est une chaînes = "")
+PROCÉDURE Constructeur(param_Address est une chaîne ="", param_Name est une chaîne = "", param_OptionalFields est un tableau de chaînes = "")
 
 SI param_Address 			   <> "" ALORS :Address 	   = param_Address
 SI param_Name 	 			   <> "" ALORS :Name 		   = param_Name
-SI param_OptionalFields    	   <> "" ALORS :OptionalFields = param_OptionalFields
-PROCÉDURE Destructeur()
-
+SI PAS param_OptionalFields.Vide     ALORS 
+		
+	POUR TOUT field DE param_OptionalFields
+		
+		SI :OptionalFields = "" ALORS
+			 
+			:OptionalFields += field
+			
+		SINON 
+			
+			:OptionalFields += "," + field
+		
+		FIN
+	FIN
+FIN
 
 PROCÉDURE ConvertirEnJson():JSON
 
@@ -67,9 +79,17 @@ SI param_From    <> ""  ALORS :From    = param_From
 PROCÉDURE Destructeur()
 
 Clic sur générer JSON complexe 
-leRecipient est un cOdysseyAdhocRecipients("nicolas.gautier@aquilainfo.com","Nicolas", "nicolas.gautier@aquilainfo.com")
+// Tableau vide
+//monTableau est un tableau de chaîne
+//
+//leRecipient	est un cOdysseyAdhocRecipients("nicolas.gautier@aquilainfo.com","Nicolas", monTableau)
 
-leJson est un JSON = leRecipient.ConvertirEnJson()
+// Tableau avec des valeurs
+monTableau est un tableau de chaîne = ["nicolas.gautier@aquilainfo.com", "aquila.com"]
+
+leRecipient	est un cOdysseyAdhocRecipients("nicolas.gautier@aquilainfo.com","Nicolas", monTableau)
+
+leJson		est un JSON	= leRecipient.ConvertirEnJson()
 
 Info(leJson) 
 
