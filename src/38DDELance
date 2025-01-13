@@ -1,0 +1,28 @@
+CAS 3 //MAIL
+		
+		Vl_Chaine_cmd = ""
+		SI SansEspace(:OS_Mail_Sujet)<>"" ALORS
+			Vl_Chaine_cmd = " /subject "+Caract(34)+:OS_Mail_Sujet+Caract(34)
+		FIN
+		SI SansEspace(:OS_Chemin_du_HTML)<>"" ALORS
+			Vl_Chaine_cmd +=" /emailbody "+:OS_Chemin_du_HTML
+		FIN	
+		
+//		trace("Appel Odyssey")
+//		trace("Taille fichier log.txt "+fTaille(:Os_Rep_Exe+"logs.txt"))
+//		trace("Vers  "+:Os_Liste_numero)
+//		trace("Vers  "+:Os_Liste_numero+"*"+:OS_Chemin_du_fichier_PDF+"*"+:OS_Chemin_du_fichier_Numero)
+
+//			SI SansEspace(:OS_Chemin_du_fichier_PDF)<>"" ALORS
+//				DDELance(:Os_Rep_Exe+"OdysseyStartBroadcast.exe /document "+:OS_Chemin_du_fichier_PDF+" /list "+:OS_Chemin_du_fichier_Numero+Vl_Chaine_cmd,DDEInactif+DDEIconise)
+//			SINON
+//				DDELance(:Os_Rep_Exe+"OdysseyStartBroadcast.exe /list "+:OS_Chemin_du_fichier_Numero+Vl_Chaine_cmd,DDEInactif+DDEIconise)
+//			FIN
+			SI SansEspace(:OS_Chemin_du_fichier_PDF)<>"" ALORS
+				DDELance(:Os_Rep_Exe+"OdysseyStartBroadcast.exe /document "+:OS_Chemin_du_fichier_PDF+" /list "+:OS_Chemin_du_fichier_Numero+Vl_Chaine_cmd+" /jobtype EMAIL",DDEInactif+DDEIconise)
+			SINON
+				//DDELance(:Os_Rep_Exe+"OdysseyStartBroadcast.exe /list "+:OS_Chemin_du_fichier_Numero+Vl_Chaine_cmd+" /jobtype EMAIL",DDEinactif+DDEIconise) //Message d'erreur avec JobType EMAIL !!
+				DDELance(:Os_Rep_Exe+"OdysseyStartBroadcast.exe /list "+:OS_Chemin_du_fichier_Numero+Vl_Chaine_cmd+" /jobtype EMAIL",DDEInactif+DDEIconise)
+			FIN
+
+FIN
