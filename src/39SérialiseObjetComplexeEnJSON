@@ -1,0 +1,61 @@
+odysseyObjet est un Odyssey_ObjetAPI()
+odysseyObjet.JobType = "Email"
+odysseyObjet.TrackingId = "Send basic Email"
+odysseyObjet.EmailBody.Name = "body.html"
+odysseyObjet.EmailBody.Content = "PGh0bWw+DQo8aGVhZGVyPg0KPG1ldGEgY2hhcnNldD0iVVRGLTgiPg0KPC9oZWFkZXI+DQo8Ym9keT4NClRoaXMgaXMgYW4gZW1haWwgdGVzdCBmcm9tIE9keXNzZXkgTWVzc2FnaW5nLg0KPC9ib2R5Pg0KPC9odG1sPg=="
+odysseyObjet.EmailBody.Type = 2
+
+recipient est une Structure
+	Address est une chaîne
+    Name est une chaîne
+	OptionalFields est un tableau de chaînes    
+FIN
+
+tabRecipients est un tableau de recipient
+tabRecipients.Ajoute(["nicolas.gautier@aquilainfo.com", "Nicolas", [""]])
+tabRecipients.Ajoute(["nicolas.gautier35135@gmail.com", "Test", [""]])
+
+odysseyObjet.AdhocRecipients = tabRecipients
+
+odysseyObjet.Parameter.Media = 5
+odysseyObjet.Parameter.Subject = "e-mail de test"
+odysseyObjet.Parameter.ReplyTo = "nicolas.gautier@aquilainfo.com"
+
+sUtilisateur 			est une chaîne = "****"
+sMotDePasse 			est une chaîne = "****"
+
+sBody		est une chaîne				= VariantVersJSON(odysseyObjet)
+
+sBaseUrl	est une chaîne				= "https://api.odyssey-services.fr/api/V1/"
+
+sPath		est une chaîne				= "EmailJobs"
+
+sFullUrl	est une chaîne				= sBaseUrl + sPath
+
+nTime		est un entier sur 8 octets	= DateHeureVersEpoch(DateHeureSys())
+
+sMethod		est une chaîne				= "POST"
+
+// Signature
+sToSign 	est une chaîne  			= sUtilisateur + ":" + sMotDePasse
+sSignature 	est une chaîne  			= "Basic " + Encode(sToSign,encodeBASE64)
+
+Req			est un httpRequête
+Rep			est un httpRéponse
+
+Req.Méthode							= httpPost
+Req.URL								= sFullUrl
+Req.Entête["Authorization"]			= sSignature
+Req.Entête["Content-Type"]			= "application/json"
+Req.Contenu							= sBody
+
+Rep									= HTTPEnvoie(Req)
+
+SI ErreurDétectée ALORS
+	Erreur("Unable to reach server - errorCode : "+ErreurInfo(errCode))
+SINON
+	trace(Rep.Contenu)
+	OdysseyResponse = Rep.Contenu
+	vVariant est un Variant = JSONVersVariant(Rep.Contenu)
+	trace("status="+vVariant["status"])
+FIN

@@ -1,8 +1,0 @@
-monTableau	est un tableau de chaîne	= ["Mon entreprise", "Date de naissance"]
-
-gMonTableau	est une chaîne ANSI
-
-// Sérialisation de l'élément
-Sérialise(monTableau, gMonTableau, psdJSON)
-
-Info(gMonTableau)
