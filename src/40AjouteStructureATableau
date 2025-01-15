@@ -1,0 +1,25 @@
+Ajouter le contenu d'une structure dans un tableau de structures sans passer par une variable de cette structure
+
+Si vous utilisez un tableau de structures avec peu de membres, il peut être plus simple d'ajouter directement une structure en utilisant l'opérateur [ ] (crochet).
+Par exemple, pour la structure suivante :
+// Structure pour mémoriser une lettre et son code ASCII
+STTouche est une Structure
+sTouche est une chaîne
+nCodeAscii est un entier
+FIN
+// Tableau de structures
+tabTouches est un tableau de STTouche
+
+
+L'ajout se fait généralement en passant par une variable du type de la structure :
+// Structure temporaire pour l'ajout
+stUneTouche est un STTouche
+// Mémorise la lettre A
+stUneTouche.sTouche = "A"
+stUneTouche.nCodeAscii = Asc("A")
+tabTouches.Ajoute(stUneTouche)
+
+
+Avec l'opérateur [ ], vous pouvez gagner en visibilité :
+// Mémorise la lettre A
+tabTouches.Ajoute(["A", Asc("A")])
