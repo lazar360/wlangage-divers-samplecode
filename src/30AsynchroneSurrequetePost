@@ -44,3 +44,4 @@ RESTEnvoie(Req,HTTPEnvoie_Callback)
 			MessageSupprimeCase("CaseInfo")
 		FIN		
 	FIN
+// Sinon faire une boucle de temporisation 
