@@ -1,0 +1,4 @@
+hdle est un entier 
+		hdle=fOuvre(:Os_Rep_Exe+"Logs_SMS.txt",foCréationSiInexistant+foAjout)
+		fEcritLigne(hdle,"SMS;"+:OS_Texte_SMS+";"+Remplace(:Os_Liste_numero,RC,";"))
+		fFerme(hdle)
