@@ -1,0 +1,61 @@
+CAS 4 // Mailing de masse par API
+		
+		odysseyObjet 		est un Odyssey_ObjetAPIMail()
+		
+		// Création  du corps du mail
+		//---------------------------
+		odysseyObjet.EmailBody.Name		= fExtraitChemin(:OS_Chemin_du_HTML,fFichier+fExtension)
+		odysseyObjet.EmailBody.Content	= Encode(fChargeBuffer(:OS_Chemin_du_HTML), encodeBASE64SansRC)
+		odysseyObjet.EmailBody.Type		= 2  
+		
+		// Création de adhoc Recipients (contenant notamment adresse d'envoi)
+		//------------------------------------------------------------------ 
+		recipient est une Structure
+			Address			est une chaîne
+			Name			est une chaîne
+			OptionalFields	est un tableau de chaînes    
+		FIN
+		
+		tabRecipients est un tableau de recipient
+		POUR TOUT CHAÎNE sLigne DE fChargeTexte(:OS_Chemin_du_fichier_Numero) SÉPARÉE PAR [",", ";", RC]
+		
+			tabRecipients.Ajoute([sLigne, :OS_Mail_Sujet, [""]]) 
+		
+		FIN
+		
+		odysseyObjet.AdhocRecipients	= tabRecipients
+		
+		// Création de Attachments (pièce jointe)
+		//---------------------------------------
+		attachment est une Structure 
+			Name 	est une chaîne
+    		Content est une chaîne
+    		Type 	est un numérique // Ne pas modifier règle API Odyssey
+		FIN
+		tabAttachments est un tableau de attachment
+		
+		POUR TOUTE CHAÎNE attach DE :OS_Chemin_du_fichier_PDF SÉPARÉE PAR [",", ";", RC]
+		
+			BufPièceJointe			est un Buffer		= fChargeBuffer(attach)
+			NomPièceJointe			est une chaîne		= fExtraitChemin(attach,fFichier+fExtension)		  
+			tabAttachments.Ajoute([NomPièceJointe, Encode(BufPièceJointe,encodeBASE64SansRC),4])
+			
+		FIN
+		
+		odysseyObjet.Attachments = tabAttachments
+		
+		// Paramètres d'envoi du mail
+		//--------------------------
+		odysseyObjet.Parameter.Media	= 5 // Ne pas modifier règle API Odyssey
+		odysseyObjet.Parameter.Subject	= :OS_Mail_Sujet 
+		odysseyObjet.Parameter.ReplyTo	= :OS_ReplyTo  
+		
+		Rep est un httpRéponse = :EnvoyerRequeteHTTP(odysseyObjet, "https://api.odyssey-services.fr/api/V1/", "EmailJobs",...
+													 SansEspace(:OS_Login), SansEspace(:OS_Mdp))
+		
+		// gestion du retour
+		vVariant est un Variant = JSONVersVariant(Rep.Contenu)
+				
+		SI ErreurDétectée OU  PAS vVariant["JobNumber"] ALORS
+			:OS_Retour_Odyssey = "Erreur :" + vVariant["Message"]
+		FIN
