@@ -3,29 +3,35 @@ pPlanning = xlsOuvre(fRepExe + [fSep] + "Planning_2025.xlsx")
 
 HSupprimeTout(T_Planning)
 HRAZ(T_Planning)
+HSupprimeTout(MODEREGLEMENT)
+HRAZ(MODEREGLEMENT)
 
 pPlanning..Feuille = 1
 
 POUR i=1 _À_ pPlanning..NombreLigne
 
-	T_Planning.Ressource = xlsDonnée(pPlanning,i,1)
-	T_Planning.Titre 	 = xlsDonnée(pPlanning,i,2)
+	T_Planning.Ressource 	= xlsDonnée(pPlanning,i,1)
+	T_Planning.Titre 	 	= xlsDonnée(pPlanning,i,2)
 
 	// Conversion d'une date excel pour notre importation
 	// On ajoute l'heure 00:00 pour la date de début et
 	// 23:59 pour la date de fin
-	sDate est une chaîne = xlsDonnée(pPlanning,i,3)
+	sDate est une chaîne    = xlsDonnée(pPlanning,i,3)
 	dDate est une DateHeure = ChaîneVersDate(sDate) + "0000"
-	T_Planning.DateDébut = dDate
+	T_Planning.DateDébut    = dDate
 
-	sDate			= xlsDonnée(pPlanning,i,4)
-	dDate		= ChaîneVersDate(sDate) + "2359"
-	T_Planning.DateFin = dDate
+	sDate					= xlsDonnée(pPlanning,i,4)
+	dDate					= ChaîneVersDate(sDate) + "2359"
+	T_Planning.DateFin 		= dDate
 
-	T_Planning.NuméroSemaine = xlsDonnée(pPlanning,i,5)
+	T_Planning.NuméroSemaine 	= xlsDonnée(pPlanning,i,5)
 	T_Planning.Années = xlsDonnée(pPlanning,i,6)
 
+	MODEREGLEMENT.Libreglement 	= xlsDonnée(pPlanning,i,7)
+
 	HAjoute(T_Planning)
+	HAjoute(MODEREGLEMENT)
+
 FIN
 ToastAffiche("IMPORT ok")
 xlsFerme(pPlanning)
