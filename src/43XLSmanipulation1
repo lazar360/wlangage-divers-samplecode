@@ -1,0 +1,45 @@
+MaFeuilleXls 			est un xlsDocument
+DocumentXls  		= CHEMIN_FEUILLE_EXCEL_MAJ
+
+// Ouverture de la feuille // Il manque un test sur l'existence du fichier xlsx (il semble que ce soit un xlsx)
+MaFeuilleXls = xlsOuvre(DocumentXls,xlsEcriture)
+
+// Boucle sur le XLS
+nb_ligne_tot = xlsNbLigne(MaFeuilleXls)
+			
+			POUR nb_ligne =NUM_LIGNE_MAJ À nb_ligne_tot
+				
+				Message("Feuille : "+MaFeuilleXls+"==>"+nb_ligne+"/"+nb_ligne_tot)
+				MultitâcheRepeint()
+				
+				sGENCOD = SansEspace(SansEspace(xlsDonnée(MaFeuilleXls,nb_ligne,NUM_COLONNE_GENCOD,Faux)))			
+				
+				bArticle_Gamme_Trouve = Faux
+				
+				SI PG_RECHERCHE_AARTICLE("ARGENCOD",sGENCOD) ALORS
+					PG_LECTURE_GAMME(GACODE_EXCEL_MAJ,AARTICLE.VACODE,AARTICLE.COCODE,AARTICLE.TACODE,DateSys())
+					bArticle_Gamme_Trouve = enreg_trouve 
+				SINON
+					//LE GENCOD Lu est peut être dans la gamme...
+					HLitRecherchePremier(GAMME,GACLE1,Complète(GACODE_EXCEL_MAJ,12)+Complète(sGENCOD,65))
+					SI PAS HEnDehors(GAMME) ET SansEspace(GAMME.ARLIBELLE1)	= SansEspace(sGENCOD) ...
+						ET SansEspace(GAMME.GACODE)	= SansEspace(GACODE_EXCEL_MAJ) ALORS	
+						bArticle_Gamme_Trouve=Vrai
+						SORTIR
+					FIN					
+				FIN
+				
+				SI bArticle_Gamme_Trouve ALORS	
+					SI NUM_COLONNE_GENCOD<>0 ALORS MaFeuilleXls[nb_ligne,NUM_COLONNE_GENCOD]	    = SansEspace(GAMME.GABARART)
+					...
+					SI NUM_COLONNE_REFCLIENT<>0 ALORS 
+						SI SansEspace(GAMME.ARLIBELLE1) <> "" ALORS 
+							MaFeuilleXls[nb_ligne,NUM_COLONNE_REFCLIENT] = SansEspace(GAMME.ARLIBELLE1)
+						SINON 
+							MaFeuilleXls[nb_ligne,NUM_COLONNE_REFCLIENT] = SansEspace(AARTICLE.ARLIBELLE1)
+						FIN
+					FIN
+					
+					NbModif++
+				FIN
+			FIN
