@@ -1,0 +1,10 @@
+HSupprimeTout(T_Planning)
+HRAZ(T_Planning)
+
+HImporteXLS(T_Planning, fRepExe + [fSep] +  "Planning_2025.xlsx", 1, "Ressource, Titre, DateDébut, DateFin, NuméroSemaine, Années", hImpNormal)
+
+SI ErreurDétectée ALORS
+	Erreur(HErreurInfo())
+SINON
+	ToastAffiche("Import oK")
+FIN
