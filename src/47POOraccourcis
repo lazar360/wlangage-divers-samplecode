@@ -1,1 +1,79 @@
+//  CLASSE UTILISATEUR
+//--------------------
+MT_Utilisateurs est une Classe <MAPPING=T_Utilisateurs>
+	<MAPPING>
+	m_IDT_Utilisateurs	est un entier sur 8 octets	<MAPPING=IDT_Utilisateurs, clé unique>
+	m_Login				  est une chaîne				 <MAPPING=Login>
+	m_Profil			  est une chaîne				 <MAPPING=Profil>
+	m_Nom				    est une chaîne				 <MAPPING=nom>
+	m_Prenom			  est une chaîne				 <MAPPING=Prenom>
+	m_MotDePasse		est MotDePasseSécurisé <MAPPING=MotDePasse>
+	m_Photo				  est un Buffer				   <MAPPING=Photo>
+	sMessageErreur	est une chaîne
+	<FIN>
+FIN
+
+// Pour faire de la surcharge clic droit dans explorateur sur méthode et proposer une autre syntaxe 
+PROCÉDURE Charge(pLogin est une chaîne):booléen
+
+HExécuteRequête(REQ_UtilisateurCherche,hRequêteDéfaut,pLogin)
+
+SI HLitPremier(REQ_UtilisateurCherche) ALORS
+	FichierVersMémoire(objet, REQ_UtilisateurCherche) // !!!!! ICI RACCOURCI
+	RENVOYER Vrai
+SINON
+	RENVOYER Faux	 
+FIN
+
+PROCÉDURE Charge(pIdt est un entier sur 8 octets):booléen
+
+SI HLitRecherchePremier(T_Utilisateurs,IDT_Utilisateurs,pIdt) ALORS
+	FichierVersMémoire(objet,T_Utilisateurs) // !!!!! ICI RACCOURCI
+	RENVOYER Vrai
+SINON 
+	RENVOYER  Faux
+
+// CLASSE CCOLLECTION DE PROFILS
+//------------------------------
+CCollectionDeProfils est une Classe
+	LesProfils est un tableau de MT_Profils
+FIN
+
+PROCÉDURE Constructeur()
+FichierVersTableau(LesProfils,T_Profils) // !!!!! ICI RACCOURCI
+
+// CONTROLEUR
+//--------------
+// Init fenetre
+PROCÉDURE MaFenêtre()
+UnUtilisateur est un MT_Utilisateurs
+tabProfils est une CCollectionDeProfils
+
+// clic sur valider
+EcranVersSource()
+SI UnUtilisateur.UtilisateurAjoute() ALORS 
+	ToastAffiche("L'utilisateur a été enregistré")
+SINON
+	Info(UnUtilisateur.sMessageErreur)
+FIN
+
+// Clic sur ChercheLogin
+SI UnUtilisateur.Charge(SAI_Login) ALORS
+	SourceVersEcran() // !!!!! ICI RACCOURCI
+FIN
+
+// Champ combo
+description > contenu > tabProfils.LesProfils (source) et idem pour varibale affichée et mémorisée
+liaison > variable > m_Profil de l'utilisateur
+
+// FENETRE
+//----------
+// Champs > description > liaison > variable > nomDuChamp
+
+
+
+
+
+
+
 
