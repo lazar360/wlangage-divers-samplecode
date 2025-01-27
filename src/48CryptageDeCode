@@ -1,0 +1,10 @@
+// Cryptage d'une chaîne de caractères en utilisant l'algorithme AES
+// ------------------------------------------------------------------
+bufMessage est un Buffer = "Message à crypter"
+bufClé est un Buffer = HashChaîne(HA_MD5_128, "mot de passe")
+bufCrypte est un Buffer = CrypteStandard(bufMessage, bufClé, crypteAES128)
+
+// Décryptage en WLangage
+------------------------- 
+bufRésultat est un Buffer = DécrypteStandard(bufCrypte, bufClé, crypteAES128)
+Info(bufRésultat)
