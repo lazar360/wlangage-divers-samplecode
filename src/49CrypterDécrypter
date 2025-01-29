@@ -1,0 +1,72 @@
+PROCÉDURE PL_CRYPTER_FICHIER_INI()
+Info("Cryptage fichier ini")
+
+// Ouverture du fichier en mode lecture/écriture
+monFichierIniACrypter est un entier = fOuvre(cheminConfigIni, foLectureEcriture)
+
+SI monFichierIniACrypter = -1 ALORS
+	Erreur("Erreur lors de l'ouverture du fichier.")
+	RETOUR
+FIN
+
+// Lecture du contenu du fichier dans un buffer
+bufMessage est un Buffer = fLit(monFichierIniACrypter, fTaille(monFichierIniACrypter))
+
+// Fermeture du fichier après lecture
+fFerme(monFichierIniACrypter)
+
+// Génération de la clé de cryptage
+// bufClé		est un Buffer	= HashChaîne(+++++, "cle de base") // sauvegarder la clé de cryptage en base de données 
+
+// Cryptage du contenu du fichier
+bufCrypte	est un Buffer	= CrypteStandard(bufMessage, bufClé, +++++)
+
+Info("Enregistrement du fichier ini")
+
+SI OuiNon("Voulez-vous supprimer le fichier configuration.ini ?") ALORS 
+	SI fSupprime(cheminConfigIni) ALORS Info("le fichier a été supprimé")
+FIN
+
+monFichierIniAEnregsitrer est un entier =  fOuvre(cheminConfigIni, foLectureEcriture + foCréation)
+
+// Ouverture du fichier
+SI monFichierIniAEnregsitrer <> -1 ALORS
+	fEcrit(monFichierIniAEnregsitrer,bufCrypte)
+	fFerme(monFichierIniAEnregsitrer)
+SINON
+	Erreur()
+FIN
+------------------
+PROCÉDURE PL_DECRYPTER_FICHIER_INI()
+Info("Décryptage fichier ini")
+
+// Ouverture du fichier en mode lecture/écriture
+monFichierIniADécrypter est un entier = fOuvre(cheminConfigIni, foLectureEcriture)
+
+SI monFichierIniADécrypter = -1 ALORS
+	Erreur("Erreur lors de l'ouverture du fichier.")
+	RETOUR
+FIN
+
+// Lecture du contenu du fichier dans un buffer
+bufMessage est un Buffer = fLit(monFichierIniADécrypter, fTaille(monFichierIniADécrypter))
+
+bufRésultat est un Buffer = DécrypteStandard(bufMessage, bufClé, +++++)
+
+// Fermeture du fichier après lecture
+fFerme(monFichierIniADécrypter)
+
+Info("Enregistrement du fichier ini")
+
+fSupprime(cheminConfigIni)
+
+monFichierIniAEnregsitrer est un entier =  fOuvre(cheminConfigIni, foLectureEcriture + foCréation)
+
+// Ouverture du fichier
+SI monFichierIniAEnregsitrer <> -1 ALORS
+	fEcrit(monFichierIniAEnregsitrer,bufRésultat)
+	fFerme(monFichierIniAEnregsitrer)
+SINON
+	Erreur()
+FIN
+
