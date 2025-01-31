@@ -1,0 +1,556 @@
+PROCÉDURE MaFenêtre()
+nIDConnexionFtp est un entier = -1
+Bureau est une chaîne = SysRep(srBureau)
+Téléchargement est une chaîne = SysRep(srTéléchargements) 
+RépertoireFtp est une chaîne = "Abelia/Plateforme_Echange"
+cheminConfigIni est une chaîne = Bureau + "\configuration.ini"
+bufClé		est un Buffer	= HashChaîne(HA_MD5_128, "cle de base")
+
+PROCÉDURE PL_CRYPTER_FICHIER_INI()
+Info("Cryptage fichier ini")
+
+// Ouverture du fichier en mode lecture/écriture
+monFichierIniACrypter est un entier = fOuvre(cheminConfigIni, foLectureEcriture)
+
+SI monFichierIniACrypter = -1 ALORS
+	Erreur("Erreur lors de l'ouverture du fichier.")
+	RETOUR
+FIN
+
+// Lecture du contenu du fichier dans un buffer
+bufMessage est un Buffer = fLit(monFichierIniACrypter, fTaille(monFichierIniACrypter))
+
+// Fermeture du fichier après lecture
+fFerme(monFichierIniACrypter)
+
+// Génération de la clé de cryptage
+// bufClé		est un Buffer	= HashChaîne() // sauvegarder la clé de cryptage en base de données 
+
+// Cryptage du contenu du fichier
+bufCrypte	est un Buffer	= CrypteStandard(bufMessage)
+
+Info("Enregistrement du fichier ini")
+
+// si fSupprime(monFichierIniACrypter) alors Info("le fichier a été supprimé")
+
+PL_SUPPRIMER_CONFIG_INI()
+
+monFichierIniAEnregsitrer est un entier =  fOuvre(cheminConfigIni, foLectureEcriture + foCréation)
+
+// Ouverture du fichier
+SI monFichierIniAEnregsitrer <> -1 ALORS
+	fEcrit(monFichierIniAEnregsitrer,bufCrypte)
+	fFerme(monFichierIniAEnregsitrer)
+	// fSupprime(cheminConfigIni)
+SINON
+	Erreur("Problème de suppression de fichier ini")
+FIN
+
+PROCÉDURE PL_DECRYPTER_FICHIER_INI()
+Info("Décryptage fichier ini")
+
+// Ouverture du fichier en mode lecture/écriture
+monFichierIniADécrypter est un entier = fOuvre(cheminConfigIni, foLectureEcriture)
+
+SI monFichierIniADécrypter = -1 ALORS
+	Erreur("Erreur lors de l'ouverture du fichier.")
+	RETOUR
+FIN
+
+// Lecture du contenu du fichier dans un buffer
+bufMessage est un Buffer = fLit(monFichierIniADécrypter, fTaille(monFichierIniADécrypter))
+
+bufRésultat est un Buffer = DécrypteStandard(bufMessage, )
+
+// Fermeture du fichier après lecture
+fFerme(monFichierIniADécrypter)
+
+//Info("Enregistrement du fichier ini")
+
+fSupprime(monFichierIniADécrypter)
+
+monFichierIniAEnregsitrer est un entier =  fOuvre(cheminConfigIni, foLectureEcriture + foCréation)
+
+// Ouverture du fichier
+SI monFichierIniAEnregsitrer <> -1 ALORS
+	fEcrit(monFichierIniAEnregsitrer,bufRésultat)
+	fFerme(monFichierIniAEnregsitrer)
+SINON
+	Erreur(errComplet)
+FIN
+
+PROCÉDURE PL_FTP_RECUPERER_CONFIGURATION()
+
+// nIDConnexionFtp	= FTPConnecte()
+
+SI nIDConnexionFtp <> -1 ALORS
+	//Info("Connexion réussie")
+	SI FTPRécupèreFichier(nIDConnexionFtp,RépertoireFtp + "/configuration.ini", cheminConfigIni) ALORS 
+		//Info("Récupération effectuée")
+	FIN
+SINON
+	Erreur()
+	FTPDéconnecte(nIDConnexionFtp)
+FIN
+PROCÉDURE PL_AUTHENTIFIER_UTILISATEUR():booléen
+
+// Récupérer config.ini sur serveur
+//------------------------------
+PL_FTP_RECUPERER_CONFIGURATION()
+
+// Décrypter le fichier ini
+//------------------------
+PL_DECRYPTER_FICHIER_INI()
+
+// Chercher le mot de passe
+//------------------------
+motDePasseAChercher	est une chaîne	= INILit("ACCES", Vg_societe_Nom, "", cheminConfigIni)
+//Info(motDePasseAChercher)
+
+motDePasseEnBDD	est une chaîne
+SI PG_LECTURE_PARAM("PLATEFORME_ABELIA") ALORS
+	motDePasseEnBDD = SansEspace(PARAM.PRNOM)
+FIN
+
+PL_SUPPRIMER_CONFIG_INI()
+
+SI motDePasseAChercher = motDePasseEnBDD ALORS
+	RENVOYER Vrai	
+SINON
+	RENVOYER Faux
+FIN
+
+PROCÉDURE PL_ENREGISTRER_MOT_DE_PASSE(motDePasseAEnregistrer est une chaîne)
+
+SI motDePasseAEnregistrer = "" ALORS
+	Erreur("Absence de mot de passe à enregistrer")
+	RETOUR
+FIN
+
+HRAZ(PARAM)
+
+SI PG_LECTURE_PARAM("PLATEFORME_ABELIA") ALORS
+	
+	PARAM.PRNOM = SansEspace(motDePasseAEnregistrer)
+	SI HModifie(PARAM) ALORS InfoAvecDélai(3 s, "Enregistrement mot de passe dans PARAM : OK")
+	
+SINON
+	
+	PARAM.PRCODE = "PLATEFORME_ABELIA"
+	PARAM.PRNOM = SansEspace(motDePasseAEnregistrer) 
+	SI HAjoute(PARAM) ALORS Info("Création de PLATEFORME_ABELIA et enregistrement mot de passe dans PARAM")
+
+FIN
+
+PROCÉDURE PL_CREER_ARBORESCENCE_FTP()
+
+PL_FTP_CONNEXION()
+
+// test de l'existence de configuration.ini 
+SI PAS FTPFichierExiste(nIDConnexionFtp, RépertoireFtp + "/configuration.ini") ALORS
+	
+	SI OuiNon(1,"La configuration des accès n'a pas été faite. Voulez-vous la créer ?") ALORS
+		
+		// création de l'arborescence 
+		SI FTPRepCrée(nIDConnexionFtp, "Abelia/Plateforme_Echange") ALORS Info("Répertoires créés")
+		
+		// création du dossier ini
+		fCrée(cheminConfigIni)
+		idFichier est un entier = fOuvre(cheminConfigIni, foLectureEcriture)
+		
+		fEcritLigne(idFichier,"[ACCES]") 
+		
+		// crypter le fichier ini
+		//-----------------------
+		PL_CRYPTER_FICHIER_INI()
+		//------------------------
+		// transfert config ini
+		PL_FTP_ENVOI_CONFIGURATION()
+		
+		// suppression fichier ini
+		fFerme(idFichier)
+		PL_SUPPRIMER_CONFIG_INI()
+		
+	SINON 
+		FTPDéconnecte(nIDConnexionFtp)
+	FIN		
+	
+SINON
+	Info("Le fichier ini existe sur le serveur FTP")
+FIN
+
+PL_FTP_DECONNEXION()
+
+PROCÉDURE PL_FTP_INSCRIRE_UTILISATEUR()
+
+idFichierIni	est un entier	= fOuvre(cheminConfigIni)
+
+SI PG_RECHERCHE_PARAM("PLATEFORME_ABELIA") ET PARAM.PRNOM <> "" ALORS
+	
+	InfoAvecDélai(2 s,"L'utilisateur est déjà inscrit")
+	RETOUR
+	
+FIN
+
+SI idFichierIni <> -1 ALORS 
+	
+	InfoAvecDélai(5 s,"Le fichier configuration.ini existe sur le disque", "Il est supprimé par sécurité")
+	fFerme(idFichierIni)
+	PL_SUPPRIMER_CONFIG_INI()
+		
+FIN
+
+InfoAvecDélai(2 s, "Génération du mot de passe")
+motDePasse		est une chaîne	= GénèreMotDePasse(12)
+
+SI OuiNon("Souhaitez-vous que le mot de passe soit copié dans un fichier texte ?") ALORS
+	
+	idFichierMdp est un entier = fOuvre(Bureau + "\MotDePasse.txt", foLectureEcriture + foCréation)
+	SI idFichierMdp <> -1 ALORS
+		fEcritLigne(idFichierMdp,motDePasse)
+		fFerme(idFichierMdp)
+	FIN
+	
+FIN
+
+// Récupérer config.ini sur serveur
+//---------------------------------
+PL_FTP_CONNEXION()
+PL_FTP_RECUPERER_CONFIGURATION()
+
+// Décrypter le fichier ini
+//------------------------
+PL_DECRYPTER_FICHIER_INI()
+
+// Écriture de la valeur dans le fichier INI
+//------------------------------------------
+SI INIEcrit("ACCES", Vg_societe_Nom, motDePasse, cheminConfigIni) ALORS
+    InfoAvecDélai(5 s, "La valeur a été écrite avec succès dans le fichier INI")
+SINON
+    Erreur("Erreur lors de l'écriture dans le fichier INI")    
+FIN
+
+// crypter le fichier ini
+//-----------------------
+PL_CRYPTER_FICHIER_INI()
+
+// Le remettre sur serveur (mettre celui existent en tmp avant de le supprimer)
+SI FTPEnvoie(nIDConnexionFtp, cheminConfigIni, RépertoireFtp) ALORS 
+	
+	Info("configutation.ini envoyé")
+	PL_ENREGISTRER_MOT_DE_PASSE(motDePasse)
+	
+SINON
+	
+	Erreur(ErreurInfo(errComplet))
+	Info("Une Erreur est survenue. Veuillez recommencer la procédure et contacter le support en cas de nouvel échec")
+	
+FIN
+
+PL_SUPPRIMER_CONFIG_INI()
+PL_FTP_DECONNEXION()
+PROCÉDURE PL_FTP_CREER_DOSSIER_UTILISATEUR()
+
+vl_estdejacree est un booléen	
+PL_FTP_CONNEXION()
+
+SI nIDConnexionFtp = -1 ALORS
+	Erreur()
+	FTPDéconnecte(nIDConnexionFtp)
+	RETOUR 
+FIN
+
+// Info("Connexion réussie")	
+// Info("Création  du répertoire sur la plateforme Abélia transfert pour " + Vg_societe_Nom)
+// On teste si dossier utilisateur existe
+FTPListeFichier(nIDConnexionFtp,"/Abelia/Plateforme_Echange/*.*",CallBackFTPListeFichier,ftpFichier+ftpRépertoire)
+
+SI vl_estdejacree ALORS 
+	Info("le répertoire existe")
+	FTPDéconnecte(nIDConnexionFtp)
+	RETOUR
+SINON
+	
+	Info("le répertoire n'existe pas")
+	SI OuiNon("Voulez-vous créer le répertoire : " + RépertoireFtp + "/" + Vg_societe_Nom) ALORS
+		// Info("chemin de création : ",RépertoireFtp + "/" + Vg_societe_Nom)
+		SI FTPRepCrée(nIDConnexionFtp,RépertoireFtp + "/" + Vg_societe_Nom) ALORS Info("Le répertoire a été créé")
+	FIN
+FIN
+
+PL_FTP_DECONNEXION()
+
+	PROCÉDURE INTERNE CallBackFTPListeFichier(sNomFichier,nTailleFichier <utile>,sAttribut,sDateModif <utile>,sHeureModif <utile>)
+		
+		// répertoire uniquement
+		SI sAttribut = "D" ALORS
+			SI sNomFichier = Vg_societe_Nom ALORS 
+				vl_estdejacree = Vrai
+			SINON 
+				vl_estdejacree = Faux
+			FIN
+		FIN
+		// Poursuite du parcours
+		RENVOYER Vrai
+		
+	FIN
+PROCÉDURE PL_FTP_TRANSFERER_XLSX()
+
+vl_fournisseur est une chaîne = LST_FOURNISSEURS.ValeurAffichée
+vl_date_du_jour est une Date = DateDuJour()
+vl_répertoire_déjà_créé est un booléen
+
+SI vl_fournisseur = "" ALORS
+	Info("Vous devez sélectionner un fournisseur à qui envoyer les documents")
+	RETOUR
+FIN
+
+SI vl_fournisseur = Vg_societe_Nom ALORS
+	Info("Vous ne pouvez pas vous transmettre des documents")
+	RETOUR
+FIN
+
+PL_FTP_CONNEXION()
+ 
+SI PAS PL_AUTHENTIFIER_UTILISATEUR() ALORS
+	Info("L'utilisateur n'a pas accès à la plateforme (problème de mot de passe)")
+	PL_FTP_DECONNEXION()
+	RETOUR 
+FIN
+
+
+Info("Vérification que le fournisseur soit bien enregistré chez le client Abélia")
+//-------------------------------------------------------------------------
+SI PG_RECHERCHE_PARAM("PLATEFORME_ABELIA") ALORS
+	
+	SI Position(PARAM.PRADR1, vl_fournisseur) = 0 ALORS
+		InfoAvecDélai(2 s, "Vous devez enregistrer le fournisseur")
+		PL_FTP_DECONNEXION()
+		RETOUR 
+	FIN
+
+SINON
+	
+	Erreur("Vous devez vous inscrire sur la plateforme Abélia")
+	PL_FTP_DECONNEXION()
+	RETOUR 
+	
+FIN
+
+InfoAvecDélai(2 s, "Vérification si un répertoire du jour a été créé")
+//--------------------------------------------------------------------
+// boucler sur le dossier de l'utilisateur
+FTPListeFichier(nIDConnexionFtp,"/Abelia/Plateforme_Echange/" + vl_fournisseur ,CallBackFTPListeFichier,ftpRépertoire)
+
+// si pas de répertoire du jour le créer
+SI PAS vl_répertoire_déjà_créé ALORS
+	
+	Info("Répertoire absent - Création du répertoire du jour")
+	FTPRepCrée(nIDConnexionFtp,"/Abelia/Plateforme_Echange/" + vl_fournisseur + "/" + vl_date_du_jour + Vg_societe_Nom)
+	
+FIN
+
+// envoyer le excel dans le répertoire daté (gérer la récupération du chemin du fichier excel)
+//-----------------------------------------
+SI FTPEnvoie(nIDConnexionFtp,  Bureau+"\test.xlsx","/Abelia/Plateforme_Echange/" + vl_fournisseur + "/" + vl_date_du_jour + Vg_societe_Nom) ALORS
+	
+	Info("Le fichier a été transféré")
+	
+FIN
+
+PL_FTP_DECONNEXION()
+
+PROCÉDURE INTERNE CallBackFTPListeFichier(sNomRépertoire,nTailleFichier <utile>,sAttribut,sDateModif <utile>,sHeureModif <utile>)
+		
+		// répertoire uniquement
+		SI sAttribut = "D" ALORS
+			SI sNomRépertoire = vl_date_du_jour + Vg_societe_Nom ALORS 
+				vl_répertoire_déjà_créé = Vrai
+			SINON 
+				vl_répertoire_déjà_créé = Faux
+			FIN
+		FIN
+		// Poursuite du parcours
+		RENVOYER Vrai
+		
+	FIN
+PROCÉDURE PL_FTP_RECUPERER_XLSX()
+
+PL_FTP_CONNEXION()
+
+SI PAS PL_AUTHENTIFIER_UTILISATEUR() ALORS
+	Info("L'utilisateur n'a pas accès à la plateforme (problème de mot de passe)")
+	PL_FTP_DECONNEXION()
+	RETOUR 
+FIN
+
+Info("Récupération de la liste des fichiers")
+//-------------------------------------------
+vl_date_du_jour		est une chaîne	= DateDuJour()
+vl_liste_fichier	est une chaîne
+listeDeFournisseurs	est tableau associatif de chaînes
+
+FTPListeFichier(nIDConnexionFtp,"/Abelia/Plateforme_Echange/" + Vg_societe_Nom + "/*.*",CallBackFTPListeFichier,ftpFichier+ftpRépertoire)
+
+Info("vl_liste_fichier", vl_liste_fichier)
+
+Info("Création de la liste des fichiers à récupérer","Par défaut, dédoublonner par fournisseur en gardant le plus récent")
+//------------------------------------------------------------------------------------------------------------------------
+POUR TOUTE CHAÎNE doc DE vl_liste_fichier SÉPARÉE PAR RC
+	
+	timeStampDoc	est une chaîne	= ExtraitChaîne(Droite(doc,22),1,".")
+	nomFournisseur	est une chaîne	= Remplace(doc,Droite(doc,22),"")	
+	
+	SI timeStampDoc <> "" ET nomFournisseur <> "" ALORS
+		Info(timeStampDoc,nomFournisseur)
+		listeDeFournisseurs[nomFournisseur] = timeStampDoc
+	FIN
+	
+FIN
+
+POUR TOUT date, fournisseur  de listeDeFournisseurs
+	Info("Récupérer le dossier de " + fournisseur, "du " + date)
+	//---------------------------------------------------------
+	SI FTPRécupère(nIDConnexionFtp,RépertoireFtp+"/"+Vg_societe_Nom+"/"+fournisseur+date+".xlsx",Bureau) ALORS Info("Récupération Ok")	
+FIN	
+
+
+
+	PROCÉDURE INTERNE CallBackFTPListeFichier(sNomFichier,nTailleFichier <utile>,sAttribut,sDateModif <utile>,sHeureModif <utile>)
+		
+		// fichiers uniquement
+		SI sAttribut <> "D" ALORS
+			vl_liste_fichier += sNomFichier + RC
+		FIN
+		RENVOYER Vrai		
+	FIN
+
+PL_FTP_DECONNEXION()
+
+PROCÉDURE PL_FTP_CHARGER_LISTE_FOURNISSEUR()
+
+PL_FTP_CONNEXION()
+
+PL_FTP_RECUPERER_CONFIGURATION()
+
+PL_DECRYPTER_FICHIER_INI()
+
+// Rechercher la correspondance fournisseur cliqué par l'utilisateur et vg_societe_nom
+vl_liste_fournisseursFTP est une chaîne = INILit("ACCES", "","", cheminConfigIni)
+
+POUR TOUTE CHAÎNE fournisseur DE vl_liste_fournisseursFTP SÉPARÉE PAR RC
+	
+	ListeAjoute(LST_FOURNISSEURS, fournisseur)
+	
+FIN
+
+PL_SUPPRIMER_CONFIG_INI()
+
+PL_FTP_DECONNEXION()
+PROCÉDURE PL_FTP_CONNEXION()
+
+nIDConnexionFtp	= FTPConnecte()
+
+SI nIDConnexionFtp <> -1 ALORS
+	Info("Connexion réussie")	
+SINON
+	Erreur("Problème de connexion")
+	RETOUR 
+FIN
+PROCÉDURE PL_FTP_DECONNEXION()
+SI FTPDéconnecte(nIDConnexionFtp) ALORS Info("Déconnexion réussie")	
+PROCÉDURE PL_SUPPRIMER_CONFIG_INI()
+SI fSupprime(cheminConfigIni) ALORS InfoAvecDélai(2 s, "Le fichier ini a été supprimé")
+PROCÉDURE PL_FTP_ENVOI_CONFIGURATION()
+SI FTPEnvoie(nIDConnexionFtp, cheminConfigIni, RépertoireFtp) ALORS Info("configuration.ini envoyé")
+PROCÉDURE PL_FTP_DESINSCRIRE_UTILISATEUR()
+
+PL_FTP_CONNEXION()
+
+PL_FTP_RECUPERER_CONFIGURATION()
+
+PL_DECRYPTER_FICHIER_INI()
+
+// Supprimer le nom dans le config ini
+INIEcrit("ACCES",Vg_societe_Nom, "", cheminConfigIni) 
+
+// Supprimer enregistrement PLATEFORME ABELIA dans Abélia
+SI PG_RECHERCHE_PARAM("PLATEFORME_ABELIA  ") ALORS
+	HSupprime(PARAM)
+	TEST_ENR("PARAM")
+FIN
+
+PL_CRYPTER_FICHIER_INI()
+
+PL_FTP_ENVOI_CONFIGURATION()
+
+PL_SUPPRIMER_CONFIG_INI()
+
+PL_FTP_DECONNEXION()
+PROCÉDURE PL_FTP_ENREGISTRER_FOURNISSEUR()
+
+// récupérer le vg_societe_nom du fournisseur
+vl_nom_fournisseur est une chaîne = LST_FOURNISSEURS.ValeurAffichée
+
+SI Vg_societe_Nom ~= vl_nom_fournisseur ALORS
+	
+	Info("Vous ne pouvez pas vous enregistrer vous-même en tant que fournisseur")
+	RETOUR 
+	
+FIN
+
+PL_FTP_CONNEXION()
+
+SI PAS PL_AUTHENTIFIER_UTILISATEUR() ALORS
+	
+	Erreur("Vous n'êtes pas inscrit sur la plateforme Abélia")
+	PL_FTP_DECONNEXION()
+	RETOUR 
+	
+FIN
+
+PL_FTP_RECUPERER_CONFIGURATION()
+
+PL_DECRYPTER_FICHIER_INI()
+ 
+SI INILit("ACCES", vl_nom_fournisseur, "", cheminConfigIni) = "" ALORS 
+	
+	InfoAvecDélai(2 s, "Le fournisseur n'est pas adhérent plateforme Abélia")
+	PL_FTP_DECONNEXION()
+	PL_SUPPRIMER_CONFIG_INI()
+	RETOUR
+		
+FIN
+
+SI PG_RECHERCHE_PARAM("PLATEFORME_ABELIA") ALORS
+
+	SI Position(PARAM.PRADR1, vl_nom_fournisseur) <> 0 ALORS
+		
+		Info("Le fournisseur a déjà été enregistré")
+		PL_FTP_DECONNEXION()
+		PL_SUPPRIMER_CONFIG_INI()
+		RETOUR
+	
+	SINON
+		
+		// Modification
+		nom_déjà_enregistré est une chaîne = SansEspace(PARAM.PRADR1)
+		nom_déjà_enregistré += vl_nom_fournisseur + RC
+		PARAM.PRADR1 = nom_déjà_enregistré
+		HModifie(PARAM)
+		TEST_ENR("PARAM")
+		Info("Modification Effectuée")
+		
+	FIN
+	
+SINON
+	
+	Erreur("Vous devez vous enregistrer sur la plateforme Abélia avant d'enregistrer des fournisseurs")
+	PL_FTP_DECONNEXION()
+	PL_SUPPRIMER_CONFIG_INI()
+	RETOUR
+	
+FIN
+
+PL_FTP_DECONNEXION()
+PL_SUPPRIMER_CONFIG_INI()
