@@ -1,0 +1,7 @@
+listeDesClés est une chaîne = INILit("ACCES","","",sCheminConfigIni)
+
+POUR TOUTE CHAÎNE clé DE listeDesClés SÉPARÉE PAR RC
+	SI clé <> "" ALORS
+		COMBO_Fournisseurs.Ajoute(INILit("ACCES", clé, "", sCheminConfigIni))	
+	FIN
+FIN
