@@ -1,0 +1,14 @@
+listeDesValeurs est une chaîne
+listeDesClés est un tableau de chaînes
+ChaîneVersTableau(INILit("ACCES","","",:CheminConfigIni),listeDesClés,RC)
+
+POUR indiceListeClé = 1 _À_ listeDesClés.Occurrence - 1 // la dernière occurence est vide
+	valeurAAjouter est une chaîne = INILit("ACCES", listeDesClés[indiceListeClé], "", :CheminConfigIni)
+	SI valeurAAjouter <> "" ET valeurAAjouter <> Vg_societe_Nom ALORS
+		SI indiceListeClé <> listeDesClés.Occurrence - 1 ALORS
+			listeDesValeurs += valeurAAjouter + RC
+		SINON
+			listeDesValeurs += valeurAAjouter
+		FIN
+	FIN
+FIN
