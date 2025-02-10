@@ -1,6 +1,6 @@
 // Décrire une session
 maSession est une emailSessionSMTP
-maSession.Nom="recherche5335@gmail.com"
+maSession.Nom="unmail@gmail.com"
 maSession.MotDePasse=""
 maSession.AdresseServeur="smtp.gmail.com"
 maSession.Port="587"
@@ -15,8 +15,8 @@ FIN
 
 // Création de la variable email
 monMessage est un Email
-monMessage.Expediteur="recherche5335@gmail.com"
-monMessage.Destinataire[1]="recherche5335@gmail.com"
+monMessage.Expediteur="unmail@gmail.com"
+monMessage.Destinataire[1]="unmail@gmail.com"
 monMessage.Sujet="Envoi message test"
 
 // message simple
