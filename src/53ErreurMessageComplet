@@ -1,4 +1,4 @@
 SI monFichierIniACrypter = -1 ALORS
-	Erreur("Erreur lors de l'ouverture du fichier", ErreurInfo(errMessage))		
+	Erreur("Erreur lors de l'ouverture du fichier", ErreurInfo())		
 	RENVOYER Faux
 FIN
