@@ -1,0 +1,17 @@
+Classe CCollectionUtilisateurs
+
+PROCEDURE FI_UtilisateursListe(pProfil est une chaine ="-1")
+MesUtilisateurs est un CCollectionUtilisateurs dynamique
+MesUtilisateurs=allouer un CCollectionUtilisateurs(pProfil)
+
+Clic sur BTN_Modifier
+SI TABLE_TabUtilisateurs.Select() = -1 ALORS 
+  INfo("Veuillez sélectionner un utilisateur")
+SINON
+  SI Ouvre(FI_Utilisateur, TABLE_TabUtilisateurs.COL_Login) ALORS
+    libérer MesUtilisateur // On vide le contenu de la variable
+    MesUtilisateurs = allouer une CCollectionUtilisateurs(pProfil)
+    TABLE_TabUtilisateurs.Affiche(taCourantBandeau)
+  FIN
+FIN
+
