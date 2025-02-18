@@ -1,0 +1,2 @@
+RqSql est une Source de Données
+HExécuteRequêteSQL(RqSql,hRequêteDéfaut+hModifieFichier,"DELETE FROM PARAM WHERE PRCODE LIKE '%PAR_FENETRE GES_GAMME_SAISIE TABLE1 T1SUPPR%'")
