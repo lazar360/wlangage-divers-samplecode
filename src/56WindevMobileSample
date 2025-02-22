@@ -1,0 +1,24 @@
+FenCoulissanteVisible(fcGauche,Vrai)
+
+SELON ZM_Menu
+	CAS 1
+	CAS 2		
+	CAS 3		
+	CAS 4 // Liste des Clients	
+		OuvreFenêtreMobile(FEN_Liste_des_clients)	
+	CAS 5		
+	CAS 6 // Quitter 		
+		SELON Dialogue("Quitter l'application ?")
+			// Oui
+			CAS 1
+				FinProgramme()
+			// Non
+			CAS 2
+				RETOUR 
+		FIN
+FIN
+
+MaSource.ParamNomClient = ""
+
+REQ_ListeClients.ParamNomClient = SAI_RechercheClient
+ZR_ListeClients.Affiche()
