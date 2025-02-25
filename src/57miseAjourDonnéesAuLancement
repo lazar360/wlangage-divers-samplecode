@@ -1,0 +1,52 @@
+HCréationSiInexistant("*")
+SI Client.NbEnr() = 0 ALORS
+	HExécuteRequête(REQ_InsertJeuDeDonnées)
+FIN
+
+// HModifieStructure()
+sListeDesErreurs est une chaîne
+// Vérification stricte de la structure de fichiers
+HVérifieStructure("*", hIdentique)
+// Pour tous les fichiers
+POUR TOUTE CHAÎNE sNomUnFichier DE HListeFichier() SÉPARÉE PAR RC
+QUAND EXCEPTION DANS 
+// Ouverture ou création du fichier de données
+HCréationSiInexistant(sNomUnFichier)
+FAIRE
+// Problème
+// Il y a une différence de structure ?
+SI HErreur(hErrEnCours) = 70016 ALORS 
+// Erreur 70016: LE FICHIER NE CORRESPOND PAS A SA DESCRIPTION
+ToastAffiche("Mise à jour de la structure du fichier <" + ...
+sNomUnFichier + "> en cours...", toastCourt, cvMilieu, chCentre)
+// On met à jour la structure du fichier
+SI PAS HModifieStructure(sNomUnFichier) ALORS
+// Echec de la mise à jour de la structure du fichier
+sListeDesErreurs += [RC] + ...
+"- Erreur de modification de structure pour le fichier <" + ...
+sNomUnFichier + "> : " + HErreurInfo()
+FIN
+SINON
+// Autres erreurs qu'une différence de structure
+sListeDesErreurs += [RC] + "- Erreur d'accès au fichier <" + ...
+sNomUnFichier + "> : " + HErreurInfo()
+FIN
+FIN
+FIN
+
+// Vérification compatible de la structure de fichier
+// Ainsi les modifications "les plus courantes" permettent 
+// quand même l'utilisation de l'application (voir HVérifieStructure)
+HVérifieStructure("*", hCompatible)
+
+// Il y a eu des erreurs ?
+SI sListeDesErreurs <> "" ALORS
+// Message afin de prévenir
+SI PAS OuiNon("Des erreurs sont apparus lors de l'ouverture des fichiers : " + RC + ...
+sListeDesErreurs + RC +...
+"Continuer quand même l'application ?") ALORS
+FinProgramme()
+FIN
+FIN
+
+// HMiseAJourLiaison()
