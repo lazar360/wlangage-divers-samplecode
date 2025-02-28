@@ -1,0 +1,37 @@
+PROCÉDURE PL_LECTURE_PARAM_NOMSOCIETE()
+
+SI PG_LECTURE_PARAM("AQUILA01") ALORS
+	SI PG_LECTURE_CONSUTIL("AQUILA01") ET SansEspace(CONSUTIL.CUMEMO_RTF) <> "" ... 
+	ET Position(CONSUTIL.CUMEMO_RTF, ExtraitChaîne(PARAM.PRNOM,1," ",DepuisDébut), 1,SansCasse) > 0 ... // 1ère partie du nom de la société est comprise dans le RTF 
+	ALORS
+		LIBELLE14..X = 280.840 // O, fait disparaître en-dehors de la fenêtre
+		RTF_ENTETE_SOCIETE	= CONSUTIL.CUMEMO_RTF
+		E_LOGO = SansEspace(PARAM.PRCOMPLEMENT09)	
+	
+	SINON
+		
+		E_NOM	= SansEspace(PARAM.PRNOM)
+		E_ADR1	= SansEspace(PARAM.PRADR1)	
+		SI SansEspace(PARAM.PRADR2)<>"" ALORS
+			E_ADR2  = SansEspace(PARAM.PRADR2)+" - "+SansEspace(PARAM.PRCPVIL)+" Tél : "+SansEspace(PARAM.PRTEL)//+" Fax : "+SansEspace(PARAM.PRFAX) 	
+		SINON
+			E_ADR2  = SansEspace(PARAM.PRCPVIL)+" Tél : "+SansEspace(PARAM.PRTEL)//+" Fax : "+SansEspace(PARAM.PRFAX) 	
+		FIN
+		
+		E_ADR3 = SansEspace(PARAM.PRLIBRE)
+		SI SansEspace(PARAM.PRRCS)<>"" ALORS
+			E_ADR3 =  E_ADR3 + " - RCS: "+SansEspace(PARAM.PRRCS)
+		FIN
+		SI SansEspace(PARAM.PRSIRET)<>"" ALORS
+			E_ADR3 =  E_ADR3 + " - SIRET: "+SansEspace(PARAM.PRSIRET)
+		FIN
+		SI SansEspace(PARAM.PRCEE)<>"" ALORS
+			E_ADR3 =  E_ADR3 + " - TVA: "+SansEspace(PARAM.PRCEE)
+		FIN
+		E_ADR4 = SansEspace(PARAM.PRCOMPLEMENT01)
+		SI SansEspace(PARAM.PRCOMPLEMENT02)<>"" ALORS
+			E_ADR4 =  E_ADR4 +" "+SansEspace(PARAM.PRCOMPLEMENT02)
+		FIN
+		E_LOGO = SansEspace(PARAM.PRCOMPLEMENT09)	
+	FIN
+FIN
