@@ -1,0 +1,71 @@
+PROCÉDURE PL_VERIFICATION_ANALYSE()
+
+sListeDesErreurs	est une chaîne
+sListeFichier		est une chaîne	= HListeFichier(SAI_Chemin_Analyse)
+
+SI sListeFichier<>"" ALORS
+	
+	PL_ECRIRE_LOGS("Fichiers à analyser : ")
+	PL_ECRIRE_LOGS(sListeFichier)
+	
+FIN
+
+PL_ECRIRE_LOGS("Vérification de l'analyse : " + SAI_Chemin_Analyse)
+
+// Fixe le mode de comparaison des fichiers de données : Vérification stricte de la structure de fichiers
+HVérifieStructure("*", hIdentique)
+
+// Pour tous les fichiers
+POUR TOUTE CHAÎNE sNomUnFichier DE HListeFichier() SÉPARÉE PAR RC
+	
+	QUAND EXCEPTION DANS 
+		
+		// Création des fichiers de données inexistants
+		//---------------------------------------------
+
+		// Changement du répertoire de création sinon création dans répertoire indiqué dans analyse 
+		// répertoire par défaut = répertoire de lancement de l'application
+		SI PAS HChangeRep(sNomUnFichier,SAI_Repertoire_Dossiers+"\Exe") ALORS
+			sListeDesErreurs += [RC] + ...
+			"- Erreur de changement de répertoire pour le fichier <" + ...
+			sNomUnFichier + "> : " + HErreurInfo()
+		FIN
+		
+		SI HCréationSiInexistant(sNomUnFichier) ALORS
+			PL_ECRIRE_LOGS("Ouverture ou création du fichier : " + sNomUnFichier)
+		SINON
+			PL_ECRIRE_LOGS("Erreur lors de l'ouverture ou la création du fichier " + sNomUnFichier) // erreur traitée dans le FAIRE
+		FIN
+		
+	FAIRE
+	
+		// Problème
+		// Il y a une différence de structure ?
+		//-------------------------------------
+		
+		SI HErreur(hErrEnCours) = 70016 ALORS 
+			// Erreur 70016: LE FICHIER NE CORRESPOND PAS A SA DESCRIPTION
+			PL_ECRIRE_LOGS("Mise à jour de la structure du fichier <" + sNomUnFichier + "> en cours...")
+			// On met à jour la structure du fichier
+			SI PAS HModifieStructure(sNomUnFichier) ALORS
+				// Echec de la mise à jour de la structure du fichier
+				sListeDesErreurs += [RC] + ...
+				"- Erreur de modification de structure pour le fichier <" + ...
+				sNomUnFichier + "> : " + HErreurInfo()
+			FIN
+		SINON
+			// Autres erreurs qu'une différence de structure
+			sListeDesErreurs += [RC] + "- Erreur d'accès au fichier <" + ...
+			sNomUnFichier + "> : " + HErreurInfo()
+		FIN
+	FIN
+FIN
+
+SI sListeDesErreurs ="" ALORS
+	PL_ECRIRE_LOGS("Mise à jour effectuée sans erreur")
+SINON
+	PL_ECRIRE_LOGS(sListeDesErreurs)
+FIN
+
+PROCÉDURE PL_ECRIRE_LOGS(sLogs est une chaîne = "")
+SAI_Logs += sLogs + RC
