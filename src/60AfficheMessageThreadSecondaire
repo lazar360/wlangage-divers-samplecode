@@ -1,0 +1,5 @@
+SI ThreadEtat("ThreadEcritLogs") <> threadInexistant ALORS ThreadArrête("ThreadEcritLogs")
+ThreadExécute("ThreadEcritLogs", threadNormal,"PL_ECRIRE_LOGS", ("Début de l'analyse. Veuillez Patienter "))
+ThreadAttend("ThreadEcritLogs")
+PI_VERIFIER_REPERTOIRE(sDossierFichiersCaisse)
+PI_VERIFIER_REPERTOIRE(sDossierFichiers)
