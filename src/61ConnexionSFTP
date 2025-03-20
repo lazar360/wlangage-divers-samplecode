@@ -1,0 +1,18 @@
+PROCÉDURE Connexion()
+
+SI :ClePrivee<>"" ALORS
+	SI Majuscule(Gauche(:sServeur,1))<>"S" ET Position(Majuscule(:sServeur),"FTP")<=0 ALORS
+		:sServeur = "sftp://"+:sServeur
+	FIN
+	:sIdConnexion = FTPConnecte(:sServeur,:sID,:sPWD,:sPort,:bConnexion,50,:ClePrivee,:MdpClePrivee)
+SINON	
+	:sIdConnexion = FTPConnecte(:sServeur,:sID,:sPWD,:sPort,:bConnexion,:eDelai)
+FIN
+
+SI :sIdConnexion <> -1 ALORS
+	// Connexion OK
+SINON	
+	SI Vf_Exe_Export_Auto=0 ALORS	
+		Erreur(ErreurInfo(errComplet))
+	FIN
+FIN
