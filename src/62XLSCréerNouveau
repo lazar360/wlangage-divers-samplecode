@@ -1,0 +1,32 @@
+MonDocXLS est un xlsDocument
+
+xlsAjouteFeuille(MonDocXLS,"CA")
+
+// Mets les mois
+MonDocXLS.Colonne[1].Cellule[1] = "Années"
+
+POUR i = 1 À 12
+	MonDocXLS.Colonne[i+1].Cellule[1] = NuméroDeMoisVersLettre(i)
+FIN
+
+// 16 ans entre 1999 et 2015
+nAnnee est un entier  = AnnéeEnCours() - 16
+
+POUR i = 2 À 18
+
+	// Mets l'année
+	MonDocXLS.Colonne[1].Cellule[i] = nAnnee
+	nAnnee++
+	// On va maintenant remplir le chiffre d'affaires
+	POUR j = 2 À 13
+		MonDocXLS.Colonne[j].Cellule[i] = NumériqueVersChaîne(Hasard(1000000,2500000),"dS") +" €"
+		MonDocXLS.Colonne[j].Cellule[i].AlignementH = chDroite
+	FIN
+FIN
+xlsSauve(MonDocXLS,fRepDonnées() + ["\"] + "MonFichier.xlsx")
+
+// Affecte le champ
+Sais_Fic = fRepDonnées() + ["\"] + "MonFichier.xlsx"
+Inter_Titre = Vrai
+
+Info("Le fichier est bien généré.","Cliquez sur Import de Excel pour afficher son contenu.")
