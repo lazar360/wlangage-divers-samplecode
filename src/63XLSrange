@@ -1,0 +1,20 @@
+SI TABLE_TRS.TRS_S0CODE[indice]<>"" ALORS
+			SI PG_RECHERCHE_SITE1(TABLE_TRS.TRS_S0CODE[indice]) ALORS	
+				FichierXls>>Range("B"+NumériqueVersChaîne(ligne_ecriture_XLS))>>Value = SansEspace(SITE.S0NOM)
+				FichierXls>>Range("C"+NumériqueVersChaîne(ligne_ecriture_XLS))>>Value = SansEspace(SITE.S0CPVIL)
+			FIN
+		FIN
+		FichierXls>>Range("D"+NumériqueVersChaîne(ligne_ecriture_XLS))>>Value = TABLE_TRS.TRS_NBROLL[indice]
+		FichierXls>>Range("E"+NumériqueVersChaîne(ligne_ecriture_XLS))>>Value = TABLE_TRS.TRS_NBPAL[indice]
+		FichierXls>>Range("F"+NumériqueVersChaîne(ligne_ecriture_XLS))>>Value = TABLE_TRS.TRS_NUMCDE[indice]		
+		FichierXls>>Range("G"+NumériqueVersChaîne(ligne_ecriture_XLS))>>Value = TABLE_TRS.TRS_CLCODE[indice]		
+		FichierXls>>Range("H"+NumériqueVersChaîne(ligne_ecriture_XLS))>>Value = TABLE_TRS.TRS_CLNOM[indice]
+		FichierXls>>Range("I"+NumériqueVersChaîne(ligne_ecriture_XLS))>>Value = TABLE_TRS.TRS_CLCP[indice]
+		FichierXls>>Range("J"+NumériqueVersChaîne(ligne_ecriture_XLS))>>Value = TABLE_TRS.TRS_VILLE[indice]
+		SI SansEspace(TABLE_TRS.TRS_DATEDEPART[indice])<>"" ALORS
+			FichierXls>>Range("K"+NumériqueVersChaîne(ligne_ecriture_XLS))>>Value = DateVersChaîne(TABLE_TRS.TRS_DATEDEPART[indice])
+		FIN
+		FichierXls>>Range("L"+NumériqueVersChaîne(ligne_ecriture_XLS))>>Value = TABLE_TRS.TRS_OBS[indice]+Vl_RefCde
+		ligne_ecriture_XLS++
+		tot_Rolls +=TABLE_TRS.TRS_NBROLL[indice]
+		Tot_Pal   +=TABLE_TRS.TRS_NBPAL[indice]
