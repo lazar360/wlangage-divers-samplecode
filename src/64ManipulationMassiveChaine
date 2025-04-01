@@ -1,0 +1,117 @@
+PROCÉDURE PL_EXPORT_PRIMEVER49(_Type="")
+
+Vl_Separateur	est une chaîne	= ";"
+VF_Fichier_Ligne  =""
+
+SI _Type="ENTETE" ALORS
+		
+	VF_Fichier_Ligne  += "N° LIGNE" 			   +Vl_Separateur 
+	VF_Fichier_Ligne  += "N° Cde" 				   +Vl_Separateur 
+	VF_Fichier_Ligne  += "N° BL"	 			   +Vl_Separateur 
+	VF_Fichier_Ligne  += "DATE CHARGEMENT"		   +Vl_Separateur 
+	VF_Fichier_Ligne  += "DATE LIVRAISON" 		   +Vl_Separateur 
+	VF_Fichier_Ligne  += "EXPEDITEUR (DO)"   	   +Vl_Separateur 
+	VF_Fichier_Ligne  += "CLIENT PAYEUR*" 		   +Vl_Separateur // NG ai un doute sur l'étoile à la fin de client payeur
+	VF_Fichier_Ligne  += "CODE PE" 			   +Vl_Separateur 
+	VF_Fichier_Ligne  += "NOM P.ENLEVEMENT"  	   +Vl_Separateur 
+	VF_Fichier_Ligne  += "ADRESSE POINT ENLEVEMENT" +Vl_Separateur 
+	VF_Fichier_Ligne  += "CODE DEST" 			   +Vl_Separateur 
+	VF_Fichier_Ligne  += "NOM DEST" 			   +Vl_Separateur 
+	VF_Fichier_Ligne  += "ADRESSE DEST" 		   +Vl_Separateur 
+	VF_Fichier_Ligne  += "LIEU MISE A DISPOSITION"  +Vl_Separateur 
+	VF_Fichier_Ligne  += "PRODUIT" 			   +Vl_Separateur 
+	VF_Fichier_Ligne  += "FORMAT" 				   +Vl_Separateur 
+	VF_Fichier_Ligne  += "NB SUPPORT" 			   +Vl_Separateur 
+	VF_Fichier_Ligne  += "NB PAL CONSIGNE" 	   +Vl_Separateur 
+	VF_Fichier_Ligne  += "QTE COLIS" 			   +Vl_Separateur 
+	VF_Fichier_Ligne  += "POIDS" 				   +Vl_Separateur 
+	VF_Fichier_Ligne  += "INSTRUCTIONS" 		   +Vl_Separateur 
+	
+SINON
+	
+	//boucle sur les lignes de la table
+	POUR indiceTableTRS = 1 _À_ TABLE_TRS.Occurrence
+		
+		// boucle sur les champs de configuration
+		POUR ind=1 À 5
+			
+			Ch_lue = {"PRIMEVER49_LIGNE_EMBALLAGE"+ind}
+			
+			nNbreFormat est un numérique = 0
+			
+			POUR TOUTE CHAÎNE format DE Ch_lue SÉPARÉE PAR [",", ".", ";"] 
+				
+				sColonneLue est une chaîne	= "TRS_" + SansEspace(format)
+				nNbreFormat += {"TABLE_trs["+indiceTableTRS+"]."+sColonneLue}
+								
+			FIN	
+						
+			SI nNbreFormat > 0 ALORS
+				
+				// Info("nNbreFormat 2 : " + nNbreFormat)				
+				SELON ind
+					CAS 1 : // EUR
+						VF_No_Ligne++
+						PI_ECRITURE_LIGNE("EUR", nNbreFormat)
+					CAS 2 : // FOR
+						VF_No_Ligne++
+						PI_ECRITURE_LIGNE("FOR", nNbreFormat)
+					CAS 3 : // BOX
+						VF_No_Ligne++ 
+						PI_ECRITURE_LIGNE("BOX", nNbreFormat)
+					// AUTRE CAS
+				FIN
+			FIN
+		FIN 			
+	FIN
+FIN	
+
+Info(VF_Fichier_Ligne)
+sVF_Fichier_Ligne_Clone est une chaîne = VF_Fichier_Ligne
+
+POUR TOUTE CHAÎNE sousLigne DE sVF_Fichier_Ligne_Clone SÉPARÉE PAR "|"
+		VF_Fichier_Ligne = sousLigne
+		Info(VF_Fichier_Ligne)
+
+		VF_Fichier_Ligne	= Remplace(VF_Fichier_Ligne,TAB," ")
+		VF_Fichier_Ligne	= Remplace(VF_Fichier_Ligne,TAB," ")
+		VF_Fichier_Ligne	= Remplace(VF_Fichier_Ligne,TAB," ")
+		VF_Fichier_Ligne	= Remplace(VF_Fichier_Ligne,RC,"")
+		VF_Fichier_Ligne	= Remplace(VF_Fichier_Ligne,RC,"")
+		VF_Fichier_Ligne	= Remplace(VF_Fichier_Ligne,RC,"")
+		PL_ECRITURE_FICHIER()
+FIN
+
+PROCÉDURE INTERNE PI_ECRITURE_LIGNE(param_Emballage est une chaîne, param_NBSUPPORT est un numérique)
+	VF_Fichier_Ligne  += VF_No_Ligne 									+Vl_Separateur	//"N° LIGNE"
+	VF_Fichier_Ligne  += SansEspace(VF_No_Livraison)	  				+Vl_Separateur  	//"N° Cde" 		
+	VF_Fichier_Ligne  += SansEspace(VF_No_Livraison)					+Vl_Separateur	//"N° BL"	
+	VF_Fichier_Ligne  += SansEspace(VF_Date_Expedition)				+Vl_Separateur	//"DATE CHARGEMENT" 		
+	VF_Fichier_Ligne  += SansEspace(VF_Date_Livraison)					+Vl_Separateur	//"DATE LIVRAISON" 	
+	VF_Fichier_Ligne  += SansEspace(Vf_Societe_Nom)+" " + ...
+					   SansEspace(Vf_Societe_Ville)						+Vl_Separateur	//"EXPEDITEUR (Donneur d'Ordre)" 	
+	VF_Fichier_Ligne  += SansEspace(Vf_Societe_Nom)	    				+Vl_Separateur	//"CLIENT PAYEUR*" TABLE_TRS.CODE_FAC_CLIENT? 	
+	VF_Fichier_Ligne  += VF_PRIMEVER49_COMPTEEXPLOIT					+Vl_Separateur	//"CODE PE"  		
+	VF_Fichier_Ligne  += SansEspace(Vf_Societe_Nom)					+Vl_Separateur 	//"NOM P.ENLEVEMENT" 			
+	VF_Fichier_Ligne  += SansEspace(Vf_Societe_Adr1) + " " + ...
+					   SansEspace(Vf_Societe_Adr2) + " " + ...
+					   SansEspace(Vf_Societe_CP) + " " + ...
+					   SansEspace(Vf_Societe_Ville) 	     			+Vl_Separateur	//"ADRESSE POINT ENLEVEMENT" 	
+	VF_Fichier_Ligne  += SansEspace(TABLE_TRS.TRS_CLCODE) 				+Vl_Separateur  	//"CODE DEST"
+	VF_Fichier_Ligne  += SansEspace(VF_Adresse_Livraison[1])			+Vl_Separateur	//"NOM DEST" 	
+	VF_Fichier_Ligne  += SansEspace(VF_Adresse_Livraison[2]) + " " + ...
+					   SansEspace(VF_Adresse_Livraison[3]) + " " + ...
+					   SansEspace(VF_Adresse_Livraison[4]) + " " + ...
+					   SansEspace(VF_Adresse_Livraison[5]) + " " + ...
+					   SansEspace(VF_Adresse_Livraison[6]) 				+Vl_Separateur	//"ADRESSE DEST" 
+	VF_Fichier_Ligne  += Gauche(SansEspace(VF_Adresse_Site[1]),3) + ...
+					   Droite(SansEspace(VF_Adresse_Site[1]),4) 			+Vl_Separateur	//"LIEU MISE A DISPOSITION" (amené à quai primever ou non ?)
+	VF_Fichier_Ligne  += "" 											+Vl_Separateur	//"PRODUIT" (FR = Fraises PS = Pastèques ?)
+	VF_Fichier_Ligne  += param_Emballage 								+Vl_Separateur	//"EUR, FOR, BOX" 
+	VF_Fichier_Ligne  += param_NBSUPPORT								+Vl_Separateur    //"NB SUPPORT"	
+	VF_Fichier_Ligne  += ""											+Vl_Separateur  	//"NB PAL CONSIGNE" (non trouvé) 		
+	VF_Fichier_Ligne  += TABLE_TRS.TRS_COLIS							+Vl_Separateur  	//"QTE COLIS" 		
+	VF_Fichier_Ligne  += Arrondi(TABLE_TRS.TRS_POIDS,2)				+Vl_Separateur  	//"POIDS" 	
+	VF_Fichier_Ligne  += SansEspace(VF_Instructions_Livraison)			+Vl_Separateur  	//"INSTRUCTIONS"
+	VF_Fichier_Ligne  += "|"
+FIN
