@@ -1,3 +1,11 @@
+// Parcours clé valeur
+sFichier est une chaîne
+nTaille est un entier
+POUR TOUT ÉLÉMENT nTaille,sFichier de taTailleFichier
+Trace(ChaîneConstruit("%1 : %2", sFichier, nTaille))
+FIN
+
+//*****************************
 // Parcours des éléments du tableau
 // Déclaration d'un tableau associatif d'entiers 
 // Tableau indexé sur des chaînes et sans doublon
