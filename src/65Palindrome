@@ -1,0 +1,20 @@
+sMotATester			est une chaîne	= SAI_Mot_à_tester
+bEstUnPalindrome	est un booléen	= Vrai
+nTailleDuMot		est un entier	= Taille(sMotATester)
+
+POUR i = 1 _À_ nTailleDuMot/2
+	Info(sMotATester[i], sMotATester[nTailleDuMot - i+1])
+	SI PAS sMotATester[i] = sMotATester[nTailleDuMot - i+1] ALORS
+		bEstUnPalindrome = Faux
+	FIN
+FIN
+
+SI bEstUnPalindrome ALORS
+	
+	Info(sMotATester + " est un palindrome")
+
+SINON 
+	
+	Info(sMotATester + " n'est pas un palindrome")
+	
+FIN
