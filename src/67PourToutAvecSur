@@ -1,0 +1,24 @@
+dDateApres est une Date = "20240101"
+sModeDePaiementRecherche est une chaîne = "Carte de crédit"
+nCompteur est un entier
+
+//pour TOUT Commande avec "ModePaiement = '" + sModeDePaiementRecherche + "'" sur IDCommande
+//
+//	nCompteur++
+//
+//FIN
+
+//Pour TOUT Commande AVEC "DateCommande > " + dDateApres SUR IDCommande
+//
+//	nCompteur++
+//
+//FIN
+
+POUR TOUT Commande AVEC "ModePaiement = '" + sModeDePaiementRecherche + "' ET DateCommande > " + dDateApres SUR IDCommande
+
+	nCompteur++
+
+FIN
+
+
+Info(nCompteur)
