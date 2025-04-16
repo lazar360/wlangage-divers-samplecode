@@ -1,0 +1,14 @@
+//MaConnexion est une connexion
+//MaConnexion.Utilisateur = "USER"
+//MaConnexion.MotDePasse = "PASSWORD"
+//MaConnexion.Serveur = "MONSERVEUR" 
+//MaConnexion.BaseDeDonnées = "Base de données"
+//MaConnexion.Provider = hAccèsHFClientServeur
+//HOuvreConnexion(MaConnexion)
+//HChangeConnexion("*", "MaConnexion")
+
+HOuvreConnexion
+HChangeConnexion
+HChangeRep
+HLitRecherchePremier
+HFermeConnexion
