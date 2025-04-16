@@ -12,3 +12,21 @@ HChangeConnexion
 HChangeRep
 HLitRecherchePremier
 HFermeConnexion
+
+// Connexion dynamique
+AdresseServeur est une chaîne = "198.168.1.120"
+
+SI Ping(AdresseServeur) ALORS
+// Le serveur est accessible, connexion HF C/S
+HOuvreConnexion("ConnexionHFCS", "admin", "", AdresseServeur, "CRM", hAccèsHFClientServeur)
+     HChangeConnexion("*", "ConnexionHFCS")
+     Info("Mode connecté à la base réseau.")
+SINON
+    // Le serveur ne répond pas, utilisation de la base HF locale
+    HOuvreConnexion("ConnexionHFLocale", "", "", "C:\Répertoire Données\", "", hAccèsHF7)
+    HChangeConnexion("*", "ConnexionHFLocale")
+    Info("Mode déconnecté, vous utilisez vos données en local.")
+FIN
+// Ne pas oublier de fermer la connexion
+HFermeConnexion("ConnexionHFCS")
+
