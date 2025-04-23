@@ -1,0 +1,23 @@
+PROCÉDURE PL_INIT_PARAMETRES()
+
+listeDesClés est une chaîne = INILit("CONFIGURATION","","",sCheminConfigIni)
+
+POUR TOUTE CHAÎNE clé DE listeDesClés SÉPARÉE PAR RC
+	SELON Vrai
+		CAS clé ~= "RepertoireWdmodfic" :
+			SAI_RepertoireWdmodfic    = INILit("CONFIGURATION","RepertoireWdmodfic", "", sCheminConfigIni)
+		CAS clé ~= "CheminAnalyse" :
+			SAI_CheminAnalyse         = INILit("CONFIGURATION","CheminAnalyse", "", sCheminConfigIni) // onglet configuration
+			SAI_Chemin_Analyse        = INILit("CONFIGURATION","CheminAnalyse", "", sCheminConfigIni) // onglet mise_à_jour
+		CAS clé ~= "Utilisateur" :
+			SAI_Utilisateur 	      = INILit("CONFIGURATION","Utilisateur", "", sCheminConfigIni)
+		CAS clé ~= "Mdp" :
+			SAI_Mdp 			      = INILit("CONFIGURATION","Mdp", "", sCheminConfigIni)
+		CAS clé ~= "AdresseOuNomServeurHF" :
+			SAI_AdresseOuNomServeurHF = INILit("CONFIGURATION","AdresseOuNomServeurHF", "", sCheminConfigIni)
+		CAS clé ~= "NumPortServeurHF" :
+			SAI_NumPortServeurHF 	  = INILit("CONFIGURATION","NumPortServeurHF", "", sCheminConfigIni)
+		CAS clé ~= "ListeFichiersCaisse" :
+			SAI_ListeFichiersCaisse   = INILit("CONFIGURATION","ListeFichiersCaisse", "", sCheminConfigIni)
+	FIN
+FIN
