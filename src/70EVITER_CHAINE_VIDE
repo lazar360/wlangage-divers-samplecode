@@ -1,0 +1,7 @@
+// Enregistrement des formats de support dans un tableau (concerne toutes les lignes)
+tabFormatSupport est un tableau de chaînes
+POUR indiceTabFormat = 1 À 5 // jusqu'à 5, le 6 est pour la consignation dans EDI
+	SI VérifieExpressionRégulière({"PRIMEVER49_LIGNE_EMBALLAGE"+indiceTabFormat},"^[a-zA-Z0-9]+$") ALORS // évite les chaînes vides
+		tabFormatSupport.Ajoute({"PRIMEVER49_LIGNE_EMBALLAGE"+indiceTabFormat})	
+	FIN
+FIN
