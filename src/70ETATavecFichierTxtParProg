@@ -1,0 +1,132 @@
+// CODE DU BOUTON IMPRIMER
+Trace("EDITIONBL")
+
+// Créer la connexion et ouvrir l'analyse
+Trace("tentative de connexion à la base/répertoire : "  + "")
+sParamConnexion est une chaîne = ""
+
+SI sParamConnexion = "base/répertoire non trouvé" ALORS
+	Trace(sParamConnexion)
+	RETOUR 
+FIN
+
+Trace(sParamConnexion)
+
+AdresseServeur			est une chaîne	= ExtraitChaîne(sParamConnexion,3,",")
+sPartieChaineAUtiliser	est une chaîne	= SansEspace(Remplace(ExtraitChaîne(sParamConnexion,5 ,","),".\",""))
+
+Trace("sPartieChaineAUtiliser " + sPartieChaineAUtiliser)
+
+sBaseAConnecter			est une chaîne
+sRepertoireAConnecter	est une chaîne
+
+SI sPartieChaineAUtiliser = "" ALORS // base pas sur ABELIA
+	sBaseAConnecter = SansEspace(ExtraitChaîne(sParamConnexion,4 ,","))
+	Trace("sBaseAConnecter " + sBaseAConnecter)
+FIN
+
+SI sPartieChaineAUtiliser <> "" ALORS
+	sBaseAConnecter			= SansEspace(ExtraitChaîne(sParamConnexion,4 ,","))
+	sRepertoireAConnecter	= SansEspace(ExtraitChaîne(sParamConnexion,5 ,","))
+	Trace("sBaseAConnecter " + sBaseAConnecter)
+	Trace("sRepertoireAConnecter " + sRepertoireAConnecter)
+FIN
+
+Trace("Tentative d'ouverture de l'analyse")
+
+// OUVERTUR ANALYSE
+// problème avec analyse (il faut que le service soit sur C:\  pour pouvoir ouvrir une analyse sur C:\)
+SI HOuvreAnalyse("C:\Developpement\Mes Projets\Windev 28\ABELIA_WD\wabelia.wd7\wabelia.wdd", "") ALORS
+	Trace("Ouverture de l'analyse réussie")
+SINON
+	Trace("Erreur lors de l'ouverture de l'analyse : " + RC + ErreurInfo())
+FIN
+
+// CONNEXION BDD
+SI HOuvreConnexion("ConnexionHFCS","admin","",AdresseServeur, sBaseAConnecter,hAccèsHFClientServeur,hOLecture) ALORS
+	SI HChangeConnexion("*", "ConnexionHFCS") ALORS
+		Trace("Connexion réussie")
+	FIN
+SINON
+	Trace("Échec de Connexion " + RC + ErreurInfo())
+FIN
+
+Trace("Tentative d'édition du bl")
+
+SI iDestination(iPDFGénérique, "C:\Users\Nicolas\Desktop\etat_testNG1.pdf") = -1 ALORS
+	
+	Trace("Erreur lors de l'impression de l'état : " + ErreurInfo())
+	
+FIN
+
+//									SI PG_RECHERCHE_LIENTETE(Gauche(_Numpiece,8),Gauche(_NumLiv,9)) ALORS // code abélia
+//										clerech  = HConstruitValClé(LILIGNE,LLCLE,LIENTETE.NUMCDE,LIENTETE.LINBLIV)// code abélia
+//
+//										HFiltre("LILIGNE","LLCLE",clerech+Caract(0),clerech+Caract(255))// code abélia
+//										SI HErreurBlocage() ALORS RIEN=""// code abélia
+//									FIN// code abélia
+
+RequeteBl est une Source de Données
+HExécuteRequêteSQL(RequeteBl,"ConnexionHFCS", ...
+"SELECT LIENTETE.NUMCDE, CLIENT.CLNOM, LILIGNE.ARLIBELLE1 "+...
+"FROM LIENTETE, LILIGNE, CLient "+...
+"left join LIENTETE on CLIENT.CLCODE = LIENTETE.CLCODE "+...
+"left join LILIGNE ON LIENTETE.NUMCDE = LILIGNE.NUMCDE "+...
+"where LIENTETE.NUMCDE = 24501145 and LIENTETE.LINBLIV = 1")
+
+//h:\ablia\etat\abelia11_bl.wde
+HExporteCSV(RequeteBl,"C:\Users\Nicolas\Desktop\export_bl.txt","",Caract(59),hExpCréation + hExpSansLigneNomRubrique)
+
+Trace("RequeteBl.NUMCDE : " + RequeteBl.NUMCDE)
+
+SI iImprimeEtat(ETAT_FICHIERTXT) ALORS
+	
+	Trace("Après fermeture ETAT")
+	
+SINON
+	
+	Trace("Erreur fermeture ETAT : " + ErreurInfo())
+	
+FIN
+
+// iImprimeEtat(nometat) // code abélia
+// HDésactiveFiltre(LILIGNE) // code abélia
+
+SI HFermeConnexion("ConnexionHFCS") ALORS
+	Trace("Fermeture Connexion")
+FIN
+
+
+
+// CODE DE L'ETAT
+// OUVERTURE DE L'ETAT
+PROCÉDURE MonEtat()
+GLOBAL
+gfsLigne		est une chaîne	= ""
+gfnIDFichier	est un entier	= 0		// Identifiant du fichier texte
+LOCAL
+sFichierTexte est une chaîne = "C:\Users\Nicolas\Desktop\export_bl.txt"
+gfnIDFichier = fOuvre(sFichierTexte, foLecture)    // Ouvrir le fichier texte
+SI gfnIDFichier = -1 ALORS
+	Erreur(ErreurInfo())
+	iFermeEtat()      // Arrêter le traitement de l'état
+FIN
+
+// LECTURE DES DONNEES
+// Extraire les données du fichier pour les afficher dans l'état 
+gfsLigne = fLitLigne(gfnIDFichier)
+gfsLigne = Remplace(gfsLigne,Caract(0), "")
+// Fin du fichier atteinte ?
+SI gfsLigne = EOT OU gfsLigne = "" ALORS 
+	RENVOYER Faux
+SINON 
+	RENVOYER Vrai
+FIN
+
+// FERMEURE DE L'ETAT
+// Fermer le fichier 
+fFerme(gfnIDFichier)
+RENVOYER Vrai
+
+// CODE DU BLOC
+itChaîne(gfsLigne,1,";"))
