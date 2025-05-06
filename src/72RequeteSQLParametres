@@ -11,3 +11,15 @@ HExécuteRequête(reqStatVols)
 POUR TOUT reqStatVols
 ...
 FIN
+
+SI sRepertoireAConnecter = "" ALORS
+ListeTable est une Source de Données
+sTableARequeter est une chaîne = SansEspace(ExtraitChaîne(sLigneLue, 5, ","))
+ListeTable.p_vacode = SansEspace(ExtraitChaîne(sLigneLue, 6, ","))
+SI  HExécuteRequêteSQL(ListeTable,"ConnexionHFCS",hRequêteDéfaut, "SELECT * FROM " + sTableARequeter + " where STOCKAL.VACODE = {p_vacode}") ALORS
+		HExporteCSV(ListeTable, ComplèteRep(REPERTOIRE_REPONSE) + ExtraitChaîne(sLigneLue,3,",") + ".csv", hExpCréation)
+		PG_LOGS("Enregistrement réponse dans : " + ComplèteRep(REPERTOIRE_REPONSE) + ExtraitChaîne(sLigneLue,3,",") + ".csv")
+SINON
+		PG_LOGS(ErreurInfo())
+FIN
+FIN
