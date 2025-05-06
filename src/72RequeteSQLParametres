@@ -1,0 +1,13 @@
+reqStatVols est une Requête SQL =
+[
+SELECT * FROM  Vols
+WHERE Vols.IDAéroportDépart = {ParamIDAéroportDépart}
+AND Vols.IDAéroportArrivée = {ParamIDAéroportArrivée}
+]
+reqStatVols.ParamIDAéroportDépart = 12
+reqStatVols.ParamIDAéroportArrivée = 3
+
+HExécuteRequête(reqStatVols)
+POUR TOUT reqStatVols
+...
+FIN
