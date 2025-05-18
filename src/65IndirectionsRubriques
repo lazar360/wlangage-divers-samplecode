@@ -8,7 +8,7 @@ select * from T_suiviActivite
 
 HExecuteRequeteSQL(MaSource, hrequetedefaut, Marequete)
 
-Pour tout MaSource
+Pour TOUT MaSource
 
 sMaValeur est une chaine
 
