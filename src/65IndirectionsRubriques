@@ -1,0 +1,20 @@
+MaSourceDeDonees est une source de données
+MaListeRubrique est une chaine
+MonDocument est un document
+
+MaRequetes est une chaine = [
+select * from T_suiviActivite
+]
+
+HExecuteRequeteSQL(MaSource, hrequetedefaut, Marequete)
+
+Pour tout MaSource
+
+sMaValeur est une chaine
+
+MaListeRubrique = HListeRubrique(MaSourceDeDonees)
+   POUR TOUTE CHAINE sRubrique DE MaListeRubrique SEPARE PAR RC
+       sMaValeur += [TAB] + { MaSourceDeDonees..nom + "." + sRubrique, indiceRubrique}  
+       MonDocument.remplace("%"+sRubrique+"%", sMaValeur)
+   FIN
+FIN
