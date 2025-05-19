@@ -1,0 +1,13 @@
+CléParcours est une chaine
+NomFamille est une chaine
+
+NomFamille = MacFly
+
+CléParcours = Hfiltre(Patients, "Nom ='" + NomFamille +"'"
+
+Hlitpremier(Patients, Cléparcours)
+TANT QUE PAS Hendehors 
+TableAjouteLigne(Table, Patients.Nom, Patients.Prenom)
+Hlitsuivant(Patients, CléParcours)
+FIN
+HdésactiveFiltre(Patients)
