@@ -1,0 +1,35 @@
+PG_LOGS("GENERATIONBL")	
+																		
+									// Créer la connexion et ouvrir l'analyse
+									PG_LOGS("tentative de connexion à la base/répertoire : "  + ExtraitChaîne(sLigneLue,4,","))
+									
+									sParamConnexion = INILit("CONNEXION BDD",ExtraitChaîne(sLigneLue,4,","),"base/répertoire non trouvé",FICHIER_CONFIGINI)
+									
+									PG_CONNEXION_BDD(sParamConnexion)	
+									
+									PG_LOGS("Tentative de génération du bl")
+									
+									// Paramétrer le lancement de la fenêtre
+									sNumeroDeCommandeTmp 			est une chaîne = ExtraitChaîne(sLigneLue,5,",")  									
+									sTTCouHTTmp 		 			est une chaîne = ExtraitChaîne(sLigneLue,6,",")
+									sListe_Id_LigcdeTmp  			est une chaîne = ExtraitChaîne(sLigneLue,7,",")
+									
+									// Paramètres envoyés à la fenêtre ven_ligcde
+									sTTCouHT					    est une chaîne
+									n_Mode_Lieux					est un entier	= 0
+									n_Mode_Prepa_Auto				est un entier	= 0
+									Mode_BL_Auto					est un entier	= 1
+									nINT_TEST_AUTO_GENERE_FACTURE	est un entier	= 0
+									nVp_Imp_BL						est un entier	= 1
+									s_Mode_Resa_Auto				est une chaîne	= ""
+									s_Mode_Etiq_Expe_Auto			est une chaîne	= ""
+									sListe_Id_Ligcde				est une chaîne		
+									
+									SI sNumeroDeCommandeTmp <> "" ET sNumeroDeCommandeTmp   <> EOT ALORS fscode			  = sNumeroDeCommandeTmp								
+									SI sTTCouHTTmp		    <> "" ET sTTCouHTTmp		    <> EOT ALORS sTTCouHT 	  	  = sTTCouHTTmp			
+									SI sListe_Id_LigcdeTmp  <> "" ET sListe_Id_LigcdeTmp    <> EOT ALORS sListe_Id_Ligcde = sListe_Id_LigcdeTmp
+									// si 7ème ligne renseignée -> sListe_Id_Ligcde
+																		
+									Ouvre(ven_ligcde, sTTCouHT, ...
+									n_Mode_Lieux, n_Mode_Prepa_Auto, Mode_BL_Auto,nINT_TEST_AUTO_GENERE_FACTURE,...
+									"HorsEcran",nVp_Imp_BL,s_Mode_Resa_Auto,s_Mode_Etiq_Expe_Auto,sListe_Id_Ligcde)	
