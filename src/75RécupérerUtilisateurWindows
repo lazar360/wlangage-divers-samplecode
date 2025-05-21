@@ -1,0 +1,67 @@
+Un petit exemple avec appel VBS et WMI :
+
+// Résumé : <Récupère le nom de l'utilisateur signé sur un poste>
+// Syntaxe :
+//[ <Résultat> = ] UtilisateurSigne ( [<VP_Machine> [, <VP_Duree>]])
+//
+// Paramètres :
+// VP_Machine : <Nom du poste>
+// VP_Duree (valeur par défaut=0) : < indiquez ici le rôle de VP_Duree >
+// Valeur de retour :
+// chaîne : // Aucune
+//// Exemple :
+// Pour les postes en XP, il faut que le Firewall le permette
+// Pour le paramétrer automatiquement il faut lancer la commande :
+// netsh firewall set service remoteadmin enable
+// (w:\Admnova\netshFirewall.bat)
+//
+PROCEDURE GLOBALE UtilisateurSigne(VP_Machine="",VP_Duree=0)
+VL_Machine est chaîne=SansEspace(VP_Machine)
+VL_Renvoyer est chaîne
+// Déclaration de l'objet environnement de script
+VL_ScriptControl est un objet Automation "MSScriptControl.ScriptControl"
+SI VL_Machine="" ALORS
+VL_Machine=NetNomMachine()
+FIN
+// Méthodes VL_ScriptControl utilisées
+// AddCode : Ajoute le code dans l'environnement
+// Eval : Exécute la fonction et renvoie la valeur, équivaut à une compilation dynamique
+// Reset : Réinitialise l'environnement
+VL_ProgrammeVbs est chaîne
+Message("Recherche utilisateur du poste "+VL_Machine)
+// Création du VBS
+VL_ProgrammeVbs+= "Function GetUserName(ComputerName)"+CRLF
+VL_ProgrammeVbs+= "On Error Resume Next"+CRLF
+VL_ProgrammeVbs+= "strComputer = ComputerName"+CRLF
+VL_ProgrammeVbs+= "Set objWMIService = GetObject("+Caract(34)+"winmgmts:"+Caract(34)+"& "+Caract(34)+"{impersonationLevel=impersonate}!\\"+Caract(34)+...
+" & strComputer & "+Caract(34)+"\root\cimv2"+Caract(34)+")"+CRLF
+VL_ProgrammeVbs+= "Set colComputer = objWMIService.ExecQuery ("+Caract(34)+"Select * from Win32_ComputerSystem"+Caract(34)+")"+CRLF
+// Recherche de l'utilisateur (Même avec un seul objet il faut utiliser une boucle sur la collection)
+VL_ProgrammeVbs+= "For Each objComputer in colComputer"+CRLF
+VL_ProgrammeVbs+= "GetUserName=objComputer.UserName"+CRLF
+VL_ProgrammeVbs+= "Next"+CRLF
+VL_ProgrammeVbs+= "End Function"+CRLF
+// lancement du VBS
+VL_ScriptControl>>Language("VBScript")
+VL_ScriptControl>>Reset()
+SI VP_Duree<>0 ALORS
+VL_ScriptControl>>Timeout=VP_Duree
+FIN
+// Création du code VBS
+QUAND EXCEPTION DANS
+VL_ScriptControl>>AddCode(VL_ProgrammeVbs)
+FAIRE
+VL_Renvoyer="Erreur dans le programme vbs..."
+FIN
+SI VL_Renvoyer="" ALORS
+VL_Renvoyer="Utilisateur Non Trouvé"
+QUAND EXCEPTION DANS
+VL_Renvoyer=VL_ScriptControl>>Eval("GetUserName("+Caract(34)+VL_Machine+Caract(34)+")")
+FAIRE
+VL_Renvoyer="Erreur d'execution du programme vbs"
+FIN
+FIN
+SI Taille(SansEspace(VL_Renvoyer))<5 ALORS
+VL_Renvoyer="Utilisateur non trouvé"
+FIN
+RENVOYER VL_Renvoyer
