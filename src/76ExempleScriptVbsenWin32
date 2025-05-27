@@ -1,0 +1,18 @@
+oScript		est un objet Automation "MSScriptControl.ScriptControl"
+sScriptVBS	est une chaîne	= [
+									' Créer un fichier texte sur le bureau de l'utilisateur
+									Set objShell = CreateObject("WScript.Shell")
+									strBureau = objShell.SpecialFolders("Desktop")
+									strFichier = strBureau & "\exemple.txt"
+									
+									Set objFSO = CreateObject("Scripting.FileSystemObject")
+									Set objFichier = objFSO.CreateTextFile(strFichier, True)
+									objFichier.WriteLine("Ceci est un fichier texte créé par un script VBS.")
+									objFichier.Close
+									
+									MsgBox "Le fichier exemple.txt a été créé sur votre bureau."
+								]
+oScript>>Language("VBScript")
+oScript>>Reset
+oScript>>AddCode(sScriptVBS)
+oScript>>Timeout(-1)// pas de timeout
