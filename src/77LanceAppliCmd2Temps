@@ -1,0 +1,10 @@
+CAS "Export_D.ini" // EXECUTE UNE COMMANDE
+//------------------------------------------------
+PG_LOGS("Export_D")
+
+LanceAppli("cmd /C cd /D K:\****_**** && ****.exe Export_D.ini")
+
+SI ErreurDétectée ALORS
+PG_LOGS("Erreur " + ErreurInfo())
+Erreur()
+FIN
