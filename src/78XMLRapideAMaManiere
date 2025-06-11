@@ -1,0 +1,34 @@
+sDocXML est une chaîne = [
+	<?xml version="1.0" encoding="UTF-8"?>
+	<Tache>
+	<Declencheur>
+	<DateDebut></DateDebut>
+	<DateFin></DateFin>
+	</Declencheur>
+	</Tache>
+]
+
+xmlExemple	est un xmlDocument	= XMLOuvre(sDocXML, depuisChaîne)
+
+// Lecture directe d'une information ...
+//Trace(xmlExemple.Tache.Declencheur.DateDebut)
+xmlExemple.Tache.Declencheur.DateDebut = 2
+//Trace(xmlExemple.Tache.Declencheur.DateDebut)
+
+// Lecture avec une partie du chemin XML contenu dans une variable
+//----------------------------------------------------------------
+// (idem si rubrique d'un fichier, paramètre d'une fenêtre, méthode, ...)
+//sParamètre est une chaîne = "InfoVersion"
+//Trace ({"xmlExemple.Document." + sParamètre + ".Version"})
+
+// Affichage du titre des actes avec parcours
+//-------------------------------------------
+//Acte est un xmlNoeud
+//POUR TOUT Acte DE RomeoEtJuliette.PLAY SUR ACT
+//	Trace(Acte.TITLE)
+//FIN
+
+//
+
+// Sauvegarde du fichier avec mise en forme (nouveauté 22)
+XMLSauve(xmlExemple, "C:\Users\Benjamine et Nicolas\Documents\Nicolas\test.xml", XMLMiseEnForme)
