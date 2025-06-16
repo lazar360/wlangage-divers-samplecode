@@ -1,0 +1,21 @@
+PROCÉDURE RÉACTIVE PL_MAJ_TABLE_XML()
+
+TableSupprimeTout(TABLE_XML)
+
+SI ONG_Menu =  4 ALORS
+
+	// Remplir le champ table
+	sListeFichiers = fListeFichier(ComplèteRep(fExtraitChemin(SAI_Repertoire_Services,fDisque+fRépertoire)) + "ARCHIVES\*.xml")
+	sListeFichiers += RC + fListeFichier(ComplèteRep(SAI_Repertoire_Services) + "*.xml")
+
+	SI sListeFichiers <> "" ALORS
+		POUR TOUTE CHAÎNE fichier DE sListeFichiers SÉPARÉE PAR RC
+			SI fichier <> "" ET PAS fichier [~] "stop" ALORS
+				xmlDoc est un xmlDocument = XMLOuvre(fichier, depuisFichier)
+				TableAjouteLigne(TABLE_XML, fExtraitChemin(fichier,fFichier), xmlDoc.Tache.Declencheur.DateDebut, xmlDoc.Tache.Declencheur.DateFin, xmlDoc.Tache.Declencheur.JoursDeLaSemaine, ...
+				xmlDoc.Tache.Declencheur.HeureDebut, xmlDoc.Tache.Declencheur.HeureFin, xmlDoc.Tache.Declencheur.Repetition, xmlDoc.Tache.Declencheur.JoursDuMois,
+				xmlDoc.Tache.Action.Commande, xmlDoc.Tache.Action.Arguments, xmlDoc.Tache.Action.RepertoireTravail)
+			FIN
+		FIN
+	FIN
+FIN
