@@ -1,0 +1,19 @@
+PROCÉDURE INTERNE PI_TESTER_INTERVALLES(param_sHeureDebut, param_sHeureFin, param_sRepetition, param_sHeureSys, param_sExecutionRepetition sont des chaînes):booléen
+		sListeIntervallesDeTemps est une chaîne
+
+		POUR i = param_sHeureDebut À param_sHeureFin PAS param_sRepetition
+			sListeIntervallesDeTemps += PG_COMPLETE_GAUCHE(NumériqueVersChaîne(i), 4 - Taille(NumériqueVersChaîne(i))) + RC
+		FIN
+		// PG_LOGS("sLesIntervallesDeTemps : " + sLesIntervallesDeTemps)
+		SI Position(sListeIntervallesDeTemps, param_sHeureSys) > 0 ALORS
+			SI param_sExecutionRepetition = EOT ALORS RENVOYER Vrai
+			SI param_sExecutionRepetition <> EOT ET param_sExecutionRepetition <> sHeureSys ALORS
+				RENVOYER Vrai
+			FIN
+		FIN
+		RENVOYER Faux
+	FIN
+
+PROCÉDURE PG_COMPLETE_GAUCHE(Pvar,Plong)
+RENVOYER( Droite(Répète("0",Plong)+ Pvar),Plong)
+ 
