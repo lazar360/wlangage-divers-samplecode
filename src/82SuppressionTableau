@@ -1,0 +1,15 @@
+SI Vg_tab_FichiersEnAttente..Occurrence > 0 ALORS
+	POUR TOUT xmlDoc DE Vg_tab_FichiersEnAttente
+		SI PG_DetecteExecutionImmediate(xmlDoc) ALORS
+			PG_LANCE_ABELIA(xmlDoc)
+		FIN
+		SI PAS PG_DetectePerimeEtProroge(xmlDoc) ALORS
+			POUR i = 1 _À_ Vg_tab_FichiersEnAttente..Occurrence
+				SI Vg_tab_FichiersEnAttente[i].Tache.Nom ~= xmlDoc.Tache.Nom ALORS
+					Vg_tab_FichiersEnAttente.Supprime(i)
+					SORTIR 
+				FIN
+			FIN
+		FIN
+	FIN
+FIN
