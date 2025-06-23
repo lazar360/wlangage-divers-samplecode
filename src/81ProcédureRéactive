@@ -1,0 +1,36 @@
+PROCÉDURE RÉACTIVE PL_MAJ_XML()
+
+sNom			est une chaîne	= SAI_Nom
+sCommande		est une chaîne	= SAI_Commande
+sArguments		est une chaîne	= SAI_Arguments
+sDateDebut		est une chaîne	= SAI_DateDebut
+sDateFin		est une chaîne	= SAI_DateFin
+sHeureDebut		est une chaîne	= SAI_HeureDebut
+sHeureFin		est une chaîne	= SAI_HeureFin
+bEstCliqué		est un booléen	= INT_JoursDeLaSemaine
+sJoursDeLaSemaine est  une chaîne
+SI bEstCliqué ALORS
+	POUR i=1 _À_ 7
+		SI  INT_JoursDeLaSemaine[i] = Vrai ALORS
+			sJoursDeLaSemaine += i + " "
+		FIN
+	FIN
+FIN
+nHeures		est un entier	= ChaîneVersNumérique(SAI_RepetitionHeures)
+nMinutes	est un entier	= ChaîneVersNumérique(SAI_RepetitionMinutes)
+sRepetition	est une chaîne	= NumériqueVersChaîne(nHeures*100+nMinutes)
+sJoursDuMois est une chaîne = SAI_JoursDuMois
+
+xmlAModifier est un xmlDocument = XMLOuvre(TABLE_Taches_En_Cours[TableSelect(TABLE_Taches_En_Cours)].COL_Fichier,depuisFichier)
+xmlAModifier.Tache.Nom							= sNom
+xmlAModifier.Tache.Action.Commande				= sCommande
+xmlAModifier.Tache.Action.Arguments				= sArguments
+xmlAModifier.Tache.Declencheur.DateDebut		= sDateDebut
+xmlAModifier.Tache.Declencheur.DateFin			= sDateFin
+xmlAModifier.Tache.Declencheur.JoursDeLaSemaine	= sJoursDeLaSemaine
+xmlAModifier.Tache.Declencheur.HeureDebut		= sHeureDebut
+xmlAModifier.Tache.Declencheur.HeureFin			= sHeureFin
+xmlAModifier.Tache.Declencheur.Repetition		= sRepetition
+xmlAModifier.Tache.Declencheur.JoursDuMois		= sJoursDuMois
+
+XMLSauve(xmlAModifier,TABLE_Taches_En_Cours[TableSelect(TABLE_Taches_En_Cours)].COL_Fichier)
