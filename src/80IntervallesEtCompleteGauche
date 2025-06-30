@@ -16,4 +16,31 @@ PROCÉDURE INTERNE PI_TESTER_INTERVALLES(param_sHeureDebut, param_sHeureFin, par
 
 PROCÉDURE PG_COMPLETE_GAUCHE(Pvar,Plong)
 RENVOYER( Droite(Répète("0",Plong)+ Pvar),Plong)
+
+----------------------------------SYNTAXE RACCOURCIE-------------------------------------
+PROCÉDURE PG_TESTER_INTERVALLES(param_sHeureDebut, param_sHeureFin, param_sRepetition, param_sHeureSys, param_sExecutionRepetition sont des chaînes):booléen
+
+tabHorairesRépétition	est un tableau d'Heures
+
+// 1- Ajout des intervalles dans le tableau
+hHeureDebut				est une Heure	= ChaîneVersHeure(param_sHeureDebut,"HHMM")
+hHeureFin				est une Heure	= ChaîneVersHeure(param_sHeureFin, "HHMM")
+sRepetitionCompletee	est une chaîne	= Répète("0",4 - Taille(param_sRepetition)) + param_sRepetition
+hRepetition				est une Heure	= ChaîneVersHeure(sRepetitionCompletee, "HHMM")
+hHeureSys				est une Heure	= ChaîneVersHeure(param_sHeureSys, "HHMM")
+
+POUR i = hHeureDebut À hHeureFin PAS hRepetition
+	tabHorairesRépétition.Ajoute(EntierVersHeure(i))
+FIN
+
+// 2- Vérification des heures avec heure sys
+POUR TOUT hHeure DE tabHorairesRépétition
+	SI hHeure ~= hHeureSys ALORS
+		SI param_sExecutionRepetition = EOT ALORS RENVOYER Vrai
+		SI param_sExecutionRepetition <> EOT ET param_sExecutionRepetition <> param_sHeureSys ALORS
+			RENVOYER Vrai
+		FIN
+	FIN
+FIN
+RENVOYER Faux
  
