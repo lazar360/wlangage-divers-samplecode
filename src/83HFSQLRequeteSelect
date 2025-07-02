@@ -62,7 +62,7 @@ FIN
 PG_LOGS("Tentative d'ouverture BDD")
 
 // CONNEXION BDD
-SI HOuvreConnexion(ConnexionHFCS, "admin","",AdresseServeur, sBaseAConnecter,hAccèsHFClientServeur,hOLecture) ALORS
+SI HOuvreConnexion(ConnexionHFCS, user, password,AdresseServeur, sBaseAConnecter,hAccèsHFClientServeur,hOLecture) ALORS
 
 	// REMET TOUS LES REPERTOIRES SUR LA NOUVELLE CONNEXION
 	SI HChangeConnexion("*", ConnexionHFCS) ALORS
