@@ -1,0 +1,86 @@
+CAS "REQUETE" // EXECUTE UNE REQUETE SELECT
+//-----------------------------------------
+									
+PG_LOGS("REQUETE")
+									
+SI PAS PG_AUTHENTIFICATION(ExtraitChaîne(sLigneLue, 2,",")) ALORS RETOUR
+									
+PG_LOGS("tentative de connexion à la base/répertoire : "  + ExtraitChaîne(sLigneLue,4,","))
+									
+sParamConnexion = INILit("CONNEXION BDD",ExtraitChaîne(sLigneLue,4,","),"base/répertoire non trouvé",SERVICE_FICHIER_CONFIGINI)
+									
+PG_CONNEXION_BDD(sParamConnexion)	
+									
+// REQUETE SQL PARAMETREE
+ListeTable est une Source de Données
+sTableARequeter		= SansEspace(ExtraitChaîne(sLigneLue, 5, ","))
+ListeTable.p_vacode	= SansEspace(ExtraitChaîne(sLigneLue, 6, ","))
+// #TODO NG : ajouter un test sur sTableARequeter
+SI  HExécuteRequêteSQL(ListeTable,"ConnexionHFCS",hRequêteDéfaut, "SELECT * FROM " + sTableARequeter + " where STOCKAL.VACODE = {p_vacode}") ALORS
+HExporteCSV(ListeTable, ComplèteRep(REPERTOIRE_REPONSE) + ExtraitChaîne(sLigneLue,3,",") + ".csv", hExpCréation)
+PG_LOGS("Enregistrement réponse dans : " + ComplèteRep(REPERTOIRE_REPONSE) + ExtraitChaîne(sLigneLue,3,",") + ".csv")
+SINON
+PG_LOGS(ErreurInfo())
+FIN
+------------------------------------
+PROCÉDURE PG_CONNEXION_BDD(paramParamConnexion)
+
+SI paramParamConnexion = "base/répertoire non trouvé" ALORS
+	PG_LOGS(paramParamConnexion)
+FIN
+
+PG_LOGS(paramParamConnexion)
+
+AdresseServeur			est une chaîne	= ExtraitChaîne(paramParamConnexion,3,",")
+sPartieChaineAUtiliser	est une chaîne	= SansEspace(Remplace(ExtraitChaîne(paramParamConnexion,5 ,","),".\",""))
+
+PG_LOGS("sPartieChaineAUtiliser " + sPartieChaineAUtiliser)
+
+SI sPartieChaineAUtiliser = "" ALORS // base pas sur ABELIA
+	sBaseAConnecter = SansEspace(ExtraitChaîne(paramParamConnexion,4 ,","))
+	PG_LOGS("sBaseAConnecter " + sBaseAConnecter)
+FIN
+
+SI sPartieChaineAUtiliser <> "" ALORS
+	sBaseAConnecter			= SansEspace(ExtraitChaîne(paramParamConnexion,4 ,","))
+	sRepertoireAConnecter		= sPartieChaineAUtiliser
+	PG_LOGS("sBaseAConnecter " + sBaseAConnecter)
+	PG_LOGS("sRepertoireAConnecter " + sRepertoireAConnecter)
+FIN
+
+PG_LOGS("Tentative d'ouverture d'analyse")
+
+// OUVERTURE ANALYSE
+// problème avec analyse (il faut que le service soit sur C:\  pour pouvoir ouvrir une analyse
+ SI HOuvreAnalyse(FICHIER_ANALYSE, "") ALORS
+	PG_LOGS("Ouverture de l'analyse réussie")
+	VG_Appli_Objet_Dossier.MC_Fichiers_Repertoire = FICHIER_ANALYSE	 
+SINON
+	PG_LOGS("Erreur lors de l'ouverture de l'analyse : " + RC + ErreurInfo())
+FIN
+
+PG_LOGS("Tentative d'ouverture BDD")
+
+// CONNEXION BDD
+SI HOuvreConnexion(ConnexionHFCS, "admin","",AdresseServeur, sBaseAConnecter,hAccèsHFClientServeur,hOLecture) ALORS
+
+	// REMET TOUS LES REPERTOIRES SUR LA NOUVELLE CONNEXION
+	SI HChangeConnexion("*", ConnexionHFCS) ALORS
+		PG_LOGS("Connexion réussie")		
+	FIN
+	
+	// CHANGE DE REPERTOIRE SI BDD SUR SOUS REPERTOIRE DE ABELIA 
+	SI sRepertoireAConnecter <> "" ALORS
+		SI WL.HChangeRep("*",sRepertoireAConnecter) ALORS
+			PG_LOGS("Change rep réussi")
+			// INITIALISE VG_Appli_Objet_Dossier POUR PASSER HCHANGEREP DANS VEN_LIGNECDE
+			VG_Appli_Objet_Dossier:MC_Base_Données_Repertoire = sRepertoireAConnecter
+		SINON
+			PG_LOGS(ErreurInfo())
+		FIN
+	FIN
+SINON
+	PG_LOGS("Échec de Connexion " + RC + ErreurInfo())
+FIN
+
+-----------------------------------
