@@ -1,0 +1,25 @@
+i						est entier
+sNomChamp				est une chaîne
+taChampFenEnrFactureVar est un tableau associatif de Variants
+i=1; sNomChamp = EnumèreChamp(FEN_EnregistrementFacture1, i)
+
+
+i=1; sNomChamp = EnumèreChamp(FEN_EnregistrementFacture1, i)
+TANTQUE sNomChamp<>""
+	// Champ suivant
+	i++;
+	sNomChamp = EnumèreChamp(FEN_EnregistrementFacture1, i)
+
+	SI sNomChamp [~] "SAI" ALORS
+		taChampFenEnrFactureVar[sNomChamp] = {sNomChamp,indChamp}..Valeur
+	FIN
+FIN
+
+// Traitement des champs de saisie
+nLigneTable est un entier = TableAjoute(TABLE_FAENTETE)
+
+POUR TOUT vValeur, sNomChamp de taChampFenEnrFactureVar
+	sNomColonne est une chaîne = Remplace(sNomChamp,"SAI_","COL_")
+	sTableColonne est une chaîne = "TABLE_FAENTETE." + sNomColonne
+	{sTableColonne,indChamp}[nLigneTable] = vValeur
+FIN
