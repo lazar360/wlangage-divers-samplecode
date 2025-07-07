@@ -1,0 +1,37 @@
+i				est entier
+sNomChamp		est une chaîne
+tabChampFenEnrFacture est un tableau de chaînes
+// nNombreAléatoire est un entier = Hasard(1, 20)
+
+// Premier champ de la fenêtre
+i=1; sNomChamp = EnumèreChamp(FEN_EnregistrementFacture1, i)
+TANTQUE sNomChamp<>""
+	// Champ suivant
+	i++;
+	sNomChamp = EnumèreChamp(FEN_EnregistrementFacture1, i)
+
+	SI sNomChamp [~] "SAI" ALORS
+		tabChampFenEnrFacture.Ajoute(sNomChamp)
+	FIN
+FIN
+// Traitement du champ
+POUR TOUT sNomDuTableau DE tabChampFenEnrFacture
+	// Trace(sNomDuTableau)
+	SELON sNomDuTableau
+		CAS "SAI_NUMSF", "SAI_NUMFA", "SAI_CLCODE"
+			{sNomDuTableau, indChamp} = DateHeureSys()
+		CAS "SAI_CLPARTICUL"
+			{sNomDuTableau, indChamp} = "M"
+		CAS "SAI_FEMTTOTAL", "SAI_FEMTTTC", "SAI_FEMTPORT", "SAI_FEMTPORTBL", [~]"TAUXREPARTITIONECHEANCE", [~]"MTPAIEMENTECHEANCE", ...
+			"SAI_FEACOMPTE", "SAI_CLREMISE", "SAI_CLESCOMPTE", "SAI_FEMTPORTSA","SAI_PATXDEVISE", "SAI_PATXEURO", "SAI_CLTARIF", "SAI_CLNB", ...
+			"SAI_CLFORMAT", "SAI_CLCOEF", "SAI_CLARRONDI", "SAI_CLREMLIGNE", [~]"FEMTREGLE"
+			{sNomDuTableau, indChamp} = Hasard(1, 20)
+		CAS "SAI_FEDATEFAC", "SAI_FEDATEECH", "SAI_FEDATECDE"
+			{sNomDuTableau, indChamp} = DateSys()
+		CAS "SAI_FEHEUREFAC"
+			{sNomDuTableau, indChamp} = HeureSys()
+		AUTRE CAS
+			{sNomDuTableau, indChamp} = GénèreMotDePasse(Hasard(1, 20), "abcdefghijklmnopqrstuvwxyz")
+		FIN
+FIN
+
