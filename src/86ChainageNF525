@@ -1,0 +1,347 @@
+PROCÉDURE MaFenêtre()
+gMonCertificat est un Certificat = CertificatSélecteur()
+
+// Initialise le générateur de nombres aléatoires
+InitHasard()
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROCÉDURE CalculeEmpreinteDonnéesAvecLignePrécédenteEtSuivante(sDonnéesLigne) : Buffer
+
+bufHash							est un Buffer
+sChaineValeurLignePrécédente	est une chaîne
+sChaineValeurLigneSuivante		est une chaîne
+nContexte						est un entier
+
+// Récupération des informations de la ligne précédente
+
+// Sauve le contexte
+nContexte=HSauvePosition(Données,IDDonnées,hSauveRubriques)
+
+HLitPrécédent(Données,IDDonnées)
+SI HEnDehors(Données) ALORS
+	// Cas où la table est vide
+	sChaineValeurLignePrécédente=""
+SINON
+	sChaineValeurLignePrécédente=Données.Valeur1+","+Données.Valeur2+","+Données.Valeur3+","+Données.Valeur4+","+Données.Valeur5+RC
+FIN
+
+// Restaure le contexte
+HRetourPosition(nContexte)
+
+// Récupération des informations de la ligne suivante
+
+// Sauve le contexte
+nContexte=HSauvePosition(Données,IDDonnées,hSauveRubriques)
+
+HLitSuivant(Données,IDDonnées)
+SI HEnDehors(Données) ALORS
+	// Cas où la table est vide
+	sChaineValeurLigneSuivante=""
+SINON
+	sChaineValeurLigneSuivante=RC+Données.Valeur1+","+Données.Valeur2+","+Données.Valeur3+","+Données.Valeur4+","+Données.Valeur5
+FIN
+
+// Restaure le contexte
+HRetourPosition(nContexte)
+
+bufHash=CertificatSigneChaîne(sChaineValeurLignePrécédente+sDonnéesLigne+sChaineValeurLigneSuivante,gMonCertificat)
+
+RETOUR=BufferVersHexa(bufHash)
+PROCÉDURE VérifieEmpreinteDonnéesAvecLignePrécédenteEtSuivante(sDonnéesLigne,bufEmpreinte) : booléen
+
+bufHash							est un Buffer
+
+sChaineValeurLignePrécédente	est une chaîne
+sChaineValeurLigneSuivante		est une chaîne
+nContexte						est un entier
+
+bufHash		= HexaVersBuffer(bufEmpreinte)
+
+// Récupération des informations de la ligne précédente
+
+// Sauve le contexte
+nContexte	= HSauvePosition(Données,IDDonnées)
+
+HLitPrécédent(Données,IDDonnées)
+SI HEnDehors(Données) ALORS
+	// Cas où on est sur la première ligne
+	sChaineValeurLignePrécédente=""
+SINON
+	sChaineValeurLignePrécédente=Données.Valeur1+","+Données.Valeur2+","+Données.Valeur3+","+Données.Valeur4+","+Données.Valeur5+RC
+FIN
+
+// Restaure le contexte
+HRetourPosition(nContexte)
+
+// Récupération des informations de la ligne suivante
+
+// Sauve le contexte
+nContexte=HSauvePosition(Données,IDDonnées)
+
+HLitSuivant(Données,IDDonnées)
+SI HEnDehors(Données) ALORS
+	// Cas où on est sur la première ligne
+	sChaineValeurLigneSuivante=""
+SINON
+	sChaineValeurLigneSuivante=RC+Données.Valeur1+","+Données.Valeur2+","+Données.Valeur3+","+Données.Valeur4+","+Données.Valeur5
+FIN
+
+// Restaure le contexte
+HRetourPosition(nContexte)
+
+	SELON CertificatVérifieChaîne(sChaineValeurLignePrécédente+sDonnéesLigne+sChaineValeurLigneSuivante,bufHash)
+		CAS certificatOk : RETOUR=Vrai
+		CAS certificatExpiré:
+			SI EnModeTest() ALORS
+				RETOUR=Vrai
+			SINON
+				RETOUR=Faux
+			FIN
+		CAS certificatInvalide:
+			RETOUR=Faux
+		CAS certificatNonFiable:
+			RETOUR=Vrai
+
+		//		certificatExpiré
+		AUTRE CAS :
+			RETOUR=Faux
+			//		Signature valide mais certificat expiré.
+			//		certificatInvalide
+			//		Signature ou certificat invalide.
+			//		certificatNonFiable
+			//		Signature valide mais la racine de confiance du certificat est non fiable.
+			//		certificatOk
+			//		Signature et certificat fiables.
+	FIN
+
+PROCÉDURE CalculeEmpreinteDonnéesAvecLignePrécédente(sDonnéesLigne) : Buffer
+
+bufHash							est un Buffer
+sChaineValeurLignePrécédente	est une chaîne
+nContexte						est un entier
+
+// Sauve le contexte
+nContexte=HSauvePosition(Données,IDDonnées,hSauveRubriques)
+
+HLitDernier(Données,IDDonnées)
+SI HEnDehors(Données) ALORS
+	// Cas où la table est vide
+	sChaineValeurLignePrécédente=""
+SINON
+	sChaineValeurLignePrécédente=Données.Valeur1+","+Données.Valeur2+","+Données.Valeur3+","+Données.Valeur4+","+Données.Valeur5+RC
+FIN
+
+// Restaure le contexte
+HRetourPosition(nContexte)
+
+bufHash=CertificatSigneChaîne(sChaineValeurLignePrécédente+sDonnéesLigne,gMonCertificat)
+
+RETOUR=BufferVersHexa(bufHash)
+PROCÉDURE VérifieEmpreinteDonnéesAvecLignePrécédente(sDonnéesLigne,bufEmpreinte) : booléen
+
+bufChaineSignée					est un Buffer
+
+sChaineValeurLignePrécédente	est une chaîne
+nContexte						est un entier
+
+bufChaineSignée	= HexaVersBuffer(bufEmpreinte)
+
+// Sauve le contexte
+nContexte		= HSauvePosition(Données,IDDonnées)
+
+HLitPrécédent(Données,IDDonnées)
+SI PAS HTrouve(Données) ALORS
+	// Cas où on est sur la première ligne
+	sChaineValeurLignePrécédente=""
+SINON
+	sChaineValeurLignePrécédente=Données.Valeur1+","+Données.Valeur2+","+Données.Valeur3+","+Données.Valeur4+","+Données.Valeur5+RC
+FIN
+
+// Restaure le contexte
+HRetourPosition(nContexte)
+
+SELON CertificatVérifieChaîne(sChaineValeurLignePrécédente+sDonnéesLigne,bufChaineSignée)
+	CAS certificatOk : RETOUR=Vrai
+	CAS certificatExpiré:
+		SI EnModeTest() ALORS
+			RETOUR=Vrai
+		SINON
+			RETOUR=Faux
+		FIN
+	CAS certificatInvalide:
+		RETOUR=Faux
+	CAS certificatNonFiable:
+		RETOUR=Vrai
+
+	//		certificatExpiré
+	AUTRE CAS :
+		RETOUR=Faux
+		//		Signature valide mais certificat expiré.
+		//		certificatInvalide
+		//		Signature ou certificat invalide.
+		//		certificatNonFiable
+		//		Signature valide mais la racine de confiance du certificat est non fiable.
+		//		certificatOk
+		//		Signature et certificat fiables.
+FIN
+PROCÉDURE PL_GENERE_ENTETE()
+i						est entier
+sNomChamp				est une chaîne
+tabChampFenEnrFacture	est un tableau de chaînes
+// nNombreAléatoire est un entier = Hasard(1, 20)
+
+// Premier champ de la fenêtre
+i=1; sNomChamp = EnumèreChamp(FEN_EnregistrementFacture1, i)
+TANTQUE sNomChamp<>""
+	// Champ suivant
+	i++;
+	sNomChamp = EnumèreChamp(FEN_EnregistrementFacture1, i)
+
+	SI sNomChamp [~] "SAI" ALORS
+		tabChampFenEnrFacture.Ajoute(sNomChamp)
+	FIN
+FIN
+
+// Traitement des champs de saisie
+POUR TOUT sNomDuTableau DE tabChampFenEnrFacture
+	// Trace(sNomDuTableau)
+	SELON sNomDuTableau
+		// Données de l'Entête
+		CAS "SAI_NUMSF", "SAI_NUMFA", "SAI_CLCODE"
+			{sNomDuTableau, indChamp} = DateHeureSys()
+		CAS "SAI_CLPARTICUL"
+			{sNomDuTableau, indChamp} = "M"
+		CAS "SAI_FEMTTOTAL", "SAI_FEMTTTC", "SAI_FEMTPORT", "SAI_FEMTPORTBL", [~]"TAUXREPARTITIONECHEANCE", [~]"MTPAIEMENTECHEANCE", ...
+			"SAI_FEACOMPTE", "SAI_CLREMISE", "SAI_CLESCOMPTE", "SAI_FEMTPORTSA","SAI_PATXDEVISE", "SAI_PATXEURO", "SAI_CLTARIF", "SAI_CLNB", ...
+			"SAI_CLFORMAT", "SAI_CLCOEF", "SAI_CLARRONDI", "SAI_CLREMLIGNE", [~]"FEMTREGLE"
+			{sNomDuTableau, indChamp} = Hasard(1, 20)
+		CAS "SAI_FEDATEFAC", "SAI_FEDATEECH", "SAI_FEDATECDE"
+			{sNomDuTableau, indChamp} = DateSys()
+		CAS "SAI_FEHEUREFAC"
+			{sNomDuTableau, indChamp} = HeureSys()
+
+		// Données de la ligne
+		CAS "SAI_NUMSF1"
+			SI SAI_NUMSF <> "" ALORS
+				{sNomDuTableau, indChamp} = SAI_NUMSF
+			SINON
+				{sNomDuTableau, indChamp} = TABLE_FAENTETE.COL_NUMSF
+			FIN
+		CAS "SAI_FLLIGNE", "SAI_FLQTE", "SAI_FLPRIXBRUT", "SAI_FLREMISE", "SAI_FLPRIXNET", "SAI_UN_VENTE", "SAI_FLMTHT", ...
+			"SAI_ARPOIDS", "SAI_FLTQTECDE", "SAI_FLQTECDE", "SAI_FLPXNETTC",  "SAI_GAPXVENCLI", "SAI_FLNBETIQ", "SAI_FLNBCHROMO", "SAI_ID_ARCODE"
+			{sNomDuTableau, indChamp} = Hasard(1, 20)
+		CAS "SAI_FLDATECDE", "SAI_FLDATELIV", "SAI_FLDATESAISIEPRIXMANUEL"
+			{sNomDuTableau, indChamp} = DateSys()
+
+
+		AUTRE CAS
+			{sNomDuTableau, indChamp} = GénèreMotDePasse(Hasard(1, 20), "abcdefghijklmnopqrstuvwxyz")
+	FIN
+FIN
+
+PROCÉDURE PL_REMPLIR_TABLE()
+i						est entier
+sNomChamp				est une chaîne
+taChampFenEnrFactureVar	est un tableau associatif de Variants
+i	= 1; sNomChamp = EnumèreChamp(FEN_EnregistrementFacture1, i)
+
+
+i	= 1; sNomChamp = EnumèreChamp(FEN_EnregistrementFacture1, i)
+TANTQUE sNomChamp<>""
+	// Champ suivant
+	i++;
+	sNomChamp = EnumèreChamp(FEN_EnregistrementFacture1, i)
+
+	SI sNomChamp [~] "SAI" ALORS
+		taChampFenEnrFactureVar[sNomChamp] = {sNomChamp,indChamp}..Valeur
+	FIN
+FIN
+
+// Traitement des champs de saisie
+nLigneTable est un entier = TableAjoute(TABLE_FAENTETE)
+
+POUR TOUT vValeur, sNomChamp de taChampFenEnrFactureVar
+	sNomColonne		est une chaîne	= Remplace(sNomChamp,"SAI_","COL_")
+	sTableColonne	est une chaîne	= "TABLE_FAENTETE." + sNomColonne
+	{sTableColonne,indChamp}[nLigneTable] = vValeur
+FIN
+
+PROCÉDURE PL_ENREGISTRER_ENTETE_LIGNE()
+
+ÉcranVersFichier()
+// Enregistrer un entête et une ligne
+FAENTETE.NUMSF = SAI_NUMSF
+SI HAjoute(FAENTETE) ET HAjoute(FALIGNE) ALORS InfoAvecDélai(2s,"Enregistrement effectué")
+
+//si HLitRecherchePremier(FAENTETE,NUMSF,TABLE_FAENTETE.COL_NUMSF) alors
+//
+//	si OuiNon("Veux-tu créer une nouvelle ligne dans l'entête ou créer une nouvelle entête ?") alors
+//		FAENTETE.NUMSF =  TABLE_FAENTETE[TableSelect(TABLE_FAENTETE)].COL_NUMSF
+//		SI HAjoute(FALIGNE) ALORS InfoAvecDélai(2s,"Enregistrement effectué")
+//	SINON
+//		SI HAjoute(FAENTETE) ET HAjoute(FALIGNE) ALORS InfoAvecDélai(2s,"Enregistrement effectué")
+//	FIN
+//
+//SINON
+//	SI HAjoute(FAENTETE) ET HAjoute(FALIGNE) ALORS InfoAvecDélai(2s,"Enregistrement effectué")
+//FIN
+//SI HErreurDoublon() = Vrai ALORS
+//	Erreur("Ce numéro existe déjà")
+//FIN
+
+PROCÉDURE PL_ENREGISTRER_NF525()
+// Récupérer des valeurs des tableaux
+sDonnees1							est une chaîne	// extraction données FAENTETE
+sDonnees2							est une chaîne	// extraction données FALIGNE
+sNumsfARecupererDansAutreTableau	est une chaîne
+
+POUR TOUTE CHAÎNE DonneeDuTableauEntete DE TABLE_FAENTETE[TableSelect(TABLE_FAENTETE)] SÉPARÉ PAR TAB
+	sNumsfARecupererDansAutreTableau = SansEspace(TABLE_FAENTETE[TableSelect(TABLE_FAENTETE)].COL_NUMSF)
+	sDonnees1 += SansEspace(DonneeDuTableauEntete) + ","
+FIN
+sDonnees1[[Taille(sDonnees1)]] = ""
+
+//Trace("sNumsfARecupererDansAutreTableau " + sNumsfARecupererDansAutreTableau,"sDonnees1 " + sDonnees1)
+
+POUR i = 1 _À_ TABLE_FALIGNE.Occurrence()
+	SI TABLE_FALIGNE[i].COL_NUMSF ~= sNumsfARecupererDansAutreTableau ALORS
+		POUR TOUTE CHAÎNE sDonneeDuTableauLigne DE TABLE_FALIGNE[i] SÉPARÉ PAR TAB
+			sDonnees2 += SansEspace(sDonneeDuTableauLigne) + ","
+		FIN
+	FIN
+FIN
+sDonnees2[[Taille(sDonnees2)]]	= ""
+
+//Trace("sDonnees1 " + sDonnees1)
+//Trace("sDonnees2 " + sDonnees2)
+
+// Enregistrement avec chaînage
+Données.Valeur4					= sDonnees1
+Données.Valeur5					= sDonnees2
+
+Données.EmpreinteSignée			= CalculeEmpreinteDonnéesAvecLignePrécédente(Données.Valeur1+","+Données.Valeur2+","+Données.Valeur3+","+Données.Valeur4+","+Données.Valeur5)
+
+HAjoute(Données)
+
+// on modifie la ligne précédente
+// Il faut d'abord se repositionner au niveau de l'index de parcours
+HChangeClé(Données,IDDonnées)
+HLitPrécédent(Données,IDDonnées)
+SI PAS HEnDehors(Données) ALORS
+	Données.EmpreinteSignée=CalculeEmpreinteDonnéesAvecLignePrécédenteEtSuivante(Données.Valeur1+","+Données.Valeur2+","+Données.Valeur3+","+Données.Valeur4+","+Données.Valeur5)
+	HModifie(Données)
+FIN
+
+// On rafraîchit le champ table
+TableAffiche(TABLE_Données,taInit)
