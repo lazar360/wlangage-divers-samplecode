@@ -50,7 +50,7 @@ UnUtilisateur est un MT_Utilisateurs
 tabProfils est une CCollectionDeProfils
 
 // clic sur valider
-EcranVersSource()
+EcranVersSource() // !!!!! ICI RACCOURCI
 SI UnUtilisateur.UtilisateurAjoute() ALORS 
 	ToastAffiche("L'utilisateur a été enregistré")
 SINON
