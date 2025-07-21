@@ -1,0 +1,74 @@
+// Exemple de signature de chaîne à utiliser pour la mise en conformité des logiciels de caisse (Norme NF525).
+// Données à signer
+bufASigner est un Buffer
+bufSeparateurDonnees est un Buffer = ","
+// Bundle contenant le certificat et la clé privée avec le type d'algorithme voulu :
+// RSA 2048, Elliptic Curve Digital Signature Algorithm (ECDSA)....
+sNomFichierCerticatEtClePrivePourSignature est une chaîne
+sNomFichierCerticatEtClePrivePourSignature = fRepDonnées() + "\signature.p12"
+// Mot de passe de la clé privée du certificat
+sMotDepasseClePriveeCertificat est une chaîne = "motdepassecleprivee"
+// Certificat seul ou clé public seule, qui est à fournir aux applications/outils
+// qui doivent pouvoir vérifier les signatures
+sNomFichierCerticatSeul est une chaîne = fRepDonnées() + ...
+"\certificat.cer" //ou fRepDonnées() + "\public.pem"
+// Signature obtenue
+bufSignatureBrute est un Buffer
+// Signature au format Base64 URL (que des caractères imprimables)
+sSignaturebase64URL est une chaîne
+ 
+// Données à signer en général une combinaison de rubriques :
+// Id ligne, Date et heure (pour signature = date facture ou date paiement), CodeAction
+// Id tiers, Libellé tiers, Num TVA tiers, Pays tiers,
+// Nom societe, Num tva societe, Pays societe,
+// Id auteur,Nom auteur
+// Id facture,Ref facture,Date facture
+// Id paiement,Ref paiement,Date paiement
+// Montant paiement (total),Montant paiement (part sur la facture),Mode paiement
+// Montant HT,Montant tva,Montant taxe 1,Montant taxe 2,Montant TTC
+// Exemple ci-dessous avec quelques valeurs "en dur" au lieu des noms des rubriques :
+tabRubriques est un tableau de chaînes = ["Idligne","DateHeureFacture", "CodeAction"]
+bufASigner = TableauVersChaîne(tabRubriques,bufSeparateurDonnees) //Etc....
+ 
+QUAND EXCEPTION DANS
+bufSignatureBrute = CertificatSigneChaîne(bufASigner, ...
+sNomFichierCerticatEtClePrivePourSignature, ...
+sMotDepasseClePriveeCertificat, ...
+certSignatureSeule + certSHA256 ) //SHA2 = SHA256
+// Notes :  
+// - pour gérer les algorithmes de certains certificats
+// (Elliptic Curve Digital Signature Algorithm (ECDSA)),
+// il faut indiquer le nom du fichier et
+// NE PAS utiliser une variable certificat avec CertifcatCharge.
+// - le certificat peut être intégré dans la librairie (fichier .WDL ou .EXE) de l'application
+// il suffit de le mettre dans les dépendances du projet ("Autres"
+// dans le treeview de l'explorateur du projet)
+// - Il faut au minimum avoir téléchargé la mise à jour spécifique du 28 juillet 2017 :
+// http://www.pcsoft.fr/st/telec/windev22/windev22_71k.htm#telecharger
+FAIRE
+Erreur("Echec de la signature", ExceptionInfo())
+RETOUR
+SINON
+SI ErreurDétectée ALORS
+Erreur("Erreur durant la signature", ErreurInfo())
+SINON
+// Transforme la signature en base64 URL, sans caractères non imprimable
+sSignaturebase64URL = Encode(bufSignatureBrute, encodeBASE64URL)
+ 
+Trace("Signature Base64URL : " + sSignaturebase64URL)
+// Pour vérifier la signature dans un autre traitement, il faut un code de ce type :
+// Attention : Il faut utiliser le fichier de clé public
+// et non le certificat avec la clé privé qui lui nécessite un mot de passe
+SELON CertificatVérifieChaîne(bufASigner, Décode(sSignaturebase64URL, encodeBASE64URL), ...
+sNomFichierCerticatSeul, certSignatureSeule + certSHA256)
+CAS certificatOk : Info("Signature valide et certificat fiable")
+CAS certificatInvalide : Info("Signature ou certificat invalide", ErreurInfo())
+CAS certificatExpiré : Info("Signature valide mais certificat expiré", ErreurInfo())
+CAS certificatNonFiable : Info("Signature valide mais racine de confiance " + ...
+"du certificat non fiable", ErreurInfo())
+// Cas sur un certificat auto-signé utilisé sur une autre machine/un autre réseau
+AUTRE CAS
+Erreur("Résultat de la vérification de signature inattendu", ErreurInfo())
+FIN
+FIN        
+FIN
