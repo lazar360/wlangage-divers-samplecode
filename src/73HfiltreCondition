@@ -1,3 +1,7 @@
+HLitPremier(PARAMETRE,  HFiltreContient(PARAMETRE,NOM,"EMETTEUR"))
+
+// OU version verbeuse
+
 CléParcours est une chaine
 NomFamille est une chaine
 
