@@ -1,0 +1,38 @@
+// XML à boucler
+/*
+<HF_DOCUMENT>
+<ARCHIVE_FACTURE>
+<FAC_NID>24004010</FAC_NID>
+<FAC_NUM>F9402150</FAC_NUM>
+<SOC_NID>ID7F3A9C2E84B14D6E9A3F2C1E5B7D9F4A</SOC_NID>
+<TIE_NUM>10049</TIE_NUM>
+<CLI_NUM/>
+<FAC_TYP>Facture</FAC_TYP>
+<FAC_TRANS/>
+<FAC_DAT>20250428</FAC_DAT>
+<FAC_GD>20250806113257832</FAC_GD>
+*/
+
+SI sListeFichiers <> "" ALORS
+	POUR TOUTE CHAÎNE fichier DE sListeFichiers SÉPARÉE PAR RC
+		SI fichier <> "" ALORS
+			xmlDoc est un xmlDocument  = XMLOuvre(fichier,depuisFichier)
+			PI_IMPORT_FACTURE(xmlDoc)
+		FIN
+	FIN
+FIN
+
+PROCÉDURE INTERNE PI_IMPORT_FACTURE(xmlDoc est un xmlDocument)
+
+		dtoFacture									est un DTO_FACTURE
+		utilitaireServiceFacture					est un SERVICE_FACTURE
+
+		POUR TOUT fact DE xmlDoc.HF_DOCUMENT SUR ARCHIVE_FACTURE
+
+			// Trace(fact.SOC_RSO)
+			// EMETTEUR
+			dtoFacture.SOC_NID			= fact.SOC_NID_EM
+			dtoFacture.SOC_RSO			= fact.SOC_RSO
+			dtoFacture.SOC_ADR			= fact.SOC_ADR
+			dtoFacture.SOC_CCP			= fact.SOC_CCP
+
