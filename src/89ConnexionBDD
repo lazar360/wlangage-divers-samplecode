@@ -1,0 +1,14 @@
+// Établir une connexion en mode  client serveur
+maConnexion est une Connexion
+maConnexion..Provider		= hAccèsHFClientServeur
+maConnexion..Utilisateur	= SAI_Utilisateur
+maConnexion..MotDePasse		= SAI_Mdp
+maConnexion..Serveur		= SAI_AdresseOuNomServeurHF + ":" + SAI_NumPortServeurHF
+maConnexion..BaseDeDonnées	= sNomBaseDeDonnées
+maConnexion..Cryptage		= SHA256 //ou hCryptageNon 
+
+// Ouverture de la connexion
+SI PAS HOuvreConnexion(maConnexion)	OU PAS HChangeConnexion("*", maConnexion) ALORS
+	PL_ECRIRE_LOGS("La connexion est en erreur")
+	RETOUR
+FIN
