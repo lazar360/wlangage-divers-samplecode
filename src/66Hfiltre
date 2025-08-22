@@ -1,3 +1,9 @@
+// version avec des chiffres
+/*
+HFiltre(BLENTETE_COMPLEMENT,NUMBL,hValMin,hValMax,"BLENTETE_COMPLEMENT.INFO_SUIVI<>''")
+POUR TOUT BLENTETE_COMPLEMENT SUR NUMBL
+*/
+// version avec des caractères
 SI INT_IGNORE_FOURNISSEUR ALORS
 	HFiltre(CFENTETE,CFCLE,Caract(0),Caract(255))
 SINON	
