@@ -1,3 +1,11 @@
+//	CléParcours est une chaine = HFiltre(DEENTETE,"NUMFA = '" + SansEspace(FAENTETE.NUMFA)+"'")
+//	Hlitpremier(DEENTETE, CléParcours)
+	HLitPremier(DEENTETE, ...
+	HFiltre(DEENTETE,"NUMFA = '" + SansEspace(FAENTETE.NUMFA)+"'"))
+	SI PAS HEnDehors(DEENTETE) ALORS sFAC_REF_DEVIS = DEENTETE.NUMDE
+	HDésactiveFiltre(DEENTETE)
+
+//---------------------------------------------------------------
 HLitPremier(PARAMETRE,  HFiltreContient(PARAMETRE,NOM,"EMETTEUR"))
 
 // OU version verbeuse
