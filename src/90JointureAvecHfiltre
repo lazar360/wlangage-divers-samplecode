@@ -13,3 +13,13 @@ sFAC_LIV_DAT	est une chaîne
 	FIN
 	HRAZ(LIENTETE)
 	sFAC_LIV_DAT = Ch_datelivraison
+
+/////////////////////OU//////////////////////////
+sFAC_ACPT_DAT	est une chaîne   // BLENTETE.BEACOMPTE,REGL,LIENTETE.LIDATELIV
+	HLitRecherchePremier(BLENTETE,NUMBL,FAENTETE.FENUMBL)
+	SI BLENTETE.BEACOMPTE <> 0 ALORS
+		HLitPremier(LIENTETE, ...
+		HFiltre(LIENTETE, "NUMCDE = '" + SansEspace(ExtraitChaîne(FAENTETE.CLE_BL,2,",")) +"'"))
+		sFAC_ACPT_DAT = DateVersChaîne(SansEspace(LIENTETE.LIDATELIV),"AAAA-MM-JJ") // A TESTER
+		HDésactiveFiltre(LIENTETE)
+	FIN
