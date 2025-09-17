@@ -1,0 +1,59 @@
+HTransactionAnnule(ComplèteRep(fRepExe)+"Transaction.trs")
+HTransactionDébut(ComplèteRep(fRepExe)+"Transaction.trs")
+
+bAppliqueEnregistrement						est un booléen	= Vrai
+bAppliqueSignature							est un booléen	= Vrai
+bAppliqueCompleterPiedFacture				est un booléen	= Vrai
+
+sNomFichierCerticatEtClePrivePourSignature	est une chaîne	= "C:\Users\Nicolas\Desktop\certificatetcle\moncertificat.pfx"
+sNomFichierCerticatEtClePrivePourSignature = fSéparateur(sNomFichierCerticatEtClePrivePourSignature)
+sMotDepasseClePriveeCertificat				est une chaîne	= "test"	// chaine secrète à faire
+sNomFichierCerticatSeul						est une chaîne	= "C:\Users\Nicolas\Desktop\certificatetcle\mon_certificat.crt"
+sNomFichierCerticatSeul 				   = fSéparateur(sNomFichierCerticatSeul)
+sXmlChaine est une chaîne = [
+	<?xml version="1.0" encoding="UTF-8"?>
+	<FAC_SIG_RES>
+	<ID></ID>
+	<CERTIF_NUM></CERTIF_NUM>
+	<FAC_SIG></FAC_SIG>
+	<FAC_VER_NOM></FAC_VER_NOM>
+ // ...
+ 			sRestitutionSignature += fExtraitChemin(ExeInfo(exeNom),fFichier) + "|"
+			sRestitutionSignature += "V" + mDuplicataFacture.m_FAC_DUP_VER
+			mDuplicataFacture.m_FAC_DUP_RES = sRestitutionSignature
+
+			HLitRecherchePremier(PIED_DE_FACTURE,FAC_NUM,SignatureDuplicata.m_TAG_DUP_ORI_NUM)
+			mDuplicataFacture.m_FAC_SIG_RES = PIED_DE_FACTURE.FAC_SIG_RES
+
+			MémoireVersFichier(mDuplicataFacture, TRACABILITE_DES_DUPLICATAS_DE_FACTURE)
+			HAjoute(TRACABILITE_DES_DUPLICATAS_DE_FACTURE)
+
+			// Enregistre la signature
+			MémoireVersFichier(SignatureDuplicata,SIGNATURE_DE_LA_TRACABILITE_DES_DUPLICATAS_DE_FACTURE)
+			HAjoute(SIGNATURE_DE_LA_TRACABILITE_DES_DUPLICATAS_DE_FACTURE)
+
+			//    VI- Produire la restitution de signature
+			//---------------------------------------------------
+
+			XmlSignature	est un xmlDocument		= XMLOuvre(sXmlChaine, depuisChaîne)
+			XmlSignature.FAC_SIG_RES.ID				= sIdDemande
+			XmlSignature.FAC_SIG_RES.CERTIF_NUM		= ExtraitChaîne(mDuplicataFacture.m_FAC_DUP_RES,1,"|")
+			XmlSignature.FAC_SIG_RES.FAC_SIG		= ExtraitChaîne(mDuplicataFacture.m_FAC_DUP_RES,2,"|")
+			XmlSignature.FAC_SIG_RES.FAC_VER_NOM	= ExtraitChaîne(mDuplicataFacture.m_FAC_DUP_RES,3,"|")
+			XmlSignature.FAC_SIG_RES.FAC_VER		= ExtraitChaîne(mDuplicataFacture.m_FAC_DUP_RES,4,"|")
+
+			XMLSauve(XmlSignature, "C:\Users\Nicolas\Desktop\signature_"+sIdDemande+".xml", XMLMiseEnForme)
+
+		AUTRE CAS
+			RETOUR
+
+	FIN
+	fSupprime(fichier)
+FIN
+
+HTransactionFin()
+
+CAS ERREUR:
+// Annulation de la transaction
+HTransactionAnnule()
+RETOUR
