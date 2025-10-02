@@ -15,7 +15,7 @@ PROCÉDURE INTERNE PI_TESTER_INTERVALLES(param_sHeureDebut, param_sHeureFin, par
 	FIN
 
 PROCÉDURE PG_COMPLETE_GAUCHE(Pvar,Plong)
-RENVOYER( Droite(Répète("0",Plong)+ Pvar),Plong)
+RENVOYER( Droite(Répète("0",Plong)+ Pvar),Plong) // ou valeur = Droite("00000000"+LIRE_CONSTANTE("NUMFACCLITTC","A",S0CODE),8)
 
 ----------------------------------SYNTAXE RACCOURCIE-------------------------------------
 PROCÉDURE PG_TESTER_INTERVALLES(param_sHeureDebut, param_sHeureFin, param_sRepetition, param_sHeureSys, param_sExecutionRepetition sont des chaînes):booléen
