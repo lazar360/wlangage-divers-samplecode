@@ -1,0 +1,16 @@
+PROCÉDURE PL_INSERER_EVENEMENTS_DANS_BDD(p_Nbre_Evenements)
+
+HLitDernier(t_jet)
+MaListeRubrique est une chaîne = HListeRubrique(t_jet)
+POUR i = 1 _À_ p_Nbre_Evenements
+	POUR TOUTE CHAÎNE sRubrique DE MaListeRubrique SÉPARÉE PAR RC
+		{"t_jet." + sRubrique,indRubrique} = {"t_jet." + sRubrique,indRubrique} + i
+		SI sRubrique = "n_jet_nid" ALORS
+			{"t_jet." + sRubrique,indRubrique} = NumériqueVersChaîne({"t_jet." + sRubrique,indRubrique})
+		FIN
+		SI sRubrique = "dt_jet_gdh" ALORS
+			{"t_jet." + sRubrique,indRubrique} = "2025-10-03 12:35:21"
+		FIN
+	FIN
+	HAjoute(t_jet)
+FIN
