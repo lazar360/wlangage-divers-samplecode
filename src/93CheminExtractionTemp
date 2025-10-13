@@ -1,0 +1,7 @@
+sRepExtractionArchive	est une chaîne	= ComplèteRep(ComplèteRep(SysRep(srBureau)) + "archive_extraite")
+sCheminFichierSignature	est une chaîne	= fConstruitChemin(sRepExtractionArchive, "Signature",".txt")
+sCheminArchiveFiscale	est une chaîne	= fConstruitChemin(sRepExtractionArchive, "ArchiveFiscale",".txt")
+
+...
+
+fRepSupprime(sRepExtractionArchive, frRécursif)
