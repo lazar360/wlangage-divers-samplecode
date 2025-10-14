@@ -1,0 +1,4 @@
+POUR i = AnnéeEnCours() - 5 _À_ AnnéeEnCours()
+	ListeAjoute(COMBO_Annee, i)
+FIN
+COMBO_Annee.SelectPlus(COMBO_Annee.Cherche(AnnéeEnCours()))
