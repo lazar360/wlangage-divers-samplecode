@@ -2,7 +2,7 @@ odysseyObjet est un Odyssey_ObjetAPI()
 odysseyObjet.JobType = "Email"
 odysseyObjet.TrackingId = "Send basic Email"
 odysseyObjet.EmailBody.Name = "body.html"
-odysseyObjet.EmailBody.Content = "PGh0bWw+DQo8aGVhZGVyPg0KPG1ldGEgY2hhcnNldD0iVVRGLTgiPg0KPC9oZWFkZXI+DQo8Ym9keT4NClRoaXMgaXMgYW4gZW1haWwgdGVzdCBmcm9tIE9keXNzZXkgTWVzc2FnaW5nLg0KPC9ib2R5Pg0KPC9odG1sPg=="
+odysseyObjet.EmailBody.Content = ""
 odysseyObjet.EmailBody.Type = 2
 
 recipient est une Structure
