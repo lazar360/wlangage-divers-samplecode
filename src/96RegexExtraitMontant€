@@ -1,0 +1,5 @@
+sChaineAVerifier	est une chaîne	= "S.A.S au capital de 166.170,05€ "
+tabResultat			est un tableau de chaînes
+sMontant			est une chaîne
+RegexCherche(sChaineAVerifier,"\b\d+(?:[.,]\d{1,2})?\s?(?:[€$£]|[A-Za-zÀ-ÖØ-öø-ÿ]+)?\b", tabResultat)
+PG_AFFICHE_INFO(Remplace(tabResultat.VersChaîne(), RC, ""))
