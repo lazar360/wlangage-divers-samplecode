@@ -1,0 +1,13 @@
+🧮 Données de départ
+- Montant TTC initial : 6,80 €
+- Remise : 0,34 € (soit 5 % de 6,80 €)
+- Taux de TVA : 10 %
+
+✅ Étapes de calcul
+- Montant TTC après remise
+6,80-0,34=6,46\, €\quad \mathrm{(TTC\  net)}- Calcul du montant HT
+Le montant TTC inclut la TVA, donc :
+\mathrm{HT}=\frac{\mathrm{TTC\  net}}{1+\frac{\mathrm{TVA}}{100}}=\frac{6,46}{1,10}=5,87\, €- Montant de TVA
+\mathrm{TVA}=\mathrm{TTC\  net}-\mathrm{HT}=6,46-5,87=0,59\, €
+
+
