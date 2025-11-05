@@ -1,0 +1,20 @@
+sScriptVBS	est une chaîne	= [
+	' Créer un fichier texte sur le bureau de l'utilisateur
+	Set objShell = CreateObject("WScript.Shell")
+	strBureau = objShell.SpecialFolders("Desktop")
+	strFichier = strBureau & "\exemple.txt"
+	
+	Set objFSO = CreateObject("Scripting.FileSystemObject")
+	Set objFichier = objFSO.CreateTextFile(strFichier, True)
+	objFichier.WriteLine("Ceci est un fichier texte créé par un script VBS.")
+	objFichier.Close
+	
+	MsgBox "Le fichier exemple.txt a été créé sur votre bureau."
+]
+
+// Écrire le script dans un fichier temporaire
+sFichierVBS est une chaîne = fRepTemp() + "\script_temp.vbs"
+fSauveTexte(sFichierVBS, sScriptVBS)
+
+// Exécuter le script
+ShellExecute(sFichierVBS)
