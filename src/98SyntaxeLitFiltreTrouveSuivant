@@ -1,0 +1,26 @@
+PROCÉDURE PL_INFO_CONNEXIONNF525()
+SI EnModeTest() ALORS //#TODO NG à supprimer
+	SI PG_LECTURE_PARAM("NF525") _ET_ PARAM.PRADR1 ~= "1" ALORS
+		utilitaireNF525	est un cNF525
+		SI utilitaireNF525.EstConnecteAuServeur() ALORS
+			SI ven_facture.Libellé [~] "<TTC>" ALORS
+				HLitPremier(NF525,HFiltre(NF525,"NID =''"))
+				SI HTrouve(NF525) ALORS
+					PG_AFFICHE_MESSAGE_TEMPO(5s, "Au moins une facture n'a pas été enregistrée dans NF525" + RC + ...
+					"Une procédure de régularisation va être lancée")
+					TANTQUE PAS HEnDehors(NF525)
+						// on cherche le numsf par le numfa du fichier NF525
+						HLitRecherchePremier(FAENTETE,NUMFA,NF525.NUM)
+						utilitaireNF525.GererEnvoiNF525("TTC","Facture",FAENTETE.NUMSF)
+						HLitSuivant(NF525)
+					FIN
+				FIN
+				HDésactiveFiltre(NF525)
+			FIN
+		SINON
+			PG_AFFICHE_MESSAGE_TEMPO(5s, "Problème de connexion au serveur NF525" + RC + ...
+			"Votre facture ne sera pas enregistrée si elle concerne un particulier" + RC + ...
+			"Veuillez contacter le support d'AQUILA")
+		FIN
+	FIN
+FIN //#TODO NG à supprimer
