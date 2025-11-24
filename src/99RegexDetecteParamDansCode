@@ -1,0 +1,159 @@
+PROCÉDURE PL_SURCLIC_LISTEPARAMPARFENETRE()
+
+sFichiersDuProjetTmp est une chaîne = fListeFichier(ComplèteRep(fRepParent(fRepParent(fRepExe()))) + "*.wdw")
+
+SI SansEspace(sFichiersDuProjetTmp) = "" ALORS
+	ErreurAvecDélai(2s, "Récupération du nom de fenêtres impossible")
+	RETOUR
+FIN
+
+sFichiersDuProjet est une chaîne
+
+POUR TOUTE CHAÎNE fichierFenetre DE sFichiersDuProjetTmp SÉPARÉ PAR RC
+	sFichiersDuProjet += fExtraitChemin(fichierFenetre,fFichier) + RC
+FIN
+
+SI SAI_Fichier_PDF = "" OU SAI_Fichier_PDF = EOT ALORS
+	ErreurAvecDélai(2s,"Indiquez un fichier pdf avec le code du projet")
+	RETOUR
+FIN
+
+sCodeFenetre	est une chaîne	= PDFVersTexte(SAI_Fichier_PDF)
+SI sCodeFenetre = "" ALORS
+	ErreurAvecDélai(2s,"Conversion du PDF en texte impossible")
+	RETOUR
+FIN
+
+InfoAvecDélai(2s,"Conversion du PDF en cours. Veuillez patienter")
+tabCodeAAfficher est un tableau de chaînes
+
+// Parcours de toutes les lignes du code de la fenêtre pour extraire les paramètres
+POUR TOUTE CHAÎNE sChaqueLigne DE sCodeFenetre SÉPARÉE PAR RC
+	nPositionPlusUn		est un entier
+	nPositionMoinsUn	est un entier
+	sChTmp				est une chaîne
+	sFenetre			est une chaîne
+
+	SI sChaqueLigne[[1 À 2]] <> "//" ALORS
+
+		POUR TOUTE CHAÎNE sChaqueMot DE sChaqueLigne SÉPARÉE PAR " "
+
+			SELON Vrai
+				// Détecter le nom d'une fenêtre
+				CAS (RegexVérifie(sChaqueLigne,"(?i)^([a-zé0-9]+|[a-zé0-9]+_[a-zé0-9]+|[a-zé0-9]+_[a-zé0-9]+_[a-zé0-9]+|[a-zé0-9]+_[a-zé0-9]+_[a-zé0-9]+_[a-zé0-9]+|[a-zé0-9]+_[a-zé0-9]+_[a-zé0-9]+_[a-zé0-9]+_[a-zé0-9]+)$")) ...
+					ET sChaqueLigne <> "FIN" ET sChaqueLigne <> "SINON" ...
+					ET sChaqueLigne <> "SORTIR" ET sChaqueLigne <> "Code" ET sChaqueLigne <> "RETOUR" ET sChaqueLigne <> "ALORS" ...
+					ET sChaqueLigne <> "alors" ET sChaqueLigne <> "Ferme" ET sChaqueLigne <> "TEST_APPEL" ET sChaqueLigne <> "touche_clavier" ...
+					ET sChaqueLigne <> "comptables" ET sChaqueLigne <> "unique_art" ET sChaqueLigne <> "Vl_Multiple" ET sChaqueLigne <> "externe" ...
+					ET sChaqueLigne <> "Bip"
+
+					POUR TOUTE CHAÎNE nomAComparer DE sFichiersDuProjet SÉPARÉE PAR RC
+						SI Majuscule(SansEspace(sChaqueLigne)) =  Majuscule(SansEspace(nomAComparer)) ET sFenetre <> sChaqueLigne ALORS
+							sFenetre = sChaqueLigne
+							SORTIR
+						FIN
+					FIN
+
+				// une fonction avec PARAM et pas une variable (à factoriser)
+				CAS Position(sChaqueLigne,"PARAM", 1) > 0
+
+					// Parcours des mots de la ligne
+					nPositionPlusUn		= Position(sChaqueMot,"PARAM", 1) + 5
+					nPositionMoinsUn	= Position(sChaqueMot, "PARAM", 1) - 1
+					sChTmp				= sChaqueMot
+
+					SI sChTmp[[nPositionMoinsUn]] = "_" ...
+						ET (sChTmp[[nPositionPlusUn]] = "(" OU sChTmp[[nPositionPlusUn]] = "_") ...
+						ET RegexVérifie(Droite(ExtraitChaîne(sChTmp, 1, "("),1),"[A-Za-z]") ... // évite le bug PG_LECTURE_PARAM("FICHIER_ETIQ_PARAM_MODELE")
+						// et sChTmp[[nPositionPlusUn]] + 1 <> ")" // évite le bug PL_LECTURE_PARAM_MAIL() - je laisse pour info
+						ALORS
+
+						SI PAS Position(sChaqueLigne,"MENU", 1) > 0 ALORS // PAS PARAM_MENU
+							sParametreRecupere est une chaîne
+							SI ExtraitChaîne(sChTmp,2,"(") = "" OU ExtraitChaîne(sChTmp,2,"(") = EOT ALORS
+								sParametreRecupere = "Pas de paramètres"
+							SINON
+								sParametreRecupere = ExtraitChaîne(sChTmp,2,"(")
+							FIN
+							sChTmp = ExtraitChaîne(sChTmp,1,"(") + ";" + sParametreRecupere
+
+							tabCodeAAfficher.Ajoute(sFenetre + ";" + PI_SUPPRIME_PARENTHESES(sChTmp))
+						SINON
+							sChTmp1	est une chaîne	= ExtraitChaîne(sChTmp,1,"(")
+							sChTmp2	est une chaîne	= Remplace(sChTmp,sChTmp1,"")
+							tabCodeAAfficher.Ajoute(sFenetre + ";" + sChTmp1 + ";" + sChTmp2)
+						FIN
+
+					FIN
+
+				// une fonction avec CONSUTIL et pas une variable (à factoriser)
+				CAS Position(sChaqueLigne,"CONSUTIL", 1) > 0
+					// Parcours des mots de la ligne
+					nPositionPlusUn		= Position(sChaqueMot,"CONSUTIL", 1) + 8
+					nPositionMoinsUn	= Position(sChaqueMot, "CONSUTIL", 1) - 1
+					sChTmp				= sChaqueMot
+					SI sChTmp[[nPositionMoinsUn]] = "_" ET sChTmp[[nPositionPlusUn]] = "(" ALORS
+						sChTmp = ExtraitChaîne(sChTmp,1,"(") + ";" + ExtraitChaîne(sChTmp,2,"(")
+						tabCodeAAfficher.Ajoute(sFenetre + ";" + PI_SUPPRIME_PARENTHESES(sChTmp))
+					FIN
+
+				// une fonction HLitRecherche
+				CAS Position(sChaqueLigne,"HLitRecherche", 1,MotComplet) > 0
+					nPositionPlusUn		= Position(sChaqueLigne,"HLitRecherche", 1) + Taille("HLitRecherche")
+					nPositionMoinsUn	= Position(sChaqueLigne, "HLitRecherche", 1) - 1
+					sChTmp				= sChaqueLigne
+					SI Position(ExtraitChaîne(sChaqueLigne,2,"("),"CONSUTIL") > 0 OU Position(ExtraitChaîne(sChaqueLigne,2,"("),"PARAM") > 0 ALORS
+						tabCodeAAfficher.Ajoute(sFenetre + ";" + ExtraitChaîne(sChaqueLigne,1,"(") + ";" + ExtraitChaîne(sChaqueLigne,2,"("))
+					FIN
+
+				// une fonction HLitRecherchePremier
+				CAS Position(sChaqueLigne,"HLitRecherchePremier", 1,MotComplet) > 0
+					nPositionPlusUn		= Position(sChaqueLigne,"HLitRecherchePremier", 1) + Taille("HLitRecherchePremier")
+					nPositionMoinsUn	= Position(sChaqueLigne, "HLitRecherchePremier", 1) - 1
+					sChTmp				= sChaqueLigne
+
+					SI Position(ExtraitChaîne(sChaqueLigne,2,"("),"CONSUTIL") > 0 OU  Position(ExtraitChaîne(sChaqueLigne,2,"("),"PARAM") ALORS
+						tabCodeAAfficher.Ajoute(sFenetre + ";" + ExtraitChaîne(sChaqueLigne,1,"(") + ";" + ExtraitChaîne(sChaqueLigne,2,"("))
+					FIN
+
+				// .ini
+				CAS Position(sChaqueLigne,".ini", 1) > 0
+
+					nPositionMoinsUn = Position(sChaqueLigne,".ini", 1) - 1
+					nPositionDepart est un entier  = nPositionMoinsUn
+					TANTQUE RegexVérifie(sChaqueLigne[[nPositionDepart]],"[a-zA-Z_]")
+						nPositionDepart--
+					FIN
+					SI sChaqueLigne[[nPositionDepart + 1  À nPositionMoinsUn]] <> "" ALORS
+						tabCodeAAfficher.Ajoute(sFenetre + ";" + "Fichier .ini;" + sChaqueLigne[[nPositionDepart + 1  À nPositionMoinsUn]] + ".ini")
+					FIN
+
+				// VARIABLES GLOBALES
+				CAS Position(sChaqueLigne, "vg",1,SansCasse) > 0
+
+					POUR TOUTE CHAÎNE sMotRedecoupe DE sChaqueMot SÉPARÉE PAR [",", "(", ")"]
+						SI RegexVérifie(sMotRedecoupe,"^[v,V][g,G](_[a-zA-Z<>=+]+){2}.*$") OU RegexVérifie(sMotRedecoupe,"^[v,V][g,G](_[a-zA-Z<>=+]+).*$") ALORS
+							// Trace("sMotRedecoupe : " + sMotRedecoupe)
+							sMotRedecoupeTmp est une chaîne = sMotRedecoupe
+							SI Position(sMotRedecoupeTmp,["+", "=", "+=", "<>", ">", "<","[", "{", "(", "}", ")"],1) > 0 ALORS
+								nPositionOperateur est un entier = Position(sMotRedecoupeTmp,["+", "=", "+=", "<>", ">", "<","[", "{", "(", "}", ")"],1) -1
+								sMotRedecoupeTmp =  sMotRedecoupeTmp[[1 À nPositionOperateur]]
+							FIN
+							tabCodeAAfficher.Ajoute(sFenetre + ";" + "Variable globale;" + sMotRedecoupeTmp)
+						FIN
+					FIN
+			FIN
+		FIN
+	FIN
+FIN
+// TODO : remise à jour code fenêtre + écraser code existant
+TableauSupprimeDoublon(tabCodeAAfficher)
+Trie(tabCodeAAfficher,tccOrdreLexicographique)
+
+fAjouteTexte(sFichierParamCsv, TableauVersChaîne(tabCodeAAfficher,RC))
+Ferme()
+
+	PROCÉDURE INTERNE PI_SUPPRIME_PARENTHESES(parame_sChTmp est une chaîne):chaîne
+		RENVOYER Remplace(parame_sChTmp,[")", "("],"")
+	FIN
+
