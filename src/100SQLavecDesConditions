@@ -1,0 +1,36 @@
+
+SELECT 
+    '70E' AS JournalCode,                                         -- Définit une valeur pour le champ JournalCode
+    'VENTES Euro' AS JournalLib,                                  -- Définit une valeur pour le champ JournalLib
+    tfe.n_fac_nid AS EcritureNum,                                 -- Reprend une valeur
+    TO_CHAR(tfe.dt_fac_gd, 'YYYYMMDD') AS EcritureDate,           -- Format une valeur timestamp YYYYMMDD HH:mm:ss en YYYYMMDD 
+    '411' AS CompteNum,
+    'CLIENTS' AS CompteLib,
+    ' ' AS CompAuxNum,                                            -- Définit chaîne vide pour ce champ
+    ' ' AS CompAuxLib,
+    tfe.s_fac_num AS PieceRef,
+    TO_CHAR(tfe.dt_fac_dat,'YYYYMMDD') AS PieceDate,
+    'Fact. ' ||                                                   -- Début de la colonne : le double pipe (||) sert à cocténer d'autres valeurs 
+    CASE                                                          -- le CASE permet de voir si la colonne est NULL : faire une chose sinon faire autre chose (Utilisation du CASE car pas de IF ELSE en SQL standard)
+        WHEN tpart.s_tie_rso IS NULL THEN tpro.s_cli_rso          -- syntaxe : CASE … WHEN … THEN … ELSE … END
+        ELSE tpart.s_tie_rso
+    END AS EcritureLib,                                           -- Fin de la colonne  : la colonne est nommée
+    tfp.cur_fac_tot_ttc_mtn AS Debit,
+    '0,00' AS Credit,
+    ' ' AS EcritureLet,
+    ' ' AS DateLet, 
+    TO_CHAR(tfe.dt_fac_gd, 'YYYYMMDD') AS ValidDate,
+    ' ' AS Montantdevise,
+    ' ' AS Idevise
+FROM 
+    t_factures_entete tfe
+LEFT JOIN t_factures_pied tfp 
+    ON tfe.n_fac_nid = tfp.n_fac_nid
+LEFT JOIN t_clients_part tpart 
+    ON tfe.n_clientid = tpart.n_clientid
+LEFT JOIN t_clients_pro tpro 
+    ON tfe.n_clientid = tpro.n_clientid
+    WHERE TO_CHAR(tfe.dt_fac_gd, 'YYYY-MM-DD') >= '2025-11-26'    -- Requête paramétrée " WHERE TO_CHAR(tfe.dt_fac_gd, 'YYYY-MM-DD') >= ?" Création d'une condition alternative (si d'arrivée = date départ ne marche pas) 
+    AND TO_CHAR(tfe.dt_fac_gd, 'YYYY-MM-DD') <= '2025-11-26'      -- Requête paramétrée " AND TO_CHAR(tfe.dt_fac_gd, 'YYYY-MM-DD') <= ?" Création d'une condition alternative (si d'arrivée = date départ ne marche pas)
+ORDER BY 
+    tfe.n_fac_nid
