@@ -1,0 +1,18 @@
+HOuvreAnalyse("K:\ABELIA\wabelia.wd7\wabelia.wdd")
+
+	HChangeRep("FAENTETE","K:\ABELIA_V11\ROUY1301\FICHIER")
+
+	// Requête non paramétrée HFSQL classique
+	MaReqHT est une Source de Données
+	HExecuteSQLQuery(MaReqHT, hQueryDefault, "SELECT * FROM FAENTETE ORDER BY NUMFA DESC")
+	POUR TOUT MaReqHT
+		SI Position(sNumFa, MaReqHT.NUMFA ,1,MotComplet+SansCasse) > 0 ALORS
+			Table_FACTURES_ABELIA.AjouteLigne(MaReqHT.NUMFA,DateVersChaîne(MaReqHT.FEDATEFAC,"JJ-MM-AAAA"), MaReqHT.FEMTTOTAL, MaReqHT.FEMTTTC)
+		FIN
+	FIN
+
+	// Requête Paramétrée HFSQL classique
+	sdFacturesHT est une Source de Données
+	sdFacturesHT.p_NUMFA = "F9400002"
+	HExécuteRequêteSQL(sdFacturesHT,hRequêteDéfaut,"SELECT * FROM FAENTETE WHERE FAENTETE.NUMFA = {p_NUMFA}")
+	PG_INFO("CL NOM :" + sdFacturesHT.CLNOM)
