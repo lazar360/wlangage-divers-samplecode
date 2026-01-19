@@ -1,0 +1,3 @@
+Si FenEtat(Mafenetre) = Actif alors
+  Info("Ma fenêtre est active")
+fin
