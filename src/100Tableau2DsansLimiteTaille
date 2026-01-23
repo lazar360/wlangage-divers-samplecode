@@ -1,0 +1,13 @@
+// Variable globale
+/*
+nDimension1 est un entier
+nDimension2 est un entier 
+*/
+
+// code du bouton
+tabTab2dimensions est un tableau de * par * chaînes
+nDimension1++
+nDimension2++
+Dimension(tabTab2dimensions, nDimension1, nDimension2)
+tabTab2dimensions[nDimension1,nDimension2] = "["+ nDimension1 + "," + nDimension2 + "]"
+PG_AFFICHE_INFO(tabTab2dimensions[nDimension1,nDimension2])
