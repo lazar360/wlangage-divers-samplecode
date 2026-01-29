@@ -1,0 +1,10 @@
+reqTrouveDevisParBl est une Requête SQL =
+[
+	SELECT de.NUMDE, fa.NUMSF, fa.CLNOM 
+	FROM DEENTETE de
+	LEFT JOIN FAENTETE fa  ON de.DVNUMBL = fa.FENUMBL 
+	WHERE fa.NUMSF = {pNumSF}
+]
+reqTrouveDevisParBl.pNumSF = 25000092
+reqTrouveDevisParBl.ExécuteRequêteSQL(hRequêteDéfaut)
+trace(reqTrouveDevisParBl)
