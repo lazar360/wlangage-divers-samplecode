@@ -1,0 +1,87 @@
+// Dans la base enregistrement du chemin 
+
+////////////////////////////////////////
+// Répertoires photos
+gsRépertoirePhotos est une chaîne
+gsRépertoirePhotosMiniatures est une chaîne
+
+// Chemins
+gsRépertoirePhotos = fRepDonnées() + [fSep] + "photos"
+gsRépertoirePhotosMiniatures = gsRépertoirePhotos + [fSep] + "thumbnails"
+
+// Création des répertoires si besoin
+SI PAS fRépertoireExiste(gsRépertoirePhotos) ALORS fRepCrée(gsRépertoirePhotos)
+SI PAS fRépertoireExiste(gsRépertoirePhotosMiniatures) ALORS fRepCrée(gsRépertoirePhotosMiniatures)
+
+PROCÉDURE PhotoChemin(LOCAL sPhoto est une chaîne)
+
+RENVOYER gsRépertoirePhotos + [fSep] + sPhoto
+
+PROCÉDURE PhotoCheminMiniature(LOCAL sPhoto est une chaîne)
+
+RENVOYER gsRépertoirePhotosMiniatures + [fSep] + sPhoto
+
+//////////////////////////////////////////////
+// Résumé : Rafraîchit la liste des photos
+//
+PROCÉDURE RafraichitListe()
+
+ZoneRépétéeSupprimeTout(ZR_Photos)
+
+// Exécution de la requête
+REQ_Photos.pRecherche = gsRecherche
+HExécuteRequête(REQ_Photos)
+
+POUR TOUT REQ_Photos 
+	// Ajout de la miniature dans la ZR
+	ZoneRépétéeAjouteLigne(ZR_Photos,REQ_Photos.IDPhoto,PhotoCheminMiniature(REQ_Photos.Chemin))
+FIN
+
+
+///////////////////////////////////////////////////////
+// Résumé : Crée une nouvelle photo
+//
+PROCÉDURE NouvellePhoto()
+
+// Ouvre l'appareil photo
+OuvreAsynchrone(FEN_Mobile_Camera_UI,(Faux),AprèsCapture)
+
+	PROCÉDURE INTERNE AprèsCapture(sChemin est une chaîne)
+		sNomDestination est une chaîne
+		
+		// Si le retour vaut chaîne vide ("")
+		SI sChemin ~= "" ALORS
+			RETOUR
+		FIN
+		
+		// Futur nom du fichier photo
+		sNomDestination  = ChaîneConstruit("%1-%2%3",DateHeureSys() ,DonneGUID(guidBrut), fExtraitChemin(sChemin,fExtension))
+		
+		// Copie de l'image dans le répertoire de l'application
+		fCopieFichier(sChemin,PhotoChemin(sNomDestination))
+		
+		// Génération de la miniature
+		IMG_Miniature = sChemin
+		SI Minuscule( fExtraitChemin(sChemin,fExtension)) = ".png" ALORS
+			dSauveImagePNG(IMG_Miniature,PhotoCheminMiniature(sNomDestination))
+		SINON
+			dSauveImageJPEG(IMG_Miniature,PhotoCheminMiniature(sNomDestination))
+		FIN
+		
+		// Suppression de l'image originale 
+		fSupprime(sChemin)
+		
+		// Ajout dans la base de donnée
+		HRAZ(Photo)
+		Photo.Chemin			= sNomDestination
+		Photo.DateHeureCreation	= DateHeureSys()
+		HAjoute(Photo)
+		
+		// Affichage de la photo
+		OuvreFenêtreMobile(FEN_Photo,Photo.IDPhoto)
+		
+		// On rafraîchit
+		RafraichitListe()
+	FIN
+
+  
