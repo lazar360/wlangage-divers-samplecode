@@ -1,0 +1,7 @@
+Info("Essai d'afficher image ", fRepDonnées() + [fSep] + Effet.Chemin)
+IMG_A_AFFICHER = fRepDonnées() + [fSep] + Effet.Chemin // fonctionne très bien :)
+Effet.LitRecherchePremier(IDEffet,3)
+Son(fRepDonnées() + [fSep] + Effet.Chemin)
+
+// Mettre les ressources dans autre : fichiers de données, image et son (vu q'ils ne sont plus dans un fichier
+// A la génération de l'exécutable, les mettre dans le répertoire des données
