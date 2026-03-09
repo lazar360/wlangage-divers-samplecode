@@ -1,0 +1,8 @@
+tabValeursZones est un tableau d'entiers
+InitHasard()
+
+POUR i = 1 À 6
+	tabValeursZones.Ajoute(i)
+FIN
+
+TableauMélange(tabValeursZones)
