@@ -1,0 +1,18 @@
+sManifestJson			est une chaîne	= ChaîneVersUTF8(fChargeTexte(ComplèteRep(VG_RepArchiveTemp) + "manifest.json"))
+jFichiersAVerifier		est un JSON
+sListeFichiersArchive 	est une chaîne 	= fListeFichier(ComplèteRep(VG_RepArchiveTemp) + "*.*")
+bResultatRequete 		est un booléen
+
+POUR TOUTE CHAÎNE fichierArchive DE sListeFichiersArchive SÉPARÉE PAR RC
+
+	SI Majuscule(fExtraitChemin(fichierArchive,fExtension)) [~] ".XML" ALORS
+		sNomMembreXml est une chaîne = fExtraitChemin(fichierArchive,fFichier + fExtension )
+		jFichiersAVerifier[sNomMembreXml] = XMLVersTexte(fChargeTexte(fichierArchive))
+	FIN
+
+	SI Majuscule(fExtraitChemin(fichierArchive,fExtension)) [~] ".TXT" ALORS
+		sNomMembreTxt est une chaîne = fExtraitChemin(fichierArchive,fFichier + fExtension)
+		jFichiersAVerifier[sNomMembreTxt] = fChargeTexte(fichierArchive)
+	FIN
+
+FIN
