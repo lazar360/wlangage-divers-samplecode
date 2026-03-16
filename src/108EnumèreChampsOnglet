@@ -1,0 +1,15 @@
+NomChamp est une chaîne = EnumèreSousElément("Fen_Archive_Visualiser.ONG_TablesDesDocuments", enumPremier + enumVolet)
+
+// Parcours de tous les volets d'onglet ONG_TablesDesDocuments
+TANTQUE NomChamp <> ""
+	// Parcours des champs du volet
+	NomChamp2 est une chaîne = EnumèreSousElément("Fen_Archive_Visualiser.ONG_TablesDesDocuments." + NomChamp, enumPremier)
+	TANTQUE NomChamp2 <> ""
+		// Trace(NomChamp2)
+		SI NomChamp2[[1 À 5]] = "TABLE" ALORS // si c'est une table
+			TableSupprimeTout(NomChamp2)
+		FIN
+		NomChamp2 = EnumèreSousElément("Fen_Archive_Visualiser.ONG_TablesDesDocuments." + NomChamp)
+	FIN
+	NomChamp = EnumèreSousElément("Fen_Archive_Visualiser.ONG_TablesDesDocuments", enumVolet)
+FIN
