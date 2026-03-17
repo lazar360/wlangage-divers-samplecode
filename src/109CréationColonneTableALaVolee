@@ -1,0 +1,30 @@
+// Si les colonnes ont déjà été créées, sortir
+SI p_Table..NombreColonne <> 1 ALORS RETOUR
+
+// Création des colonnes
+POUR TOUT sField DE p_xml.DATAPACKET.METADATA.FIELDS SUR FIELD
+
+	SI sField..Attribut["attrname"] = p_premiere_colonne CONTINUER // on passe la première colonne (il faut au moins une colonne pour la cloner)
+
+	sNouvelleColonneLibelle est une chaîne 	= sField..Attribut["attrname"]
+	sNouvelleColonneLibelle[[1 À 2]] 		= ""
+	SI sNouvelleColonneLibelle[[1]] 		= "_" ALORS sNouvelleColonneLibelle[[1]] = ""
+	SI RegexVérifie(sNouvelleColonneLibelle[[1 À 2]], "^[A-Za-z]_$") ALORS sNouvelleColonneLibelle[[1 À 2]] = ""
+	sNouvelleColonneLibelle					= Majuscule(Remplace(sNouvelleColonneLibelle,"_","-"))
+
+	sNouvelleColonne est une chaîne 		= sField..Attribut["attrname"] + "-" + DonneUUID()
+	ChampClone(p_premiere_colonne, sNouvelleColonne)
+
+	{sNouvelleColonne, indChamp}..Libellé 	= sNouvelleColonneLibelle
+	{sNouvelleColonne,indChamp}..Visible  	= Vrai
+
+	SI ExtraitChaîne(sNouvelleColonne,1,"_") DANS("cur","f") ALORS
+		{sNouvelleColonne,indChamp}..TypeSaisie   = typSaisieNum
+		{sNouvelleColonne,indChamp}..MasqueSaisie = "999 999 999,99"
+	FIN
+
+	SI sNouvelleColonne[[1]] = "s" OU sNouvelleColonne[[1 À 2]] = "dt" ALORS
+		{sNouvelleColonne,indChamp}..TypeSaisie = typSaisieTexte
+	FIN
+
+FIN
