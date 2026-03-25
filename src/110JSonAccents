@@ -1,0 +1,7 @@
+Pour résoudre le problème d'accentuation
+
+// Passer par un ChaîneVersJSON avant le JSONVersVariant afin d'éviter d'avoir des problèmes d'accentuation si on passe directement par JSONVersVariant
+VP_Resultat_JSON = ChaîneVersJSON(VP_Resultat)
+
+// Résultat au format JSON
+VF_NF525_Ticket_Resume = JSONVersVariant(VP_Resultat_JSON)
