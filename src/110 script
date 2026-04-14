@@ -34,7 +34,12 @@ créer une nouvelle release avec l'image passe-partout appel
 créer plan 1 : page up
 créer libellé : LIB_Paragraphe
 créer une fenêtre interne : FI_Menu
-Mettre sur pause :revoir comment c'est fait sur livre en mode débuggeur à partir du clic sur bouton
+Mettre sur pause : revoir comment c'est fait sur livre en mode débuggeur à partir du clic sur bouton burger, la gestion du swip et la zm
 Reprendre 
 télécharger l'image passe-partout
-fenêtre interne : création d'une image, descr : IMG_Menu, image
+fenêtre interne : création d'une image, descr : IMG_Menu, image passe-partout
+fenêtre interne : création d'une zone multilignes : ligne chapitres et ligne aventure
+code de la zm, faire un selon avec ligne chapitres et ligne aventure
+tester la navigation 
+
+
