@@ -1,0 +1,40 @@
+1. création Navbar :
+créer une nouvelle release : Matériel pour la Navbar : mettre l'image menu burger (hors vidéo)
+revenir sur le code de l'init
+ajouter les tests : si enmodetest et chapitres.nbreenr = 0 et fFichierExiste(fichierImport) et ouinon(voulez-vous …)
+Mettre sur pause
+regarder les tailles du libellé nav bar dans livre jeu
+xy hauteur largeur = …
+regarder couleur du libellé dans descr champ onglet style Cadre extérieur couleur fond, cadre extérieur
+Reprendre
+créer libellé avec même taille et même couleur dans appel
+créer une image, descr : IMG_Jeu, icône du catalogue play, image cliquable
+créer une image, descr : IMG_Sac, icône du catalogue sac, image cliquable 
+créer une image, descr : IMG_Map, icône du catalogue map, image cliquable
+sous IMG_Jeu : créer un libellé : Jeu couleur noir puis même couleur que libellé navbar
+sous IMG_Sac : créer un libellé : Sac couleur noir puis même couleur que libellé navbar
+sous IMG_Map : créer un libellé : Carte couleur noir puis même couleur que libellé navbar
+Mettre sur pause
+Regarder dans livre la couleur du libellé qui bouge
+Reprendre
+créer libellé : LIB_Titre mettre au 2ème plan (entre navbar et LIB_Jeu) : expliquer qu'il va bouger pour rendre visible le libellé
+télécharger Matériel pour la Navbar : mettre l'image dans l'exe
+mettre sur pause
+regarder dimension IMG_Menu dans livre
+regarder jouer animation,... (copier le code dans un txt)
+Reprendre 
+créer Icône menu, descr : IMG_Menu, Image cliquable, Animation (aller-retour)
+code du bouton : au clic, animation joue + en commantaire fenêtre coulissante visible vrai
+tester l'animation au clic
+Au besoin mettre sur pause
+Arrêter l'enregistrement pour montage  
+
+2. Création navigation
+créer une nouvelle release avec l'image passe-partout appel 
+créer plan 1 : page up
+créer libellé : LIB_Paragraphe
+créer une fenêtre interne : FI_Menu
+Mettre sur pause :revoir comment c'est fait sur livre en mode débuggeur à partir du clic sur bouton
+Reprendre 
+télécharger l'image passe-partout
+fenêtre interne : création d'une image, descr : IMG_Menu, image
