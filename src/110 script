@@ -1,15 +1,6 @@
-1. création ZR_Chapitres
-attributs : Att_Numero Valeur, Att_Nom Valeur, Att_Image Valeur, Att_synopsis Valeur, Att_Introduction Valeur (non visible)
-placer dans la Zr, IMG_Chapitre à gauche 
-libellé numero vide sur image en haut
-libellé nom vide sur image en haut sous libellé nom
-à côté image SAI synopsis zone de saisie en affichage seul RTF
-
-code de la fenêtre :
-boucle sur chapitre
-zr_chapitre ajouteLigne...
 
 2. création Navbar :
+déplacer le code de la ZR dans une procédure locale charger chapitre
 créer une nouvelle release : Matériel pour la Navbar : mettre l'image menu burger (hors vidéo)
 revenir sur le code de l'init
 ajouter les tests : si enmodetest et chapitres.nbreenr = 0 et fFichierExiste(fichierImport) et ouinon(voulez-vous …)
