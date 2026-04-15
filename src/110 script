@@ -1,6 +1,6 @@
 
 2. création Navbar :
-déplacer le code de la ZR dans une procédure locale charger chapitre
+déplacer le code de la ZR dans une procédure locale charger chapitre + mettre en jaune chapitre et nom
 créer une nouvelle release : Matériel pour la Navbar : mettre l'image menu burger (hors vidéo)
 revenir sur le code de l'init
 ajouter les tests : si enmodetest et chapitres.nbreenr = 0 et fFichierExiste(fichierImport) et ouinon(voulez-vous …)
