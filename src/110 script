@@ -1,5 +1,7 @@
+Flouter vidéo 2 lvdh
 
 2. création Navbar :
+Créer  un tri sur la zr en fonction  du numéro : si un chapitre est rajouté on a toujours un classement par numéro
 déplacer le code de la ZR dans une procédure locale charger chapitre + mettre en jaune chapitre et nom
 créer une nouvelle release : Matériel pour la Navbar : mettre l'image menu burger (hors vidéo)
 revenir sur le code de l'init
@@ -43,5 +45,8 @@ fenêtre interne : création d'une image, descr : IMG_Menu, image passe-partout
 fenêtre interne : création d'une zone multilignes : ligne chapitres et ligne aventure
 code de la zm, faire un selon avec ligne chapitres et ligne aventure
 tester la navigation 
+
+4. Création fenêtre introduction chapitre 1
+dans zone html utiliser AvecZoom = faux pour enlever la loupe pas belle
 
 
