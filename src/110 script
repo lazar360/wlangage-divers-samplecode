@@ -1,9 +1,12 @@
 Flouter vidéo 2 lvdh
 
-2. création Navbar :
 Créer  un tri sur la zr en fonction  du numéro : si un chapitre est rajouté on a toujours un classement par numéro
 déplacer le code de la ZR dans une procédure locale charger chapitre + mettre en jaune chapitre et nom
-créer une nouvelle release : Matériel pour la Navbar : mettre l'image menu burger (hors vidéo)
+
+ajouter le logo appel de Merlin
+
+2. création Navbar :
+
 revenir sur le code de l'init
 ajouter les tests : si enmodetest et chapitres.nbreenr = 0 et fFichierExiste(fichierImport) et ouinon(voulez-vous …)
 Mettre sur pause
