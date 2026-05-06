@@ -1,0 +1,6 @@
+sDateLundi est une chaîne = PremierJourDeLaSemaine(DateDuJour)
+ToastAffiche("Date du lundi " + sDateLundi)
+nNbreJours est un entier  = DateVersEntier(sDateLundi) - 7
+ToastAffiche("Nombre de jours " + nNbreJours)
+sDatePrecedentLundi est une chaîne = EntierVersDate(nNbreJours)
+ToastAffiche("sDatePrecedentLundi : " + sDatePrecedentLundi)
