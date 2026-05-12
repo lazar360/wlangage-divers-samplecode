@@ -1,0 +1,14 @@
+sContenuFichier est une chaîne			   = fChargeTexte(sFichierParamCsv)
+sContenuTable   est une chaîne      	 = TableParametrage.VersTexte(taSansTitre,";",RC)
+sPremierMot 	est une chaîne 			     = ExtraitChaîne(sContenuTable,1,";",DepuisDébut)
+sDernierMot     est une chaîne			   = ExtraitChaîne(sContenuTable,2,";",DepuisFin)
+sContenuTable 							           = Remplace(sContenuTable,";"+RC,RC)
+SI sContenuTable[[Taille(sContenuTable)]] ~= ";" ALORS sContenuTable[[Taille(sContenuTable)]] = ""
+sChaineARemplacer est une chaîne = sPremierMot +  ExtraitChaîneEntre(sContenuFichier,1,sPremierMot,sDernierMot) + sDernierMot
+sContenuFichier 						           = Remplace(...
+											                   sContenuFichier,...
+                 		   									 sChaineARemplacer,...
+											                   sContenuTable)
+
+fSupprime(sFichierParamCsv)
+fSauveTexte(sFichierParamCsv,sContenuFichier)
