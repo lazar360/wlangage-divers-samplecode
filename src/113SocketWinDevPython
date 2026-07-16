@@ -1,0 +1,25 @@
+PROCÉDURE ThreadBotSupport(sQuestion)
+
+sNomSocket	est une chaîne	= "botsupport"
+
+SI PAS SocketConnecte(sNomSocket, 5526, "127.0.0.1") ALORS
+	gsReponseBot = "Service d'aide non démarré. Lancez le serveur du bot support."
+	RETOUR
+FIN
+
+// Aligner le mode de transmission sur le protocole du serveur Python :
+// flux brut delimite par un saut de ligne (Caract(10)).
+SocketChangeModeTransmission(sNomSocket, SocketMarqueurFinBuffer, Caract(10)) // LA SOLUTION EST ICI !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+// En mode marqueur, le \n est ajoute automatiquement par SocketEcrit : ne pas le remettre.
+SocketEcrit(sNomSocket, ChaîneVersUTF8(sQuestion))
+
+// Une seule lecture : SocketLit attend le marqueur \n et renvoie la ligne (marqueur retire).
+trace("Avant SocketLit")
+bufBrut est un Buffer = SocketLit(sNomSocket, Vrai)
+SocketFerme(sNomSocket)
+
+// Derniere instruction : remplit gsReponseBot (declenche l'affichage cote timer)
+sRep est une chaîne = SansEspace(UTF8VersChaîne(bufBrut))
+SI sRep = "" ALORS sRep = "Aucune reponse recue du service d'aide."
+gsReponseBot = sRep
