@@ -9,7 +9,7 @@ Différents travaux effectués (WinDev, Java, Python) permettant d'utiliser les 
 
 -- Nouvelles fonctionnalités :
 - Intégration PayBox à l'application principale ;
-- Export Csv ;
+- Echange dématérialisé de données via Csv ;
 - Serveur NF525 JRE Java et WinDev (à finir) ;
 - Intégration du serveur à l'application WinDev ;
 - Dossier d'architecture technique NF525 ;
