@@ -1,12 +1,13 @@
 Différents travaux effectués (WinDev, Java, Python) permettant d'utiliser les extraits de code :
-* Maintenance :
+
+-- Maintenance :
 - Point qui ne faisait pas de commentaire ;
 - Affichage adresse dans un état ; 
 - Affichage image dans un état ;
 - Page de paramétrage des coordonnées de la société utilisatrice ;
 - Correction bug d'affichage sur PayBox ;
 
-* Nouvelles fonctionnalités :
+-- Nouvelles fonctionnalités :
 - Intégration PayBox à l'application principale ;
 - Export Csv ;
 - Serveur NF525 JRE Java et WinDev (à finir) ;
