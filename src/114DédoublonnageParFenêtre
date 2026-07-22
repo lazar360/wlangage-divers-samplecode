@@ -1,0 +1,19 @@
+PROCÉDURE PL_DEDOUBLONNER_PARAMETRES()
+
+// Dédoublonnage sur la clé (fenêtre + paramètre) : un même paramètre lu
+// plusieurs fois dans une MÊME fenêtre n'apparaît qu'une fois ; le même
+// paramètre présent dans DEUX fenêtres différentes est conservé dans chacune.
+// (La colonne du milieu - fonction/nature de lecture - est volontairement ignorée.)
+// Agit sur la variable de fenêtre VF_tabCodeAAfficher, remplie par PL_LISTER_PARAMETRES.
+tabSansDoublon	est un tableau de chaînes
+tabVus			est un tableau associatif de booléens
+POUR TOUT sLigneCourante DE VF_tabCodeAAfficher
+	sFen	est une chaîne		= ExtraitChaîne(sLigneCourante, 1, ";")
+	sParam	est une chaîne		= ExtraitChaîne(sLigneCourante, 3, ";")
+	sCle	est une chaîne		= sFen + ";" + sParam
+	SI PAS tabVus[sCle] ALORS
+		tabVus[sCle] = Vrai
+		tabSansDoublon.Ajoute(sLigneCourante)
+	FIN
+FIN
+VF_tabCodeAAfficher = tabSansDoublon
