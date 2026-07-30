@@ -10,7 +10,7 @@ Différents travaux effectués (WinDev, Java, Python) permettant d'utiliser les 
 -- Nouvelles fonctionnalités :
 - Intégration PayBox à l'application principale (Requête URL) ;
 - Echange dématérialisé de données via Csv ;
-- Serveur NF525 JRE Java et WinDev (à finir) ;
+- Serveur NF525 JRE Java et WinDev ;
 - Intégration de serveur SFTP à l'application WinDev ;
 - Dossier d'architecture technique NF525 ;
 - Script python (avec Claude) RAG -> explication des paramètres dans l'application principale 
