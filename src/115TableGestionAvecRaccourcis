@@ -1,0 +1,16 @@
+SELON Vrai
+	CAS ToucheEnfoncée(VK_DELETE) // Suppr
+		TableParametrage.SupprimeAvecAnimation(TableParametrage.Select())
+		VF_EstModifieParam = Vrai
+	CAS ToucheEnfoncée(teControl) ET ToucheEnfoncée(0x53) // Ctrl + touche S
+		SI VF_EstModifieParam OU VF_EstModifieParamFenetre ALORS
+			PL_MODIFICATION_PARAM()
+			VF_EstModifieParam			= Faux
+			VF_EstModifieParamFenetre	= Faux
+		FIN
+	CAS ToucheEnfoncée(VK_ADD) // Touche "+"
+		TableParametrage.InsèreLigne(TableParametrage.Select())
+		TableParametrage[TableParametrage.Select() - 1].FENETRE   = TableParametrage[TableParametrage.Select()].FENETRE
+		TableParametrage[TableParametrage.Select() - 1].PARAMETRE = TableParametrage[TableParametrage.Select()].PARAMETRE
+		VF_EstModifieParam = Vrai
+FIN
